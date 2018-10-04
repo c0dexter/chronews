@@ -9,6 +9,7 @@ public class ApiClient {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
 
     private static final String BASE_API_URL = "https://newsapi.org/v2/";
+
     public static Retrofit getClient() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_API_URL)
