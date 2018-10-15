@@ -1,6 +1,10 @@
 package pl.michaldobrowolski.chronews.api.service;
 
-import okhttp3.ResponseBody;
+import java.util.List;
+
+import pl.michaldobrowolski.chronews.api.model.pojo.Article;
+import pl.michaldobrowolski.chronews.api.model.pojo.News;
+import pl.michaldobrowolski.chronews.api.model.pojo.Source;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -10,26 +14,28 @@ public interface ApiInterface {
     // Call to the proper endpoint by GET method (because of getting info only)
 
     @GET("top-headlines")
-    Call<ResponseBody> topHeadlines(
+    Call<News> topHeadlines( // why not Call<List<Article>> ??
             @Query("country") String countryCode,
             @Query("category") String categoryType,
             @Query("q") String queryPhrase,
             @Query("pageSize") Integer amountResultsPerPage,
-            @Query("page") Integer pagePaginationAmount
+            @Query("page") Integer pagePaginationAmount,
+            @Query("apiKey") String apiKeyValue
     );
 
     @GET("everything")
-    Call<ResponseBody> everything(
+    Call<News> everything(
             @Query("q") String queryPhrase,
             @Query("language") String languageCode,
-            @Query("sortBy") String sortingType
+            @Query("sortBy") String sortingType,
+            @Query("apiKey") String apiKeyValue
     );
 
     @GET("sources")
-    Call<ResponseBody> sources(
+    Call<Source> sources(
             @Query("category") String categoryType,
             @Query("language") String languageCode,
-            @Query("country") String countryCode
+            @Query("country") String countryCode,
+            @Query("apiKey") String apiKeyValue
     );
-
 }

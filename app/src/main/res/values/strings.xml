@@ -101,4 +101,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="desc_article_photo">Photo of article</string>
+    <string name="example_title_article">Bieńkowska ostrzega przed starymi dieslami w Europie Wschodniej</string>
+    <string name="example_short_desc_article">Niemiecki rząd chce pozbyć się zatruwających środowisko starych aut z silnikiem diesla. Handlarze samochodów w Europie Wschodniej zacierają ręce. Komisarz UE Elżbieta Bieńkowska ostrzega przed fatalnymi skutkami.</string>
 </resources>
