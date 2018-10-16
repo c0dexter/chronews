@@ -21,10 +21,10 @@
             card_view:cardElevation="@dimen/cardview_default_elevation"
             card_view:cardUseCompatPadding="true">
 
-            <ImageView
+            <pl.michaldobrowolski.chronews.utils.DynamicHeightImage
                 android:id="@+id/article_thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_article_photo"

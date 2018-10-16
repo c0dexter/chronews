@@ -7,12 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
+import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
@@ -30,6 +27,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private List<Article> articleList;
     private Article article;
     private Context context;
+    private DynamicHeightImage dynamicHeightImage;
 
     public ArticleListAdapter(List<Article> articleList, Context context) { //ListAdapterOnClickHandler listAdapterOnClickHandler
         //this.listAdapterOnClickHandler = listAdapterOnClickHandler;
@@ -41,6 +39,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_article, parent, false);
+        dynamicHeightImage = new DynamicHeightImage(context);
+        dynamicHeightImage.setRatioThreeTwo();
         view.setFocusable(true);
         return new ViewHolder(view);
     }
@@ -61,7 +61,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.article_thumbnail)
-        ImageView ivArticleThumbnail;
+        DynamicHeightImage ivArticleThumbnail;
         @BindView(R.id.article_title)
         TextView tvArticleTitle;
         @BindView(R.id.article_short_desc)
@@ -79,15 +79,4 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         }
     }
 
-//    // Transform selected Article to the JSON String for future operation on DB
-//    private String transformJsonToString(String jsonResult, int position) {
-//        JsonElement element = new JsonParser().parse(jsonResult);
-//        JsonArray elementAsJsonArray = element.getAsJsonArray();
-//        JsonElement articleElement = elementAsJsonArray.get(position);
-//        return articleElement.toString();
-//    }
-
-//    public interface ListAdapterOnClickHandler {
-//        void onClickArticle(int articleCardPosition);
-//    }
 }

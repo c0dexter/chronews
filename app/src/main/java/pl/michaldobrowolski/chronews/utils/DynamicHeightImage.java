@@ -1,17 +1,30 @@
 package pl.michaldobrowolski.chronews.utils;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 public class DynamicHeightImage extends android.support.v7.widget.AppCompatImageView {
 
-    private float mAspectRatio = 1.5f;
+    private static float mAspectRatio = 1.5f; // for the screen ratio 3:2 = 1.5f
 
     public DynamicHeightImage(Context context) {
         super(context);
     }
 
-    public void setAspectRatio(float aspectRatio) {
+    public DynamicHeightImage(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public DynamicHeightImage(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public void setUserAspecthRatio(float aspectRatio) {
         mAspectRatio = aspectRatio;
+        requestLayout();
+    }
+
+    public void setRatioThreeTwo() {
         requestLayout();
     }
 
