@@ -12,9 +12,16 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
+
+        debug {
+            buildConfigField 'String', "ApiKey", Chronews_ApiKey
+            resValue 'string', "api_key", Chronews_ApiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "ApiKey", Chronews_ApiKey
+            resValue 'string', "api_key", Chronews_ApiKey
         }
     }
 }

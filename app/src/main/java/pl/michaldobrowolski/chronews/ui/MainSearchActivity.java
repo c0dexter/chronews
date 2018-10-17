@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
@@ -24,8 +25,7 @@ import retrofit2.Response;
 
 public class MainSearchActivity extends AppCompatActivity {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
-    private static final String API_KEY = ""; // TODO: remove API Key before commit!!!
-
+    private static final String API_KEY = BuildConfig.ApiKey;
     private TextView mTextMessage;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
