@@ -18,11 +18,11 @@ import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
     //private final ListAdapterOnClickHandler listAdapterOnClickHandler;
-
 
     private List<Article> articleList;
     private Article article;
@@ -39,6 +39,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_article, parent, false);
+
         dynamicHeightImage = new DynamicHeightImage(context);
         dynamicHeightImage.setRatioThreeTwo();
         view.setFocusable(true);
@@ -48,9 +49,16 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Article article = articleList.get(position);
-        Picasso.get().load(article.getUrlToImage()).into(holder.ivArticleThumbnail);
+
+        if(article.getUrlToImage() != null){
+            Picasso.get().load(article.getUrlToImage()).into(holder.ivArticleThumbnail);
+        } else{
+            Picasso.get().load(R.drawable.default_news_photo).into(holder.ivArticleThumbnail);
+        }
+
         holder.tvArticleTitle.setText(article.getTitle());
-        holder.tvArticleShortDesc.setText(article.getDescription());
+        holder.tvArticleDate.setText(article.getSource().getName());
+        holder.tvArticleSource.setText(new StringBuilder().append(UtilityHelper.displayShortDate(article.getPublishedAt())).append(",").toString());
     }
 
     @Override
@@ -64,8 +72,10 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         DynamicHeightImage ivArticleThumbnail;
         @BindView(R.id.article_title)
         TextView tvArticleTitle;
-        @BindView(R.id.article_short_desc)
-        TextView tvArticleShortDesc;
+        @BindView(R.id.article_source)
+        TextView tvArticleSource;
+        @BindView(R.id.article_date)
+        TextView tvArticleDate;
 
         public ViewHolder(View itemView) {
             super(itemView);
