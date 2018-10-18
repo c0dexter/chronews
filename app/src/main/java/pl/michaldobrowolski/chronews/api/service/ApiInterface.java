@@ -25,7 +25,7 @@ public interface ApiInterface {
 
     @GET("everything")
     Call<News> everything(
-            @Query("q") String queryPhrase,
+            @Query("q") String searchedPhrase,
             @Query("language") String languageCode,
             @Query("sortBy") String sortingType,
             @Query("apiKey") String apiKeyValue
