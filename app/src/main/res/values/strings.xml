@@ -107,4 +107,6 @@
     <string name="menu_search_title">Search preference</string>
     <string name="menu_settings_title">Settings</string>
     <string name="search_news_hint">Search news...</string>
+    <string name="calendar_icon_desc">calendar icon</string>
+    <string name="shadow_gradient_desc">shadow gradient</string>
 </resources>

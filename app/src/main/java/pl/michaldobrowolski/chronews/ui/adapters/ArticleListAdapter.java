@@ -50,15 +50,16 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Article article = articleList.get(position);
 
-        if(article.getUrlToImage() != null){
+        if (article.getUrlToImage() != null) {
             Picasso.get().load(article.getUrlToImage()).into(holder.ivArticleThumbnail);
-        } else{
+        } else {
             Picasso.get().load(R.drawable.default_news_photo).into(holder.ivArticleThumbnail);
         }
 
         holder.tvArticleTitle.setText(article.getTitle());
-        holder.tvArticleDate.setText(article.getSource().getName());
-        holder.tvArticleSource.setText(new StringBuilder().append(UtilityHelper.displayShortDate(article.getPublishedAt())).append(",").toString());
+        holder.tvArticleDate.setText(UtilityHelper.displayShortDate(article.getPublishedAt()));
+        holder.tvArticleSource.setText(article.getSource().getName());
+        holder.tvArticleDesc.setText(article.getDescription());
     }
 
     @Override
@@ -76,6 +77,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         TextView tvArticleSource;
         @BindView(R.id.article_date)
         TextView tvArticleDate;
+        @BindView(R.id.article_description)
+        TextView tvArticleDesc;
 
         public ViewHolder(View itemView) {
             super(itemView);
