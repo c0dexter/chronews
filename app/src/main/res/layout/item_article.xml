@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
@@ -36,10 +36,12 @@
                 android:layout_height="0dp"
                 android:contentDescription="@string/shadow_gradient_desc"
                 android:src="@drawable/bottom_shadow"
+                android:visibility="gone"
                 card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="@+id/article_thumbnail" />
+                card_view:layout_constraintTop_toTopOf="@+id/article_thumbnail"
+                tools:visibility="visible" />
 
             <ProgressBar
                 android:id="@+id/progress_bar_main_thumbnail"
@@ -51,7 +53,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
+                card_view:layout_constraintBottom_toTopOf="@+id/article_title"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
@@ -65,18 +67,20 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textStyle="italic"
-                android:fontFamily="sans-serif-condensed"
+                android:visibility="gone"
                 card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
                 card_view:layout_constraintEnd_toStartOf="@+id/layoutArticleDate"
                 card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintVertical_bias="1.0"
-                tools:text="Interia.pl" />
+                tools:text="Interia.pl"
+                tools:visibility="visible" />
 
             <FrameLayout
                 android:id="@+id/layoutArticleDate"
@@ -86,12 +90,14 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/date_oval_white"
                 android:padding="5dp"
+                android:visibility="gone"
                 card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="1.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="@+id/shadow_bottom_thumbnail"
-                card_view:layout_constraintVertical_bias="1.0">
+                card_view:layout_constraintVertical_bias="1.0"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/calendar"

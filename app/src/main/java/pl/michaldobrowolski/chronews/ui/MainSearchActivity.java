@@ -69,8 +69,6 @@ public class MainSearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        //fetchTopHeadlinesArticles(); //TODO: Turn on to getting example result after loading screen
-
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

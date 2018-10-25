@@ -18,7 +18,7 @@ public final class UtilityHelper {
      */
     public static String displayShortDate(String dateToParse) {
         String inputPattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-        String outputPattern = "yyyy-MM-dd";
+        String outputPattern = "d MMM yyyy";
         SimpleDateFormat inputDateFormat = new SimpleDateFormat(inputPattern);
         SimpleDateFormat outputDateFormat = new SimpleDateFormat(outputPattern);
 

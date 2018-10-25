@@ -7,8 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,6 +32,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private Article article;
     private Context context;
     private DynamicHeightImage dynamicHeightImage;
+    private OnItemClickListener onItemClickListener;
 
     public ArticleListAdapter(List<Article> articleList, Context context) { //ListAdapterOnClickHandler listAdapterOnClickHandler
         //this.listAdapterOnClickHandler = listAdapterOnClickHandler;
@@ -43,17 +48,52 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         dynamicHeightImage = new DynamicHeightImage(context);
         dynamicHeightImage.setRatioThreeTwo();
         view.setFocusable(true);
-        return new ViewHolder(view);
+        return new ViewHolder(view, onItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Article article = articleList.get(position);
 
         if (article.getUrlToImage() != null) {
-            Picasso.get().load(article.getUrlToImage()).into(holder.ivArticleThumbnail);
+            Picasso.get()
+                    .load(article.getUrlToImage())
+                    .into(holder.ivArticleThumbnail, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.pbMainThumbnail.setAlpha(0f);
+                            holder.pbMainThumbnail.animate().setDuration(300).alpha(1f).start();
+                            holder.pbMainThumbnail.setVisibility(View.GONE);
+                            holder.ivShadowShapeThumbnail.setVisibility(View.VISIBLE);
+                            holder.flDateItem.setVisibility(View.VISIBLE);
+                            holder.tvArticleSource.setVisibility(View.VISIBLE);
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            holder.pbMainThumbnail.setVisibility(View.GONE);
+                        }
+                    });
         } else {
-            Picasso.get().load(R.drawable.default_news_photo).into(holder.ivArticleThumbnail);
+            Picasso.get()
+                    .load(R.drawable.default_news_photo)
+                    .into(holder.ivArticleThumbnail, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.pbMainThumbnail.setAlpha(0f);
+                            holder.pbMainThumbnail.animate().setDuration(300).alpha(1f).start();
+                            holder.pbMainThumbnail.setVisibility(View.GONE);
+                            holder.ivShadowShapeThumbnail.setVisibility(View.VISIBLE);
+                            holder.flDateItem.setVisibility(View.VISIBLE);
+                            holder.tvArticleSource.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            holder.pbMainThumbnail.setVisibility(View.GONE);
+                        }
+                    });
         }
 
         holder.tvArticleTitle.setText(article.getTitle());
@@ -68,7 +108,16 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         return articleList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.article_thumbnail)
         DynamicHeightImage ivArticleThumbnail;
         @BindView(R.id.article_title)
@@ -79,17 +128,25 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         TextView tvArticleDate;
         @BindView(R.id.article_description)
         TextView tvArticleDesc;
+        @BindView(R.id.shadow_bottom_thumbnail)
+        ImageView ivShadowShapeThumbnail;
+        @BindView(R.id.layoutArticleDate)
+        FrameLayout flDateItem;
+        @BindView(R.id.progress_bar_main_thumbnail)
+        ProgressBar pbMainThumbnail;
+        OnItemClickListener onItemClickListener;
 
-        public ViewHolder(View itemView) {
+
+        ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
+            itemView.setOnClickListener(this);
+            this.onItemClickListener = onItemClickListener;
         }
 
         @Override
         public void onClick(View v) {
-
+            onItemClickListener.onItemClick(v, getAdapterPosition());
         }
     }
-
 }
