@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainSearchActivity extends AppCompatActivity {
+public class MainSearchActivity extends AppCompatActivity implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
     private static final String API_KEY = BuildConfig.ApiKey;
     private TextView mTextMessage;
@@ -67,6 +69,7 @@ public class MainSearchActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -74,14 +77,21 @@ public class MainSearchActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    private void fetchTopHeadlinesArticles(final String searchedPhrase) {
+    private void fetchArticles(final String searchedPhrase) {
 
         Call<News> call;
-        if (searchedPhrase.length() > 0) {
-            //call = apiInterface.topHeadlines(UtilityHelper.CountryCodes.POLAND.getCountryCode(), null, searchedPhrase, null, null, API_KEY);
-            call = apiInterface.everything(searchedPhrase, UtilityHelper.CountryCodes.POLAND.getCountryCode(), null, API_KEY);
+        String country = UtilityHelper.CountryCodes.POLAND.getCountryCode();
+        String categoryType = UtilityHelper.Category.ENTERTAINMENT.getCategory();
+        String sortingType = UtilityHelper.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
+
+        // No search phrase -> display TOP HEADLINES for a specific country
+        call = apiInterface.topHeadlines(country, null, null, null, null, API_KEY);
+
+
+        if (searchedPhrase.length() > 2) {
+            call = apiInterface.everything(searchedPhrase, null, null, API_KEY);
         } else {
-            call = apiInterface.topHeadlines(UtilityHelper.CountryCodes.POLAND.getCountryCode(), null, null, null, null, API_KEY);
+            call = apiInterface.topHeadlines(country, null, null, null, null, API_KEY);
         }
 
         call.enqueue(new Callback<News>() {
@@ -92,7 +102,7 @@ public class MainSearchActivity extends AppCompatActivity {
                     //fetchingData(response);
                     news = response.body();
                     jasonRetrofitResult = new Gson().toJson(news);
-                    adapter = new ArticleListAdapter(news.getArticles(), MainSearchActivity.this);
+                    adapter = new ArticleListAdapter(news.getArticles(), MainSearchActivity.this, MainSearchActivity.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } else {
@@ -107,6 +117,7 @@ public class MainSearchActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: ", t);
             }
         });
+
     }
 
     @Override
@@ -123,14 +134,14 @@ public class MainSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.length() > 2) {
-                    fetchTopHeadlinesArticles(query); // TODO: make switch-case block for selected search type in the Settings
+                    fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
                 }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newQuery) {
-                fetchTopHeadlinesArticles(newQuery); // TODO: make switch-case block for selected search type in the Settings
+                fetchArticles(newQuery); // TODO: make switch-case block for selected search type in the Settings
                 return false;
             }
         });
@@ -138,5 +149,10 @@ public class MainSearchActivity extends AppCompatActivity {
         menuItem.getIcon().setVisible(false, false);
 
         return true;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
     }
 }

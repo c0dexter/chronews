@@ -14,7 +14,7 @@ public interface ApiInterface {
     // Call to the proper endpoint by GET method (because of getting info only)
 
     @GET("top-headlines")
-    Call<News> topHeadlines( // why not Call<List<Article>> ??
+    Call<News> topHeadlines(
             @Query("country") String countryCode,
             @Query("category") String categoryType,
             @Query("q") String queryPhrase,

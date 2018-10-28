@@ -26,18 +26,15 @@ import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
-    //private final ListAdapterOnClickHandler listAdapterOnClickHandler;
-
+    private final OnItemClickListener onItemClickListener;
     private List<Article> articleList;
-    private Article article;
     private Context context;
     private DynamicHeightImage dynamicHeightImage;
-    private OnItemClickListener onItemClickListener;
 
-    public ArticleListAdapter(List<Article> articleList, Context context) { //ListAdapterOnClickHandler listAdapterOnClickHandler
-        //this.listAdapterOnClickHandler = listAdapterOnClickHandler;
+    public ArticleListAdapter(List<Article> articleList, Context context, OnItemClickListener onItemClickListener) {
         this.articleList = articleList;
         this.context = context;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -67,7 +64,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                             holder.ivShadowShapeThumbnail.setVisibility(View.VISIBLE);
                             holder.flDateItem.setVisibility(View.VISIBLE);
                             holder.tvArticleSource.setVisibility(View.VISIBLE);
-
+                            holder.tvAuthor.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -99,7 +96,14 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         holder.tvArticleTitle.setText(article.getTitle());
         holder.tvArticleDate.setText(UtilityHelper.displayShortDate(article.getPublishedAt()));
         holder.tvArticleSource.setText(article.getSource().getName());
-        holder.tvArticleDesc.setText(article.getDescription());
+        if (article.getDescription() != null) {
+            holder.tvArticleDesc.setVisibility(View.VISIBLE);
+            holder.tvArticleDesc.setText(article.getDescription());
+        }
+        holder.tvPublishedTimeCounter.setText(UtilityHelper.publishTimeCounter(article.getPublishedAt()));
+        if (article.getAuthor() != null) {
+            holder.tvAuthor.setText(article.getAuthor());
+        }
     }
 
     @Override
@@ -108,24 +112,24 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         return articleList.size();
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
-        this.onItemClickListener = onItemClickListener;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.article_thumbnail)
         DynamicHeightImage ivArticleThumbnail;
+        @BindView(R.id.author)
+        TextView tvAuthor;
+        @BindView(R.id.article_date)
+        TextView tvArticleDate;
         @BindView(R.id.article_title)
         TextView tvArticleTitle;
         @BindView(R.id.article_source)
         TextView tvArticleSource;
-        @BindView(R.id.article_date)
-        TextView tvArticleDate;
+        @BindView(R.id.published_time_counter)
+        TextView tvPublishedTimeCounter;
         @BindView(R.id.article_description)
         TextView tvArticleDesc;
         @BindView(R.id.shadow_bottom_thumbnail)

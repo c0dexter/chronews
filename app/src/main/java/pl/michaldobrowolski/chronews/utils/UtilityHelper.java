@@ -2,6 +2,7 @@ package pl.michaldobrowolski.chronews.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public final class UtilityHelper {
@@ -24,7 +25,6 @@ public final class UtilityHelper {
 
         Date date = null;
         String formattedDate = null;
-
         try {
             date = inputDateFormat.parse(dateToParse);
             formattedDate = outputDateFormat.format(date);
@@ -34,6 +34,54 @@ public final class UtilityHelper {
 
         return formattedDate;
     }
+
+    /**
+     * This function is displaying a time since news have been published
+     *
+     * @param publishedDate - String value with date provided by API
+     * @return String value with message to inform user how long time ago a news has been published
+     */
+    public static String publishTimeCounter(String publishedDate) {
+        String counterResult;
+
+        Calendar cal = Calendar.getInstance();
+        String inputPattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        SimpleDateFormat sdf = new SimpleDateFormat(inputPattern);
+
+        Date publishedDateAt = null;
+        try {
+            publishedDateAt = sdf.parse(publishedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        cal.setTime(publishedDateAt);
+
+        Calendar calendar = Calendar.getInstance();
+        long now = calendar.getTimeInMillis();
+        long time = cal.getTimeInMillis();
+        long diff = now - time;
+
+        int days = (int) (diff / (1000*60*60*24));
+        int hours   = (int) ((diff / (1000*60*60)) % 24);
+
+        if (hours > 24){
+            if(days < 2 ){
+                counterResult = " \u2022 " + String.valueOf(days) + " day ago";
+            } else
+            counterResult = " \u2022 " + String.valueOf(days) + " days ago";
+
+        } else {
+            if(hours < 2){
+                counterResult = " \u2022 " + String.valueOf(hours) + " hour ago";
+            } else{
+                counterResult = " \u2022 " + String.valueOf(hours) + " hours ago";
+            }
+        }
+
+        return String.valueOf(counterResult);
+    }
+
+
 
     /**
      * Country codes for query parameter
@@ -171,6 +219,10 @@ public final class UtilityHelper {
 
         SortOption(String sortingOption) {
             this.sortingOption = sortingOption;
+        }
+
+        public String getSortingOption() {
+            return sortingOption;
         }
     }
 
