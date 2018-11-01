@@ -4,18 +4,19 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,50 +32,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainSearchActivity extends AppCompatActivity implements ArticleListAdapter.OnItemClickListener {
+public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
     private static final String API_KEY = BuildConfig.ApiKey;
-    private TextView mTextMessage;
+    Context context;
     private RecyclerView recyclerView;
+    private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
     private News news;
-    private ApiInterface apiInterface;
     private String jasonRetrofitResult;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_search);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_categories);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_favourites);
-                    return true;
-            }
-            return false;
-        }
-    };
-
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        context = getContext();
+        recyclerView = rootView.findViewById(R.id.mainRecyclerView);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        // fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
+        return rootView;
     }
 
     private void fetchArticles(final String searchedPhrase) {
@@ -83,10 +65,6 @@ public class MainSearchActivity extends AppCompatActivity implements ArticleList
         String country = UtilityHelper.CountryCodes.POLAND.getCountryCode();
         String categoryType = UtilityHelper.Category.ENTERTAINMENT.getCategory();
         String sortingType = UtilityHelper.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
-
-        // No search phrase -> display TOP HEADLINES for a specific country
-        call = apiInterface.topHeadlines(country, null, null, null, null, API_KEY);
-
 
         if (searchedPhrase.length() > 2) {
             call = apiInterface.everything(searchedPhrase, null, null, API_KEY);
@@ -98,16 +76,15 @@ public class MainSearchActivity extends AppCompatActivity implements ArticleList
             @Override
             public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("LOG: Response Code: ", response.code() + "");
-                    //fetchingData(response);
+                    Log.d(TAG, "Response Code: " + response.code());
                     news = response.body();
                     jasonRetrofitResult = new Gson().toJson(news);
-                    adapter = new ArticleListAdapter(news.getArticles(), MainSearchActivity.this, MainSearchActivity.this);
+                    adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Response code: " + response.code());
+                    Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Fetching data failed! Response code: " + response.code());
                 }
             }
 
@@ -117,18 +94,23 @@ public class MainSearchActivity extends AppCompatActivity implements ArticleList
                 Log.e(TAG, "onFailure: ", t);
             }
         });
-
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
         MenuItem menuItem = menu.findItem(R.id.action_bar_search);
 
-        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
         searchView.setQueryHint(getString(R.string.search_news_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -147,12 +129,11 @@ public class MainSearchActivity extends AppCompatActivity implements ArticleList
         });
 
         menuItem.getIcon().setVisible(false, false);
-
-        return true;
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
     }
+
 }

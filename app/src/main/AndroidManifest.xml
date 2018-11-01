@@ -11,23 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NewsTheme">
-        <activity android:name=".ui.MainSearchActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.CategoriesActivity"
-            android:label="@string/title_activity_categories" />
-        <activity
-            android:name=".ui.FavouritesActivity"
-            android:label="@string/title_activity_favourites" />
-        <activity
-            android:name=".ui.ArticleDetailActivity"
-            android:label="@string/title_activity_article_detail"
-            android:theme="@style/NewsTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
