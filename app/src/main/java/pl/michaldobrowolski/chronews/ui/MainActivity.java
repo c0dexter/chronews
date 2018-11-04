@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;

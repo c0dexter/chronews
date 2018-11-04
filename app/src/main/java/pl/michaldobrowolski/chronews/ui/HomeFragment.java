@@ -2,6 +2,7 @@ package pl.michaldobrowolski.chronews.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 
 import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
+import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
@@ -35,7 +37,7 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
     private static final String API_KEY = BuildConfig.ApiKey;
-    Context context;
+    private Context context;
     private RecyclerView recyclerView;
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
@@ -115,15 +117,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (query.length() > 2) {
-                    fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
-                }
+                fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newQuery) {
-                fetchArticles(newQuery); // TODO: make switch-case block for selected search type in the Settings
                 return false;
             }
         });
@@ -134,6 +133,18 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+
+        Article article = news.getArticles().get(position);
+        ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("articleKey", article);
+        articleDetailFragment.setArguments(bundle);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, articleDetailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 }

@@ -8,6 +8,7 @@
     tools:showIn="@layout/fragment_article_detail">
 
     <TextView
+        android:id="@+id/article_detail_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
