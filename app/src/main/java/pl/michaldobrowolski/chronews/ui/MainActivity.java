@@ -1,6 +1,5 @@
 package pl.michaldobrowolski.chronews.ui;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,7 +12,7 @@ import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = ApiClient.class.getClass().getSimpleName();
+    private static final String TAG = MainActivity.class.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

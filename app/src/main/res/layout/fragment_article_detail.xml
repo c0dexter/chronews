@@ -44,10 +44,12 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_article_detail" />
+    <include
+        layout="@layout/content_article_detail"
+        android:layout_height="511dp" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fav"
+        android:id="@+id/fav_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

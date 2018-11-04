@@ -8,7 +8,7 @@ import java.util.Date;
 public final class UtilityHelper {
 
     public static String removeRedundantCharactersFromText(String text) {
-        return text.replaceAll("/[+.*?/]", "");
+        return text.replaceAll("\\[+.*?\\]", "");
     }
 
     /**

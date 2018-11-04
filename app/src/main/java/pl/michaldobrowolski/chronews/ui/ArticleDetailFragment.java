@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -18,11 +19,19 @@ import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ArticleDetailFragment extends Fragment {
-    private Article article;
+    private static final String TAG = ArticleDetailFragment.class.getClass().getSimpleName();
     @BindView(R.id.article_image)
     DynamicHeightImage ivArticleImage;
+    @BindView(R.id.article_detail_text)
+    TextView tvArticleDetailText;
+    @BindView(R.id.article_detail_title)
+    TextView tvArticleDetailTitle;
+    @BindView(R.id.article_detail_author)
+    TextView tvArticleDetailAuthor;
+    private Article article;
 
     @Nullable
     @Override
@@ -46,19 +55,31 @@ public class ArticleDetailFragment extends Fragment {
     }
 
     private void populateViews(Article article) {
-        Picasso.get()
-                .load(article.getUrlToImage())
-                .into(ivArticleImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
 
-                    }
+        if (article.getUrl() != null) {
+            Picasso.get()
+                    .load(article.getUrlToImage())
+                    .into(ivArticleImage);
+        } else {
+            Picasso.get()
+                    .load(R.drawable.default_news_photo)
+                    .into(ivArticleImage);
+        }
 
-                    @Override
-                    public void onError(Exception e) {
+        if (article.getAuthor() != null) {
+            tvArticleDetailAuthor.setVisibility(View.VISIBLE);
+            tvArticleDetailAuthor.setText(article.getAuthor());
+        }
 
-                    }
-                });
+        if (article.getContent() != null) {
+            tvArticleDetailText.setText(UtilityHelper.removeRedundantCharactersFromText(article.getContent()));
+        } else {
+            tvArticleDetailText.setText(article.getDescription());
+        }
 
+        tvArticleDetailTitle.setText(article.getTitle());
+
+
+        Log.d(TAG, article.getContent() + " " + article.getAuthor());
     }
 }
