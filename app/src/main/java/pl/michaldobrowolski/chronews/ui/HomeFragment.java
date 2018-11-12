@@ -2,15 +2,16 @@ package pl.michaldobrowolski.chronews.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +30,7 @@ import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
-import pl.michaldobrowolski.chronews.utils.UtilityHelper;
+import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,29 +45,36 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private News news;
     private String jasonRetrofitResult;
 
-
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_activity_toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
+        //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         context = getContext();
-        recyclerView = rootView.findViewById(R.id.mainRecyclerView);
+        recyclerView = rootView.findViewById(R.id.recycler_view_home);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        // fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
+        fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
         return rootView;
     }
 
     private void fetchArticles(final String searchedPhrase) {
 
         Call<News> call;
-        String country = UtilityHelper.CountryCodes.POLAND.getCountryCode();
-        String categoryType = UtilityHelper.Category.ENTERTAINMENT.getCategory();
-        String sortingType = UtilityHelper.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
+        String country = NewsApiUtils.CountryCodes.POLAND.getCountryCode();
+        String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
+        String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
 
         if (searchedPhrase.length() > 2) {
             call = apiInterface.everything(searchedPhrase, null, null, API_KEY);

@@ -9,7 +9,7 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="NewsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="NewsTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/customColorPrimary</item>
         <item name="colorPrimaryDark">@color/customColorPrimaryDark</item>
@@ -18,12 +18,7 @@
         <item name="android:textColorSecondary">@color/customColorSecondaryText</item>
     </style>
 
-    <style name="NewsTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
 
     <style name="NewsTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="NewsTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="NewsTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 </resources>

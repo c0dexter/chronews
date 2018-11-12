@@ -118,25 +118,25 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.article_thumbnail)
+        @BindView(R.id.image_category_thumb)
         DynamicHeightImage ivArticleThumbnail;
-        @BindView(R.id.author)
+        @BindView(R.id.text_author)
         TextView tvAuthor;
-        @BindView(R.id.article_date)
+        @BindView(R.id.text_article_date)
         TextView tvArticleDate;
-        @BindView(R.id.article_title)
+        @BindView(R.id.text_article_title)
         TextView tvArticleTitle;
-        @BindView(R.id.article_source)
+        @BindView(R.id.text_article_source)
         TextView tvArticleSource;
-        @BindView(R.id.published_time_counter)
+        @BindView(R.id.text_published_time_counter)
         TextView tvPublishedTimeCounter;
-        @BindView(R.id.article_description)
+        @BindView(R.id.text_article_description)
         TextView tvArticleDesc;
-        @BindView(R.id.shadow_bottom_thumbnail)
+        @BindView(R.id.image_shadow_bottom_thumb)
         ImageView ivShadowShapeThumbnail;
-        @BindView(R.id.layoutArticleDate)
+        @BindView(R.id.frame_article_date)
         FrameLayout flDateItem;
-        @BindView(R.id.progress_bar_main_thumbnail)
+        @BindView(R.id.progress_bar_home_thumbnail)
         ProgressBar pbMainThumbnail;
         OnItemClickListener onItemClickListener;
 

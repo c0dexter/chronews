@@ -8,10 +8,6 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true">
@@ -21,7 +17,7 @@
             android:layout_height="wrap_content">
 
             <pl.michaldobrowolski.chronews.utils.DynamicHeightImage
-                android:id="@+id/article_thumbnail"
+                android:id="@+id/image_category_thumb"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
@@ -31,20 +27,20 @@
                 tools:src="@drawable/example_image" />
 
             <ImageView
-                android:id="@+id/shadow_bottom_thumbnail"
+                android:id="@+id/image_shadow_bottom_thumb"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:contentDescription="@string/shadow_gradient_desc"
                 android:src="@drawable/bottom_shadow"
                 android:visibility="gone"
-                card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
+                card_view:layout_constraintBottom_toBottomOf="@+id/image_category_thumb"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="@+id/article_thumbnail"
+                card_view:layout_constraintTop_toTopOf="@+id/image_category_thumb"
                 tools:visibility="visible" />
 
             <ProgressBar
-                android:id="@+id/progress_bar_main_thumbnail"
+                android:id="@+id/progress_bar_home_thumbnail"
                 style="@style/Widget.AppCompat.ProgressBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,13 +49,13 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/article_title"
+                card_view:layout_constraintBottom_toTopOf="@+id/text_article_title"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/author"
+                android:id="@+id/text_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -73,8 +69,8 @@
                 android:textColor="@android:color/white"
                 android:textStyle="normal"
                 android:visibility="gone"
-                card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
-                card_view:layout_constraintEnd_toStartOf="@+id/layoutArticleDate"
+                card_view:layout_constraintBottom_toBottomOf="@+id/image_category_thumb"
+                card_view:layout_constraintEnd_toStartOf="@+id/frame_article_date"
                 card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
@@ -83,7 +79,7 @@
                 tools:visibility="visible" />
 
             <FrameLayout
-                android:id="@+id/layoutArticleDate"
+                android:id="@+id/frame_article_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -91,16 +87,16 @@
                 android:background="@drawable/date_oval_white"
                 android:padding="5dp"
                 android:visibility="gone"
-                card_view:layout_constraintBottom_toBottomOf="@+id/article_thumbnail"
+                card_view:layout_constraintBottom_toBottomOf="@+id/image_category_thumb"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="1.0"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="@+id/shadow_bottom_thumbnail"
+                card_view:layout_constraintTop_toTopOf="@+id/image_shadow_bottom_thumb"
                 card_view:layout_constraintVertical_bias="1.0"
                 tools:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/calendar"
+                    android:id="@+id/image_calendar"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginStart="5dp"
@@ -110,7 +106,7 @@
                     android:tint="@color/customColorSecondaryText" />
 
                 <TextView
-                    android:id="@+id/article_date"
+                    android:id="@+id/text_article_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="28dp"
@@ -121,7 +117,7 @@
             </FrameLayout>
 
             <TextView
-                android:id="@+id/article_title"
+                android:id="@+id/text_article_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -132,14 +128,14 @@
                 android:textColor="@color/customColorPrimaryText"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                card_view:layout_constraintBottom_toTopOf="@+id/article_description"
+                card_view:layout_constraintBottom_toTopOf="@+id/text_article_description"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/shadow_bottom_thumbnail"
+                card_view:layout_constraintTop_toBottomOf="@+id/image_shadow_bottom_thumb"
                 tools:text="Bitcoin Price Intraday Analysis: BTC/USD Retests Interim Resistance" />
 
             <TextView
-                android:id="@+id/article_description"
+                android:id="@+id/text_article_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -149,12 +145,12 @@
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/article_title"
+                card_view:layout_constraintTop_toBottomOf="@+id/text_article_title"
                 tools:visibility="visible"
                 tools:text="The Bitcoin-to-dollar exchange rate on Wednesday traded at 6435-fiat after jumping 1.76 percent from the previous day's low." />
 
             <TextView
-                android:id="@+id/article_source"
+                android:id="@+id/text_article_source"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -168,12 +164,12 @@
                 android:textStyle="bold"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/article_description"
+                card_view:layout_constraintTop_toBottomOf="@+id/text_article_description"
                 tools:text="Interia.pl"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/published_time_counter"
+                android:id="@+id/text_published_time_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -189,8 +185,8 @@
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintHorizontal_bias="0.0"
-                card_view:layout_constraintStart_toEndOf="@+id/article_source"
-                card_view:layout_constraintTop_toBottomOf="@+id/article_description"
+                card_view:layout_constraintStart_toEndOf="@+id/text_article_source"
+                card_view:layout_constraintTop_toBottomOf="@+id/text_article_description"
                 tools:text=" • 8 hours ago"
                 tools:visibility="visible" />
 

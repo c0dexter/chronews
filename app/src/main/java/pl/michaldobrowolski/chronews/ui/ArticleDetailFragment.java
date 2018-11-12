@@ -1,9 +1,12 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +26,19 @@ import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ArticleDetailFragment extends Fragment {
     private static final String TAG = ArticleDetailFragment.class.getClass().getSimpleName();
-    @BindView(R.id.article_image)
+    @BindView(R.id.image_article_detail)
     DynamicHeightImage ivArticleImage;
-    @BindView(R.id.article_detail_text)
+    @BindView(R.id.text_article_detail_text)
     TextView tvArticleDetailText;
-    @BindView(R.id.article_detail_title)
+    @BindView(R.id.text_article_detail_title)
     TextView tvArticleDetailTitle;
-    @BindView(R.id.article_detail_author)
+    @BindView(R.id.text_article_detail_read_more)
+    TextView tvReadMoreText;
+    @BindView(R.id.text_article_detail_author)
     TextView tvArticleDetailAuthor;
+    @BindView(R.id.toolbar_article_detail)
+    Toolbar tbArticleDetailToolbar;
+    private Context context;
     private Article article;
 
     @Nullable
@@ -38,6 +46,7 @@ public class ArticleDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
+        context = getActivity();
 
         return rootView;
     }
@@ -52,6 +61,13 @@ public class ArticleDetailFragment extends Fragment {
             article = bundle.getParcelable("articleKey");
             populateViews(Objects.requireNonNull(article));
         }
+
+        tvReadMoreText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UtilityHelper.openArtilceInBrowser(context, article);
+            }
+        });
     }
 
     private void populateViews(Article article) {
@@ -81,5 +97,17 @@ public class ArticleDetailFragment extends Fragment {
 
 
         Log.d(TAG, article.getContent() + " " + article.getAuthor());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 }
