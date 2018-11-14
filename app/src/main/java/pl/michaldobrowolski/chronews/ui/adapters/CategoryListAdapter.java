@@ -19,6 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
+import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
 
@@ -27,9 +28,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private final OnItemClickListener onItemClickListener;
     private Context context;
     private DynamicHeightImage dynamicHeightImage;
-    private List<NewsApiUtils.CategoryObject> categoryList;
+    private List<Category> categoryList;
 
-    public CategoryListAdapter(OnItemClickListener onItemClickListener, Context context, List<NewsApiUtils.CategoryObject> categoryList) {
+    public CategoryListAdapter(OnItemClickListener onItemClickListener, Context context, List<Category> categoryList) {
         this.onItemClickListener = onItemClickListener;
         this.context = context;
         this.categoryList = categoryList;
@@ -48,7 +49,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        NewsApiUtils.CategoryObject categoryObject = categoryList.get(position);
+        Category categoryObject = categoryList.get(position);
 
         if (categoryObject.getCategoryImageUrl() != null) {
             Picasso.get()

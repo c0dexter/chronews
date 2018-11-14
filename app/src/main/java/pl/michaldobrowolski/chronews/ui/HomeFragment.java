@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     private void fetchArticles(final String searchedPhrase) {
 
-        Call<News> call;
+        Call<News> call = null;
         String country = NewsApiUtils.CountryCodes.POLAND.getCountryCode();
         String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
         String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d(TAG, "Response Code: " + response.code());
                     news = response.body();
-                    jasonRetrofitResult = new Gson().toJson(news);
+                    //jasonRetrofitResult = new Gson().toJson(news);
                     adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
