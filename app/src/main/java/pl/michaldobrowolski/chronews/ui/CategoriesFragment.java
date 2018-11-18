@@ -20,10 +20,14 @@ import pl.michaldobrowolski.chronews.ui.adapters.CategoryListAdapter;
 import pl.michaldobrowolski.chronews.utils.CategoryFactory;
 
 public class CategoriesFragment extends Fragment implements CategoryListAdapter.OnItemClickListener {
-    private static final String TAG = ApiClient.class.getClass().getSimpleName();
-    private GridLayoutManager gridLayoutManager;
+    private static final String TAG = CategoriesFragment.class.getClass().getSimpleName();
+    public static RecyclerView.Adapter adapter;
     private CategoryFactory categoryFactory;
     private Context context;
+
+    public RecyclerView.Adapter getAdapter() {
+        return adapter;
+    }
 
     @Nullable
     @Override
@@ -31,11 +35,8 @@ public class CategoriesFragment extends Fragment implements CategoryListAdapter.
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_categories, null);
-        context = getContext();
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-
-        createCategories(apiInterface, context);
+        context = getActivity();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         addCategoriesToScreen(gridLayoutManager, rootView);
 
         return rootView;
@@ -49,9 +50,11 @@ public class CategoriesFragment extends Fragment implements CategoryListAdapter.
     public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);
-        RecyclerView.Adapter adapter = new CategoryListAdapter(CategoriesFragment.this, context, categoryFactory.getCategoryObjectList());
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        createCategories(apiInterface, context);
+
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -62,8 +65,10 @@ public class CategoriesFragment extends Fragment implements CategoryListAdapter.
                 }
             }
         });
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        adapter = new CategoryListAdapter(CategoriesFragment.this, context, categoryFactory.getCategoryObjectList());
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

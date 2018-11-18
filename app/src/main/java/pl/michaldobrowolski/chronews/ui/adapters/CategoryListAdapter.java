@@ -21,7 +21,6 @@ import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
-import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
 
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
@@ -49,11 +48,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Category categoryObject = categoryList.get(position);
-
-        if (categoryObject.getCategoryImageUrl() != null) {
+        if (categoryList.get(position).getCategoryImageUrl() != null) {
             Picasso.get()
-                    .load(categoryObject.getCategoryImageUrl())
+                    .load(categoryList.get(position).getCategoryImageUrl())
                     .into(holder.ivCategoryThumb, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -88,7 +85,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                         }
                     });
         }
-        holder.tvCategoryName.setText(categoryObject.getCategoryName());
+        holder.tvCategoryName.setText(categoryList.get(position).getCategoryName());
     }
 
     @Override
@@ -112,7 +109,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         ProgressBar pbCategoryThumbnail;
         CategoryListAdapter.OnItemClickListener onItemClickListener;
 
-        public ViewHolder(View view, OnItemClickListener onItemClickListener) {
+        ViewHolder(View view, OnItemClickListener onItemClickListener) {
             super(view);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);

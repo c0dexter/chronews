@@ -21,8 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
@@ -43,7 +41,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
     private News news;
-    private String jasonRetrofitResult;
 
     @Nullable
     @Override
@@ -55,8 +52,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_activity_toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
-        //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         context = getContext();
         recyclerView = rootView.findViewById(R.id.recycler_view_home);

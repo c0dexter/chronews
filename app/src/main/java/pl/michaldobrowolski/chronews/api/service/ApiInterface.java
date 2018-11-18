@@ -1,8 +1,5 @@
 package pl.michaldobrowolski.chronews.api.service;
 
-import java.util.List;
-
-import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.model.pojo.Source;
 import retrofit2.Call;
