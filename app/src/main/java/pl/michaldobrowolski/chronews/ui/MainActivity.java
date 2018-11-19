@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Log.d(TAG, "Bottom Menu clicked: HomeFragment created!");
                 break;
             case R.id.navigation_categories:
-                fragment = new CategoriesFragment();
-                Log.d(TAG, "Bottom Menu clicked: CategoriesFragment created!");
+                fragment = new CategoryBoardFragment();
+                Log.d(TAG, "Bottom Menu clicked: CategoryBoardFragment created!");
                 break;
 
             case R.id.navigation_favourites:

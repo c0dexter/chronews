@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,29 +14,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import pl.michaldobrowolski.chronews.R;
+import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
-import pl.michaldobrowolski.chronews.ui.adapters.CategoryListAdapter;
+import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
+import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.CategoryFactory;
 
-public class CategoriesFragment extends Fragment implements CategoryListAdapter.OnItemClickListener {
-    private static final String TAG = CategoriesFragment.class.getClass().getSimpleName();
+public class CategoryBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
+    private static final String TAG = CategoryBoardFragment.class.getClass().getSimpleName();
     public static RecyclerView.Adapter adapter;
     private CategoryFactory categoryFactory;
     private Context context;
-
-    public RecyclerView.Adapter getAdapter() {
-        return adapter;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_categories, null);
+        View rootView = inflater.inflate(R.layout.fragment_categories_board, null);
         context = getActivity();
+        if (context != null) {
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).hide();
+        }
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         addCategoriesToScreen(gridLayoutManager, rootView);
 
@@ -51,6 +54,7 @@ public class CategoriesFragment extends Fragment implements CategoryListAdapter.
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(gridLayoutManager);
+        gridLayoutManager.supportsPredictiveItemAnimations();
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         createCategories(apiInterface, context);
@@ -66,13 +70,25 @@ public class CategoriesFragment extends Fragment implements CategoryListAdapter.
             }
         });
 
-        adapter = new CategoryListAdapter(CategoriesFragment.this, context, categoryFactory.getCategoryObjectList());
+        adapter = new CategoryBoardAdapter(CategoryBoardFragment.this, context, categoryFactory.getCategoryObjectList());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
+        Category category = categoryFactory.getCategoryObjectList().get(position);
+        CatergoryArticleListFragment catergoryArticleListFragment = new CatergoryArticleListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("categoryArticleKey", category);
+        catergoryArticleListFragment.setArguments(bundle);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, catergoryArticleListFragment)
+                .addToBackStack(null)
+                .commit();
+
+        Toast.makeText(context, "Selected \"" + category.getCategoryName().toUpperCase() + "\" category", Toast.LENGTH_SHORT).show();
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
-import pl.michaldobrowolski.chronews.ui.CategoriesFragment;
+import pl.michaldobrowolski.chronews.ui.CategoryBoardFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,7 +54,7 @@ public class CategoryFactory {
                             }
 
                             categoryObjectList.add(new Category(category.getCategory(), urlToThumbnail));
-                            CategoriesFragment.adapter.notifyDataSetChanged();
+                            CategoryBoardFragment.adapter.notifyDataSetChanged();
 
                         } else {
                             Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();

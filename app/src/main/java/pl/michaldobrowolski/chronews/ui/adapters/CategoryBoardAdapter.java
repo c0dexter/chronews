@@ -22,14 +22,14 @@ import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 
-public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
+public class CategoryBoardAdapter extends RecyclerView.Adapter<CategoryBoardAdapter.ViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
     private final OnItemClickListener onItemClickListener;
     private Context context;
     private DynamicHeightImage dynamicHeightImage;
     private List<Category> categoryList;
 
-    public CategoryListAdapter(OnItemClickListener onItemClickListener, Context context, List<Category> categoryList) {
+    public CategoryBoardAdapter(OnItemClickListener onItemClickListener, Context context, List<Category> categoryList) {
         this.onItemClickListener = onItemClickListener;
         this.context = context;
         this.categoryList = categoryList;
@@ -107,7 +107,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         TextView tvCategoryName;
         @BindView(R.id.progress_bar_category_thumbnail)
         ProgressBar pbCategoryThumbnail;
-        CategoryListAdapter.OnItemClickListener onItemClickListener;
+        CategoryBoardAdapter.OnItemClickListener onItemClickListener;
 
         ViewHolder(View view, OnItemClickListener onItemClickListener) {
             super(view);
