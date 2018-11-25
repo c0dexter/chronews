@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Country and language settings">
+
+        <ListPreference
+            android:defaultValue="eg"
+            android:dialogTitle="Choose language"
+            android:entries="@array/language_name_entries"
+            android:entryValues="@array/language_codes_values"
+            android:key="key_language_code"
+            android:summary="%s"
+            android:title="Set language of news" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_specific_country"
+            android:summary="News will be displayed only for a specific country. If option off, show everything"
+            android:title="Narrow your search to one country" />
+
+        <ListPreference
+            android:defaultValue="en"
+            android:dialogTitle="Choose preferred country "
+            android:entries="@array/country_name_entries"
+            android:entryValues="@array/country_codes_values"
+            android:key="key_country_code"
+            android:summary="%s"
+            android:title="Set specific country" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Choose categories">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_business"
+            android:summary="Display business news"
+            android:title="Business category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_entertainment"
+            android:summary="Display entertainment news"
+            android:title="Entertainment category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_general"
+            android:summary="Display general news"
+            android:title="General category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_health"
+            android:summary="Display health news"
+            android:title="Health category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_science"
+            android:summary="Display science news"
+            android:title="Science category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_sports"
+            android:summary="Display sports news"
+            android:title="Sports category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_category_technology"
+            android:summary="Display technology news"
+            android:title="Technology category" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

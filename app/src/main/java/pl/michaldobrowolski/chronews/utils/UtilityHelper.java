@@ -29,7 +29,7 @@ public final class UtilityHelper {
         SimpleDateFormat inputDateFormat = new SimpleDateFormat(inputPattern);
         SimpleDateFormat outputDateFormat = new SimpleDateFormat(outputPattern);
 
-        Date date = null;
+        Date date;
         String formattedDate = null;
         try {
             date = inputDateFormat.parse(dateToParse);
@@ -87,12 +87,18 @@ public final class UtilityHelper {
         return String.valueOf(counterResult);
     }
 
-    public static void openArtilceInBrowser(Context context, Article article){
+    public static void openArticleInBrowser(Context context, Article article){
         String url = article.getUrl();
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         context.startActivity(i);
     }
+
+    public static String makeUpperString(String stringToChange){
+        return stringToChange.substring(0,1).toUpperCase() + stringToChange.substring(1);
+    }
+
+
 
 
 }

@@ -2,6 +2,7 @@ package pl.michaldobrowolski.chronews.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,14 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
+import pl.michaldobrowolski.chronews.ui.SharedPreferences.SettingsActivity;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
 import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +46,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
     private News news;
+    private Toolbar toolbar;
 
     @Nullable
     @Override
@@ -48,25 +54,31 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_activity_toolbar);
+        context = getActivity();
+        if (context != null) {
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
+        }
+        toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
+        toolbar.setTitle(R.string.app_name);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
-        context = getContext();
+
         recyclerView = rootView.findViewById(R.id.recycler_view_home);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
+        //fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
         return rootView;
+
     }
 
-    private void fetchArticles(final String searchedPhrase) {
 
-        Call<News> call = null;
+    public void fetchArticles(final String searchedPhrase) {
+        toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
+        Call<News> call;
         String country = NewsApiUtils.CountryCodes.POLAND.getCountryCode();
         String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
         String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
@@ -105,11 +117,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater = getActivity().getMenuInflater();
+        inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
@@ -134,6 +147,18 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.actionSettings) {
+            // launch settings activity
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
 
@@ -143,11 +168,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         bundle.putParcelable("articleKey", article);
         articleDetailFragment.setArguments(bundle);
 
-        getFragmentManager()
+        Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
                 .beginTransaction()
                 .replace(R.id.fragment_container, articleDetailFragment)
                 .addToBackStack(null)
                 .commit();
     }
+
 
 }

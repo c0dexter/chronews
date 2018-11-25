@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,17 +14,15 @@ import pl.michaldobrowolski.chronews.R;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = MainActivity.class.getClass().getSimpleName();
-    Toolbar mainActivityToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mainActivityToolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
+        Toolbar mainActivityToolbar = findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(mainActivityToolbar);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment());
         Log.d(TAG, "A default HomeFragment has been loaded successfully!");
@@ -64,4 +63,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         return loadFragment(fragment);
     }
+
 }

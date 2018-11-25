@@ -32,11 +32,12 @@ import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CatergoryArticleListFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
+public class CategoryArticleListFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
     private static final String API_KEY = BuildConfig.ApiKey;
     private Context context;
@@ -52,8 +53,12 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_category_article_list, container, false);
+        context = getActivity();
+        if (context != null) {
+            Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
+        }
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.main_activity_toolbar);
+        Toolbar toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -70,6 +75,7 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
         }
 
         if (category != null) {
+            toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
             fetchArticles(category.getCategoryName()); // TODO: get info from the bundle
         }
         return rootView;
@@ -77,7 +83,7 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
 
     private void fetchArticles(final String category) {
 
-        Call<News> call = null;
+        Call<News> call;
         String country = NewsApiUtils.CountryCodes.UNITED_KINGDOM.getCountryCode();
         String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
         String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
@@ -90,7 +96,7 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
                     Log.d(TAG, "Response Code: " + response.code());
                     news = response.body();
                     //jasonRetrofitResult = new Gson().toJson(news);
-                    adapter = new ArticleListAdapter(news.getArticles(), context, CatergoryArticleListFragment.this);
+                    adapter = new ArticleListAdapter(news.getArticles(), context, CategoryArticleListFragment.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } else {
@@ -115,7 +121,7 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater = getActivity().getMenuInflater();
+        inflater = Objects.requireNonNull(getActivity(), "Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
@@ -149,7 +155,7 @@ public class CatergoryArticleListFragment extends Fragment implements ArticleLis
         bundle.putParcelable("articleKey", article);
         articleDetailFragment.setArguments(bundle);
 
-        getFragmentManager()
+        Objects.requireNonNull(getFragmentManager(), "FragmentManager must not be null")
                 .beginTransaction()
                 .replace(R.id.fragment_container, articleDetailFragment)
                 .addToBackStack(null)

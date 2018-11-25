@@ -17,7 +17,6 @@ import android.widget.Toast;
 import java.util.Objects;
 
 import pl.michaldobrowolski.chronews.R;
-import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
@@ -29,6 +28,7 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
     public static RecyclerView.Adapter adapter;
     private CategoryFactory categoryFactory;
     private Context context;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -72,20 +72,19 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
 
         adapter = new CategoryBoardAdapter(CategoryBoardFragment.this, context, categoryFactory.getCategoryObjectList());
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(View view, int position) {
         Category category = categoryFactory.getCategoryObjectList().get(position);
-        CatergoryArticleListFragment catergoryArticleListFragment = new CatergoryArticleListFragment();
+        CategoryArticleListFragment categoryArticleListFragment = new CategoryArticleListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("categoryArticleKey", category);
-        catergoryArticleListFragment.setArguments(bundle);
+        categoryArticleListFragment.setArguments(bundle);
 
-        getFragmentManager()
+        Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
                 .beginTransaction()
-                .replace(R.id.fragment_container, catergoryArticleListFragment)
+                .replace(R.id.fragment_container, categoryArticleListFragment)
                 .addToBackStack(null)
                 .commit();
 

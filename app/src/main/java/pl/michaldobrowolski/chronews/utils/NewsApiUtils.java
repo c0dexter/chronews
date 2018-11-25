@@ -144,33 +144,5 @@ public final class NewsApiUtils {
         }
     }
 
-//    /**
-//     * A category object to populate RecyclerView on the Category screen
-//     */
-//    public static class CategoryObject{
-//        private String categoryName;
-//        private String categoryImageUrl;
-//
-//        public String getCategoryName() {
-//            return categoryName;
-//        }
-//
-//        public void setCategoryName(String categoryName) {
-//            this.categoryName = categoryName;
-//        }
-//
-//        public String getCategoryImageUrl() {
-//            return categoryImageUrl;
-//        }
-//
-//        public void setCategoryImageUrl(String categoryImageUrl) {
-//            this.categoryImageUrl = categoryImageUrl;
-//        }
-//
-//        public CategoryObject(String categoryName, String categoryImageUrl) {
-//            this.categoryName = categoryName;
-//            this.categoryImageUrl = categoryImageUrl;
-//        }
-//    }
 
 }

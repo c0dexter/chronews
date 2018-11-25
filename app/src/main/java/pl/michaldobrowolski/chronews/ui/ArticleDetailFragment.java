@@ -65,7 +65,7 @@ public class ArticleDetailFragment extends Fragment {
         tvReadMoreText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UtilityHelper.openArtilceInBrowser(context, article);
+                UtilityHelper.openArticleInBrowser(context, article);
             }
         });
     }
@@ -102,12 +102,12 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(), "Context of activity must not be null")).getSupportActionBar()).hide();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(), "Context of activity must not be null")).getSupportActionBar()).show();
     }
 }

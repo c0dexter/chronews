@@ -106,9 +106,13 @@
     <string name="example_short_desc_article">Niemiecki rząd chce pozbyć się zatruwających środowisko starych aut z silnikiem diesla. Handlarze samochodów w Europie Wschodniej zacierają ręce. Komisarz UE Elżbieta Bieńkowska ostrzega przed fatalnymi skutkami.</string>
     <string name="menu_search_title">Search preference</string>
     <string name="menu_settings_title">Settings</string>
-    <string name="search_news_hint">Search news...</string>
+    <string name="search_news_hint">Search news…</string>
     <string name="calendar_icon_desc">calendar icon</string>
     <string name="shadow_gradient_desc">shadow gradient</string>
-    <string name="read_more">Read more...</string>
+    <string name="read_more">Read more…</string>
     <string name="image_for_business_category_desc">image for business category</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
 </resources>
