@@ -1,77 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Language of news">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_switch_specific_news_language"
+            android:summary="Show news written in the selected language only"
+            android:summaryOff="No matter language, show all news"
+            android:summaryOn="Show news only for selected language"
+            android:title="Search news" />
+        <ListPreference
+            android:defaultValue="en"
+            android:dependency="@string/key_switch_specific_news_language"
+            android:dialogTitle="Choose preferred language"
+            android:entries="@array/language_name_entries"
+            android:entryValues="@array/language_codes_values"
+            android:key="@string/key_language_code"
+            android:summary="Set language"
+            android:title="Set language" />
+    </PreferenceCategory>
 
-    <PreferenceCategory android:title="Country and language settings">
+    <PreferenceCategory android:title="Sorting type">
+        <ListPreference
+            android:dialogTitle="Choose preferred sorting option"
+            android:entries="@array/sorting_options_entries"
+            android:entryValues="@array/sorting_options_values"
+            android:key="@string/key_sorting_code"
+            android:summary="You can choose sorting option for search result"
+            android:title="Set sorting type" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Top headlines on the home screen">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_switch_top_headlines_home_screen"
+            android:summary="Show top headlines on home screen"
+            android:summaryOff="Don't search and don't show top headlines news on home screen"
+            android:summaryOn="Search and show top headlines news on home screen for selected country"
+            android:title="Show top headlines on home screen" />
 
         <ListPreference
             android:defaultValue="eg"
-            android:dialogTitle="Choose language"
-            android:entries="@array/language_name_entries"
-            android:entryValues="@array/language_codes_values"
-            android:key="key_language_code"
-            android:summary="%s"
-            android:title="Set language of news" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="key_specific_country"
-            android:summary="News will be displayed only for a specific country. If option off, show everything"
-            android:title="Narrow your search to one country" />
-
-        <ListPreference
-            android:defaultValue="en"
+            android:dependency="@string/key_switch_top_headlines_home_screen"
             android:dialogTitle="Choose preferred country "
             android:entries="@array/country_name_entries"
             android:entryValues="@array/country_codes_values"
-            android:key="key_country_code"
-            android:summary="%s"
-            android:title="Set specific country" />
+            android:key="@string/key_country_code_top_headlines"
+            android:summary="Choose country"
+            android:title="Set country as top headlines source" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_switch_top_headlines_home_screen"
+            android:key="@string/key_switch_category_top_headlines"
+            android:summary="Show news form this category on the home screen"
+            android:summaryOff="Top headlines from random categories"
+            android:summaryOn="Top headlines from selected category"
+            android:title="Show top headlines for category" />
+        <ListPreference
+            android:dependency="@string/key_switch_category_top_headlines"
+            android:dialogTitle="Choose preferred category"
+            android:entries="@array/news_categories_entries"
+            android:entryValues="@array/news_categories_values"
+            android:key="@string/key_top_headlines_category"
+            android:summary="Set favourite category type for displaying top headlines"
+            android:title="Set favorite category" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_switch_search_phrase_top_headlines"
+            android:dependency="@string/key_switch_top_headlines_home_screen"
+            android:summary="Show top headlines for selected phrase"
+            android:summaryOff="All top headlines"
+            android:summaryOn="Top headlines for selected phrase"
+            android:title="Top headlines for populated phrase" />
+        <EditTextPreference
+            android:dependency="@string/key_switch_search_phrase_top_headlines"
+            android:dialogMessage="Populate default phrase for showing top headlines on the home screen"
+            android:dialogTitle="Specify preferred phrase"
+            android:key="@string/key_default_phrase_top_headlines"
+            android:persistent="true"
+            android:lines="2"
+            android:ellipsize="end"
+            android:title="Set a search phrase" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Choose categories">
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_business"
+            android:key="@string/key_category_business"
             android:summary="Display business news"
             android:title="Business category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_entertainment"
+            android:key="@string/key_category_entertainment"
             android:summary="Display entertainment news"
             android:title="Entertainment category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_general"
+            android:key="@string/key_category_general"
             android:summary="Display general news"
             android:title="General category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_health"
+            android:key="@string/key_category_health"
             android:summary="Display health news"
             android:title="Health category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_science"
+            android:key="@string/key_category_science"
             android:summary="Display science news"
             android:title="Science category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_sports"
+            android:key="@string/key_category_sports"
             android:summary="Display sports news"
             android:title="Sports category" />
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="key_category_technology"
+            android:key="@string/key_category_technology"
             android:summary="Display technology news"
             android:title="Technology category" />
-
     </PreferenceCategory>
+
 </PreferenceScreen>

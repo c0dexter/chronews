@@ -3,7 +3,9 @@ package pl.michaldobrowolski.chronews.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -70,25 +72,49 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        //fetchArticles("android"); // TODO: (FEATURE) get info from shared pref
+        fetchArticles(null); // TODO: (FEATURE) get info from shared pref
         return rootView;
 
     }
 
 
-    public void fetchArticles(final String searchedPhrase) {
+    public void fetchArticles( @Nullable String searchedPhrase) {
         toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
-        Call<News> call;
-        String country = NewsApiUtils.CountryCodes.POLAND.getCountryCode();
-        String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
-        String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
 
-        if (searchedPhrase.length() > 2) {
-            call = apiInterface.everything(searchedPhrase, null, null, API_KEY);
-        } else {
-            call = apiInterface.topHeadlines(country, null, null, null, null, API_KEY);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String countryCode = preferences.getString("key_country_code_top_headlines", null);
+        String languageCode = preferences.getString("key_language_code", null);
+        String sortingType = preferences.getString("key_sorting_code", null);
+        String topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
+        String defaultSearchPhrase = preferences.getString("key_default_phrase_top_headlines", null);
+        Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_specific_country", false);
+        Boolean preferredLanguageSwitch = preferences.getBoolean("key_switch_specific_news_language", false);
+        Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
+        Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
+        Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
+
+
+        // TOP HEADLINES - DEFAULT SEARCH LOGIC
+        if(preferredTopHeadlinesSwitch == true){
+
+            if(preferredTopHeadlinesCategorySwitch == false){
+                topHeadlinesCategory = null;
+            }
+            if(preferredTopHeadlinesSpecificPhraseSwitch == false){
+                defaultSearchPhrase = null;
+            }else {
+                countryCode = null;
+                topHeadlinesCategory = null;
+            }
         }
 
+        Call<News> call;
+        if(searchedPhrase != null && !Objects.equals(searchedPhrase, "")){
+            call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
+        }else{
+            searchedPhrase = defaultSearchPhrase;
+            call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
+        }
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {

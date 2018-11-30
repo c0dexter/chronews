@@ -172,13 +172,27 @@
 
     <!-- START sorting options -->
     <string-array name="sorting_options_entries">
-        <item>relevancy</item>
-        <item>popularity</item>
+        <item>Newest first</item>
+        <item>Most popular first</item>
+        <item>Relevance descending</item>
+    </string-array>
+
+    <string-array name="sorting_options_values">
         <item>publishedAt</item>
+        <item>popularity</item>
+        <item>relevancy</item>
     </string-array>
     <!-- START sorting options -->
 
+    <!-- START search mode options -->
+    <string-array name="search_mode_options_entries">
+        <item>Everything related to phrase</item>
+        <item>Top headlines</item>
+    </string-array>
+
+    <string-array name="search_mode_options_values">
+        <item>everything</item>
+        <item>topHeadlines</item>
+    </string-array>
+    <!-- START search mode options -->
 </resources>
-
-
-    <!--TODO: finish this XML preference: https://www.youtube.com/watch?v=wY64_9Gp8_0  /  https://www.androidhive.info/2017/07/android-implementing-preferences-settings-screen/ -->

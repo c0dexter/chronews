@@ -112,6 +112,26 @@
     <string name="read_more">Read more…</string>
     <string name="image_for_business_category_desc">image for business category</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="key_language_code">key_language_code</string>
+    <string name="key_country_code_top_headlines">key_country_code_top_headlines</string>
+    <string name="key_switch_specific_country">key_switch_specific_country</string>
+    <string name="key_category_business">key_category_business</string>
+    <string name="key_category_entertainment">key_category_entertainment</string>
+    <string name="key_category_general">key_category_general</string>
+    <string name="key_category_health">key_category_health</string>
+    <string name="key_category_science">key_category_science</string>
+    <string name="key_category_sports">key_category_sports</string>
+    <string name="key_category_technology">key_category_technology</string>
+    <string name="key_search_mode_code">key_search_mode_code</string>
+    <string name="key_sorting_code">key_sorting_code</string>
+    <string name="key_top_headlines_category">key_favourite_category</string>
+    <string name="key_default_phrase_top_headlines">key_default_phrase_top_headlines</string>
+    <string name="key_switch_specific_news_language">key_switch_specific_news_language</string>
+    <string name="key_switch_favourite_category">key_switch_favourite_category</string>
+    <string name="key_switch_favourite_phrase">key_switch_favourite_phrase</string>
+    <string name="key_switch_top_headlines_home_screen">key_switch_top_headlines_home_screen</string>
+    <string name="key_switch_category_top_headlines">key_switch_category_top_headlines</string>
+    <string name="key_switch_search_phrase_top_headlines">key_switch_search_phrase_top_headlines</string>
 
     <!-- Strings related to Settings -->
 
