@@ -34,7 +34,6 @@ import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.SharedPreferences.SettingsActivity;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
-import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,41 +77,61 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     }
 
 
-    public void fetchArticles( @Nullable String searchedPhrase) {
+    public void fetchArticles(@Nullable String searchedPhrase) {
         toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String countryCode = preferences.getString("key_country_code_top_headlines", null);
-        String languageCode = preferences.getString("key_language_code", null);
+        String countryCode;
+        String languageCode;
         String sortingType = preferences.getString("key_sorting_code", null);
         String topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
-        String defaultSearchPhrase = preferences.getString("key_default_phrase_top_headlines", null);
-        Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_specific_country", false);
+        String phraseForSearchingTopHeadlines;
         Boolean preferredLanguageSwitch = preferences.getBoolean("key_switch_specific_news_language", false);
         Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
         Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
         Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
 
-
-        // TOP HEADLINES - DEFAULT SEARCH LOGIC
-        if(preferredTopHeadlinesSwitch == true){
-
-            if(preferredTopHeadlinesCategorySwitch == false){
-                topHeadlinesCategory = null;
-            }
-            if(preferredTopHeadlinesSpecificPhraseSwitch == false){
-                defaultSearchPhrase = null;
-            }else {
-                countryCode = null;
-                topHeadlinesCategory = null;
-            }
+        if (preferredLanguageSwitch == true) {
+            languageCode = preferences.getString("key_language_code", null);
+        } else {
+            languageCode = null;
         }
 
+        // TOP HEADLINES - DEFAULT SEARCH LOGIC
+        if (preferredTopHeadlinesSwitch == true) {
+            // Check selected country code
+            countryCode = preferences.getString("key_country_code_top_headlines", null);
+
+            // Check switch for displaying top headlines for one specific category
+            if (preferredTopHeadlinesCategorySwitch == true) {
+                // Select country code to build a call
+                topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
+            } else {
+                // Set country code as null
+                topHeadlinesCategory = null;
+            }
+
+            // Check switch for searching news by phrase
+            if (preferredTopHeadlinesSpecificPhraseSwitch == true) {
+                // get a search phrase form shared pref and assign value to searched phrase
+                phraseForSearchingTopHeadlines = preferences.getString("key_default_phrase_top_headlines", null);
+                searchedPhrase = phraseForSearchingTopHeadlines;
+                // set country as null, because API can return a global top headlines for some phrase only
+                countryCode = null;
+            } else {
+                searchedPhrase = null;
+            }
+        } else {
+            countryCode = null;
+        }
+
+
         Call<News> call;
-        if(searchedPhrase != null && !Objects.equals(searchedPhrase, "")){
+        if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
+            // Use search phrase and display everything what is related to the phrase
             call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
-        }else{
-            searchedPhrase = defaultSearchPhrase;
+        } else {
+            // Show top headlines
             call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
         }
         call.enqueue(new Callback<News>() {
@@ -143,7 +162,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -159,7 +177,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
+                fetchArticles(query); // TODO: make switch-cas98 e block for selected search type in the Settings
                 return false;
             }
 
@@ -180,7 +198,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             startActivity(new Intent(getActivity(), SettingsActivity.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -200,6 +217,4 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 .addToBackStack(null)
                 .commit();
     }
-
-
 }

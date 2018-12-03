@@ -89,13 +89,11 @@ public class ArticleDetailFragment extends Fragment {
 
         if (article.getContent() != null) {
             tvArticleDetailText.setText(UtilityHelper.removeRedundantCharactersFromText(article.getContent()));
+            Log.d(TAG, "ARTICLE CONTENT: " + article.getContent());
         } else {
             tvArticleDetailText.setText(article.getDescription());
         }
-
         tvArticleDetailTitle.setText(article.getTitle());
-
-
         Log.d(TAG, article.getContent() + " " + article.getAuthor());
     }
 

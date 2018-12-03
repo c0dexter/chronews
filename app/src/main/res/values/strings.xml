@@ -124,7 +124,7 @@
     <string name="key_category_technology">key_category_technology</string>
     <string name="key_search_mode_code">key_search_mode_code</string>
     <string name="key_sorting_code">key_sorting_code</string>
-    <string name="key_top_headlines_category">key_favourite_category</string>
+    <string name="key_top_headlines_category">key_top_headlines_category</string>
     <string name="key_default_phrase_top_headlines">key_default_phrase_top_headlines</string>
     <string name="key_switch_specific_news_language">key_switch_specific_news_language</string>
     <string name="key_switch_favourite_category">key_switch_favourite_category</string>

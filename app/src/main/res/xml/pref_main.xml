@@ -8,7 +8,7 @@
             android:summary="Show news written in the selected language only"
             android:summaryOff="No matter language, show all news"
             android:summaryOn="Show news only for selected language"
-            android:title="Search news" />
+            android:title="News in preferred language" />
         <ListPreference
             android:defaultValue="en"
             android:dependency="@string/key_switch_specific_news_language"
