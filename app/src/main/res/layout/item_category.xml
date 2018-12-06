@@ -23,7 +23,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_article_photo"
                 android:scaleType="centerCrop"
-                android:transitionName="article main thumbnail"
+                android:transitionName="articleEntity main thumbnail"
                 tools:src="@drawable/example_image" />
 
             <ImageView
