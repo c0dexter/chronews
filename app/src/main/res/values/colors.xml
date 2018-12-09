@@ -11,4 +11,6 @@
     <color name="customColorPrimaryText">#212121</color>
     <color name="customColorSecondaryText">#757575</color>
     <color name="customColorDivider">#BDBDBD</color>
+    <color name="customColorFabButtonOn">@android:color/holo_red_light</color>
+    <color name="customColorFabButtonOff">@android:color/white</color>
 </resources>

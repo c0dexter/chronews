@@ -38,7 +38,6 @@ public class Article implements Parcelable {
     @SerializedName("publishedAt")
     private String publishedAt;
     @SerializedName("content")
-
     private String content;
 
     protected Article(Parcel in) {

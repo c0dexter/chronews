@@ -16,6 +16,7 @@ android {
         debug {
             buildConfigField 'String', "ApiKey", Chronews_ApiKey
             resValue 'string', "api_key", Chronews_ApiKey
+
         }
         release {
             minifyEnabled false

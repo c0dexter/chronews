@@ -18,14 +18,12 @@ import android.widget.Toast;
 import com.amitshekhar.DebugDB;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
-import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
 import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
@@ -50,11 +48,8 @@ public class ArticleDetailFragment extends Fragment {
     private Context context;
     private Article article;
     private ArticleRepository articleRepository;
-    private boolean articleExist = false;
-    private String articleTitle;
-    private String articlePublishedDate;
-    private String articleSource;
-    private String articleUrl;
+    private boolean articleStored;
+    private String articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent;
 
     @Nullable
     @Override
@@ -81,57 +76,74 @@ public class ArticleDetailFragment extends Fragment {
         articlePublishedDate = article.getPublishedAt();
         articleSource = article.getSource().getName();
         articleUrl = article.getUrl();
+        articleAuthor = article.getAuthor();
+        articleDesc = article.getDescription();
+        articleImageUrl = article.getUrlToImage();
+        articleContent = article.getContent();
 
-        setFavButton(articleUrl);
-
+        setFavButtonLogic(articleUrl);
+        setFabButtonLook();
         tvReadMoreText.setOnClickListener(v -> UtilityHelper.openArticleInBrowser(context, article));
     }
 
-    private void setFavButton(String articleUrl) {
-        // btnFav.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+    private void setFavButtonLogic(String articleUrl) {
+
+        try {
+            articleStored = articleRepository.getArticleCountByUrl(articleUrl);
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         btnFav.setOnClickListener(v -> {
-            DebugDB.getAddressLog();
-            List<ArticleEntity> articleEntities = null;
-            ArticleEntity articleEntity = null;
 
-            try {
-                articleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl);
-                Toast.makeText(context, "Article has been saved", Toast.LENGTH_SHORT).show();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+            if (!articleStored) {
+                DebugDB.getAddressLog();
+                try {
+                    articleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
+                    articleStored = true;
+                    setFabButtonLook();
+                    Toast.makeText(context, "Article has been saved", Toast.LENGTH_SHORT).show();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    articleRepository.deleteArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
+                    articleStored = false;
+                    Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            try {
-                articleEntities = articleRepository.getAllArticles();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            List<ArticleEntity> articleEntities = null;
+//            ArticleEntity articleEntity = null;
+//            try {
+//                articleEntities = articleRepository.getAllArticles();
+//            } catch (ExecutionException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                articleEntity = articleRepository.getArticleByUrl(articleUrl);
+//                Log.i(TAG, "MY_URL" + articleEntity.getUrl());
+//            } catch (ExecutionException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
-            try {
-                articleEntity  = articleRepository.getArticleByUrl(articleUrl);
-                Log.i(TAG, "MY_URL" + articleEntity.getUrl());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                articleRepository.deleteArticle(articleTitle, articlePublishedDate, articleSource, articleUrl);
-                Toast.makeText(context, "Article deleted", Toast.LENGTH_SHORT).show();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            Log.i(TAG, articleEntities.get(0).getTitle());
-            Log.i(TAG, articleEntity.getUrl());
+//            Log.i(TAG, articleEntities.get(0).getTitle());
+//            Log.i(TAG, articleEntity.getUrl());
         });
+    }
+
+    private void setFabButtonLook() {
+        if (articleStored) {
+            btnFav.setImageResource(R.drawable.ic_favorite_article_on_24dp);
+        } else {
+            btnFav.setImageResource(R.drawable.ic_favorite_article_off_24dp);
+        }
     }
 
     private void populateViews(Article article) {

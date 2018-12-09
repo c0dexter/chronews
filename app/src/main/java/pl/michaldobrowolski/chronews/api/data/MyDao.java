@@ -31,6 +31,8 @@ public interface MyDao {
     void deleteArticleByUrl(String url);
 
 
+    @Query("SELECT COUNT(*) FROM articles WHERE article_url LIKE :url")
+    int countArticlesWithUrl(String url);
 
 
 }

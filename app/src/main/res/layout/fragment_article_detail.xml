@@ -53,6 +53,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/star_off" />
+        app:srcCompat="@drawable/ic_favorite_article_off_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>
