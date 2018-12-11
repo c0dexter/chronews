@@ -72,8 +72,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         fetchArticles(null); // TODO: (FEATURE) get info from shared pref
-        return rootView;
 
+        return rootView;
     }
 
 
@@ -119,7 +119,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 // set country as null, because API can return a global top headlines for some phrase only
                 countryCode = null;
             } else {
-                searchedPhrase = null;
+                //searchedPhrase = null;
             }
         } else {
             countryCode = null;
@@ -177,7 +177,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetchArticles(query); // TODO: make switch-cas98 e block for selected search type in the Settings
+                fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
                 return false;
             }
 

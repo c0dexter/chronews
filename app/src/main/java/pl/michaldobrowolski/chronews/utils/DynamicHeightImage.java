@@ -19,7 +19,7 @@ public class DynamicHeightImage extends android.support.v7.widget.AppCompatImage
         super(context, attrs, defStyle);
     }
 
-    public void setUserAspecthRatio(float aspectRatio) {
+    public void setUserAspectRatio(float aspectRatio) {
         mAspectRatio = aspectRatio;
         requestLayout();
     }

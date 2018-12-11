@@ -47,25 +47,11 @@ public class ArticleRepository {
         return new GetArticleByUrlAsyncTask().execute(articleUrl).get();
     }
 
-    public void deleteArticle(String articleTitle,
-                              String articlePublishedDate,
-                              String articleSource,
-                              String articleUrl,
-                              String articleAuthor,
-                              String articleDesc,
-                              String articleImageUrl,
-                              String articleContent) throws ExecutionException, InterruptedException {
-        ArticleEntity articleEntity = new ArticleEntity();
-        articleEntity.setTitle(articleTitle);
-        articleEntity.setPublishedDate(articlePublishedDate);
-        articleEntity.setSourceName(articleSource);
-        articleEntity.setUrl(articleUrl);
-        articleEntity.setAuthor(articleAuthor);
-        articleEntity.setDescription(articleDesc);
-        articleEntity.setImageUrl(articleImageUrl);
-        articleEntity.setContent(articleContent);
+    public void deleteArticle(
+            String articleImageUrl
+    ) throws ExecutionException, InterruptedException {
 
-        new DeleteArticleAsyncTask().execute(articleEntity).get();
+        new DeleteArticleAsyncTask().execute(articleImageUrl).get();
     }
 
     /**
@@ -75,7 +61,7 @@ public class ArticleRepository {
      * @return - "TRUE" if article exist in DB, FALSE if article doesn't exist or there more than one
      * occurrence of item with the same URL
      */
-    public boolean getArticleCountByUrl(String articleUrl) throws ExecutionException, InterruptedException  {
+    public boolean getArticleCountByUrl(String articleUrl) throws ExecutionException, InterruptedException {
         int articlesCount = new GetCountArticlesByUrlAsyncTask().execute(articleUrl).get();
         if (articlesCount > 1) {
             throw new IllegalStateException("There is more articles with the same URLs");
@@ -112,10 +98,16 @@ public class ArticleRepository {
         }
     }
 
-    private static class DeleteArticleAsyncTask extends AsyncTask<ArticleEntity, Void, Void> {
+    private static class DeleteArticleAsyncTask extends AsyncTask<String, Void, Void> {
+//        @Override
+//        protected Void doInBackground(ArticleEntity... articleEntities) {
+//            appDatabase.myDao().deleteArticleByUrl(articleEntities[0].getUrl());
+//            return null;
+//        }
+
         @Override
-        protected Void doInBackground(ArticleEntity... articleEntities) {
-            appDatabase.myDao().deleteArticleByUrl(articleEntities[0].getUrl());
+        protected Void doInBackground(String... strings) {
+            appDatabase.myDao().deleteArticleByUrl(strings[0]);
             return null;
         }
     }

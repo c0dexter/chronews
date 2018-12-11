@@ -41,7 +41,7 @@ public class CategoryBoardAdapter extends RecyclerView.Adapter<CategoryBoardAdap
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
 
         dynamicHeightImage = new DynamicHeightImage(context);
-        dynamicHeightImage.setUserAspecthRatio(1.2f);
+        dynamicHeightImage.setUserAspectRatio(1.2f);
         view.setFocusable(true);
         return new ViewHolder(view, onItemClickListener);
     }

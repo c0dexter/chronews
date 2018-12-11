@@ -110,31 +110,14 @@ public class ArticleDetailFragment extends Fragment {
                 }
             } else {
                 try {
-                    articleRepository.deleteArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
+                    articleRepository.deleteArticle( articleUrl);
                     articleStored = false;
+                    setFabButtonLook();
                     Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
-//            List<ArticleEntity> articleEntities = null;
-//            ArticleEntity articleEntity = null;
-//            try {
-//                articleEntities = articleRepository.getAllArticles();
-//            } catch (ExecutionException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            try {
-//                articleEntity = articleRepository.getArticleByUrl(articleUrl);
-//                Log.i(TAG, "MY_URL" + articleEntity.getUrl());
-//            } catch (ExecutionException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-
-//            Log.i(TAG, articleEntities.get(0).getTitle());
-//            Log.i(TAG, articleEntity.getUrl());
         });
     }
 

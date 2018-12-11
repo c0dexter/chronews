@@ -43,7 +43,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_article, parent, false);
 
         dynamicHeightImage = new DynamicHeightImage(context);
-        dynamicHeightImage.setRatioThreeTwo();
+        dynamicHeightImage.setUserAspectRatio((float) 1.5);
         view.setFocusable(true);
         return new ViewHolder(view, onItemClickListener);
     }
@@ -151,6 +151,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         @Override
         public void onClick(View v) {
             onItemClickListener.onItemClick(v, getAdapterPosition());
+
 
         }
     }
