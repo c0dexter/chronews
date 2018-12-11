@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,8 @@ import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
 import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.api.model.pojo.Article;
+import pl.michaldobrowolski.chronews.api.model.pojo.Source;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.ui.adapters.FavouriteListAdapter;
 
@@ -86,7 +87,28 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(context, "Clicked aricle on: " + position, Toast.LENGTH_SHORT).show();
+        articleEntity = dbArticlesList.get(position);
+        Article article = new Article();
+        Source source = new Source();
+        source.setName(articleEntity.getSourceName());
+        article.setUrlToImage(articleEntity.getImageUrl());
+        article.setUrl(articleEntity.getUrl());
+        article.setDescription(articleEntity.getDescription());
+        article.setTitle(articleEntity.getTitle());
+        article.setAuthor(articleEntity.getAuthor());
+        article.setContent(articleEntity.getContent());
+        article.setPublishedAt(articleEntity.getPublishedDate());
+        article.setSource(source);
+        ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("articleKey", article);
+        articleDetailFragment.setArguments(bundle);
+
+        Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
+                .beginTransaction()
+                .replace(R.id.fragment_container, articleDetailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

@@ -74,7 +74,12 @@ public class ArticleDetailFragment extends Fragment {
 
         articleTitle = article.getTitle();
         articlePublishedDate = article.getPublishedAt();
-        articleSource = article.getSource().getName();
+        if(article.getSource()!=null){
+            articleSource = article.getSource().getName();
+        }
+        else{
+
+        }
         articleUrl = article.getUrl();
         articleAuthor = article.getAuthor();
         articleDesc = article.getDescription();
