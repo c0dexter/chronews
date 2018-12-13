@@ -134,6 +134,8 @@
     <string name="key_switch_search_phrase_top_headlines">key_switch_search_phrase_top_headlines</string>
     <string name="button_for_removing_string_action_settings_article_from_fav_list">Button for removing @string/action_settings article from fav list</string>
     <string name="toolbar_title_favourites">Favourites</string>
+    <string name="appwidget_header_text">Favourites articles</string>
+    <string name="add_widget">Add widget</string>
 
     <!-- Strings related to Settings -->
 

@@ -18,7 +18,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SharedPreferences.SettingsActivity"></activity>
+        <activity android:name=".ui.SharedPreferences.SettingsActivity" />
+
+        <receiver android:name=".widget.ChronewsWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/chronews_widget_info" />
+        </receiver>
+        <service
+            android:name="pl.michaldobrowolski.chronews.widget.ChronewsWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

@@ -64,13 +64,6 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
     }
 
 
-//    private void setAdapter(RecyclerView.Adapter myAdapter, List<ArticleEntity> articleEntitiesList) {
-//        myAdapter = new FavouriteListAdapter(FavouriteFragment.this, articleEntitiesList, context);
-//        recyclerView.setAdapter(adapter);
-//        myAdapter.notifyDataSetChanged();
-//    }
-
-
     /**
      * Get all articles from Database
      *
@@ -84,6 +77,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         }
         return dbArticlesList;
     }
+
 
     @Override
     public void onItemClick(View view, int position) {
@@ -110,6 +104,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
                 .addToBackStack(null)
                 .commit();
     }
+
 
     @Override
     public void onResume() {

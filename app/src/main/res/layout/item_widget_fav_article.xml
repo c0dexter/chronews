@@ -34,7 +34,6 @@
                     tools:src="@drawable/example_image" />
 
 
-
                 <ProgressBar
                     android:id="@+id/progress_bar_fav_article_image"
                     style="?android:attr/progressBarStyle"
