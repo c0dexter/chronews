@@ -136,6 +136,8 @@
     <string name="toolbar_title_favourites">Favourites</string>
     <string name="appwidget_header_text">Favourites articles</string>
     <string name="add_widget">Add widget</string>
+    <string name="widget_subheader_slogan_text">Favourite articles</string>
+    <string name="image_of_article_displayed_on_widget_item">Image of article displayed on widget item</string>
 
     <!-- Strings related to Settings -->
 

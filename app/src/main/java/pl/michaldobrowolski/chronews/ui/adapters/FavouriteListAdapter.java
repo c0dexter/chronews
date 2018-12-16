@@ -125,7 +125,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         FavouriteListAdapter.OnItemClickListener onItemClickListener;
 
 
-        public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+        ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -138,11 +138,11 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                         articleRepository.deleteArticle(articleUrl);
                         dbArticlesList = articleRepository.getAllArticles(); // Remember this!!!
                         notifyDataSetChanged();
+                        // Update widgets
+                        UtilityHelper.updateWidget(context);
                         Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
 
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
+                    } catch (ExecutionException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 }

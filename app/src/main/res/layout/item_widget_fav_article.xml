@@ -1,169 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/frame_widget_article_image"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/image_widget_fav_article_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/desc_article_photo"
+            android:scaleType="centerCrop"
+            android:transitionName="articleEntity main thumbnail"
+            tools:src="@drawable/example_image" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_widget_fav_article_image"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="@dimen/cardview_default_elevation"
-        card_view:cardUseCompatPadding="true">
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_widget_fav_article_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:lines="3"
+            android:textColor="@color/customColorPrimaryText"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            tools:text="Bitcoin Price Intraday Analysis: BTC/USD Retests Interim Resistance" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false">
+            android:layout_margin="4dp"
+            android:orientation="horizontal">
 
-            <FrameLayout
-                android:id="@+id/frame_article_image"
-                android:layout_width="0dp"
-                android:layout_height="102dp"
-                android:layout_weight="1">
+            <TextView
+                android:id="@+id/text_widget_fav_article_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/customColorSecondaryText"
+                android:textStyle="normal"
+                tools:text="Interia.pl"
+                tools:visibility="visible" />
 
-                <ImageView
-                    android:id="@+id/image_fav_article_thumb"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/desc_article_photo"
-                    android:scaleType="fitXY"
-                    android:transitionName="articleEntity main thumbnail"
-                    tools:src="@drawable/example_image" />
-
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_fav_article_image"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:visibility="visible" />
-
-            </FrameLayout>
-
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2">
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/text_fav_published_time_counter"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif-condensed"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@color/customColorSecondaryText"
-                        android:textStyle="normal"
-                        android:visibility="visible"
-                        card_view:layout_constraintBaseline_toBaselineOf="@+id/text_fav_article_source"
-                        card_view:layout_constraintEnd_toStartOf="@+id/guideline"
-                        card_view:layout_constraintHorizontal_bias="0.0"
-                        card_view:layout_constraintStart_toEndOf="@+id/text_fav_article_source"
-                        tools:text=" • 8 hours ago"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/text_fav_article_source"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif-condensed"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@color/customColorPrimaryText"
-                        android:textStyle="bold"
-                        card_view:layout_constraintBottom_toBottomOf="@+id/text_fav_published_time_counter"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        card_view:layout_constraintTop_toBottomOf="@+id/text_fav_article_title"
-                        card_view:layout_constraintVertical_bias="0.0"
-                        tools:text="Interia.pl"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/text_fav_article_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif-condensed"
-                        android:lines="2"
-                        android:textColor="@color/customColorPrimaryText"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent"
-                        tools:text="Bitcoin Price Intraday Analysis: BTC/USD Retests Interim Resistance" />
-
-
-                    <TextView
-                        android:id="@+id/text_fav_article_author"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif-condensed"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@color/customColorPrimaryText"
-                        android:textStyle="normal"
-                        android:visibility="gone"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@+id/guideline"
-                        card_view:layout_constraintHorizontal_bias="0.0"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        card_view:layout_constraintTop_toBottomOf="@+id/text_fav_article_source"
-                        tools:text="Piotr Urbaniak"
-                        tools:visibility="visible" />
-
-                    <ImageButton
-                        android:id="@+id/button_remove_fav_article"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@null"
-                        android:contentDescription="@string/button_for_removing_string_action_settings_article_from_fav_list"
-                        android:padding="8dp"
-                        android:tint="@color/customColorFabButtonOn"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintStart_toStartOf="@+id/guideline"
-                        card_view:layout_constraintTop_toBottomOf="@+id/text_fav_article_title"
-                        card_view:srcCompat="@drawable/ic_favorite_black_24dp" />
-
-                    <android.support.constraint.Guideline
-                        android:id="@+id/guideline"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        card_view:layout_constraintGuide_begin="188dp" />
-
-                </android.support.constraint.ConstraintLayout>
-
-
-            </FrameLayout>
+            <TextView
+                android:id="@+id/text_widget_fav_published_time_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/customColorSecondaryText"
+                android:textStyle="normal"
+                android:visibility="visible"
+                tools:text=" • 8 hours ago"
+                tools:visibility="visible" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
-</FrameLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/image_of_article_displayed_on_widget_item"
+        android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+</LinearLayout>

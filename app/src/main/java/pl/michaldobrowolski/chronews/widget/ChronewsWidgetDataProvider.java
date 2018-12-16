@@ -2,16 +2,25 @@ package pl.michaldobrowolski.chronews.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
 import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
 
@@ -27,23 +36,13 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
 
     @Override
     public void onCreate() {
-        // TODO: get data from DB
         articleRepository = new ArticleRepository(context);
-        getDbArticlesList();
-    }
-
-    private List<ArticleEntity> getDbArticlesList() {
-        try {
-            dbArticlesList = articleRepository.getAllArticles();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return dbArticlesList;
+        getDataFromDataBase();
     }
 
     @Override
     public void onDataSetChanged() {
-        getDbArticlesList();
+        getDataFromDataBase();
     }
 
     @Override
@@ -58,11 +57,24 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews mView = new RemoteViews(context.getPackageName(),
-                android.R.layout.simple_list_item_1);
-        mView.setTextViewText(android.R.id.text1, dbArticlesList.get(position).getTitle());
-        mView.setTextColor(android.R.id.text1, Color.BLACK);
-        return mView;
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                R.layout.item_widget_fav_article
+        );
+
+        remoteViews.setTextViewText(R.id.text_widget_fav_article_title, dbArticlesList.get(position).getTitle());
+        remoteViews.setTextViewText(R.id.text_widget_fav_article_source, dbArticlesList.get(position).getSourceName());
+        remoteViews.setTextViewText(R.id.text_widget_fav_published_time_counter, UtilityHelper.publishTimeCounter(dbArticlesList.get(position).getPublishedDate()));
+        if (dbArticlesList.get(position).getImageUrl() != null) {
+            try {
+                Bitmap b = Picasso.get().load(dbArticlesList.get(position).getImageUrl()).get();
+                remoteViews.setImageViewBitmap(R.id.image_widget_fav_article_thumb, b);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            remoteViews.setViewVisibility(R.id.progress_bar_widget_fav_article_image, View.GONE);
+        }
+
+        return remoteViews;
     }
 
     @Override
@@ -83,5 +95,15 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    private void getDataFromDataBase() {
+
+        try {
+            //dbArticlesList.clear();
+            dbArticlesList = articleRepository.getAllArticles();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

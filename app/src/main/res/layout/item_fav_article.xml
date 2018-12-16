@@ -8,7 +8,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="5dp"
+        card_view:cardCornerRadius="3dp"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true">
 
@@ -29,11 +29,9 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/desc_article_photo"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:transitionName="articleEntity main thumbnail"
                     tools:src="@drawable/example_image" />
-
-
 
                 <ProgressBar
                     android:id="@+id/progress_bar_fav_article_image"

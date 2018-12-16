@@ -56,22 +56,21 @@
 
             <TextView
                 android:id="@+id/text_author"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-condensed"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textStyle="normal"
                 android:visibility="gone"
                 card_view:layout_constraintBottom_toBottomOf="@+id/image_category_thumb"
                 card_view:layout_constraintEnd_toStartOf="@+id/frame_article_date"
-                card_view:layout_constraintHorizontal_bias="0.0"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
                 card_view:layout_constraintVertical_bias="1.0"
@@ -89,8 +88,6 @@
                 android:visibility="gone"
                 card_view:layout_constraintBottom_toBottomOf="@+id/image_category_thumb"
                 card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="1.0"
-                card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="@+id/image_shadow_bottom_thumb"
                 card_view:layout_constraintVertical_bias="1.0"
                 tools:visibility="visible">
@@ -188,6 +185,7 @@
                 card_view:layout_constraintTop_toBottomOf="@+id/text_article_description"
                 tools:text=" • 8 hours ago"
                 tools:visibility="visible" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

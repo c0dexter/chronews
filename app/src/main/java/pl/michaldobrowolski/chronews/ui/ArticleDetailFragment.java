@@ -1,5 +1,7 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +30,7 @@ import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
+import pl.michaldobrowolski.chronews.widget.ChronewsWidgetProvider;
 
 public class ArticleDetailFragment extends Fragment {
     private static final String TAG = ArticleDetailFragment.class.getClass().getSimpleName();
@@ -50,6 +53,7 @@ public class ArticleDetailFragment extends Fragment {
     private ArticleRepository articleRepository;
     private boolean articleStored;
     private String articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent;
+    private ChronewsWidgetProvider chronewsWidgetProvider;
 
     @Nullable
     @Override
@@ -58,6 +62,7 @@ public class ArticleDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         context = getActivity();
         articleRepository = new ArticleRepository(context);
+        chronewsWidgetProvider = new ChronewsWidgetProvider();
 
         return rootView;
     }
@@ -74,11 +79,8 @@ public class ArticleDetailFragment extends Fragment {
 
         articleTitle = article.getTitle();
         articlePublishedDate = article.getPublishedAt();
-        if(article.getSource()!=null){
+        if (article.getSource() != null) {
             articleSource = article.getSource().getName();
-        }
-        else{
-
         }
         articleUrl = article.getUrl();
         articleAuthor = article.getAuthor();
@@ -92,7 +94,6 @@ public class ArticleDetailFragment extends Fragment {
     }
 
     private void setFavButtonLogic(String articleUrl) {
-
         try {
             articleStored = articleRepository.getArticleCountByUrl(articleUrl);
 
@@ -109,15 +110,19 @@ public class ArticleDetailFragment extends Fragment {
                     articleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
                     articleStored = true;
                     setFabButtonLook();
+                    // Update widgets
+                    UtilityHelper.updateWidget(context);
                     Toast.makeText(context, "Article has been saved", Toast.LENGTH_SHORT).show();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    articleRepository.deleteArticle( articleUrl);
+                    articleRepository.deleteArticle(articleUrl);
                     articleStored = false;
                     setFabButtonLook();
+                    // Update widgets
+                    UtilityHelper.updateWidget(context);
                     Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
