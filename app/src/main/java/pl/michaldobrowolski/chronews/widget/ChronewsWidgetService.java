@@ -11,4 +11,6 @@ public class ChronewsWidgetService extends RemoteViewsService {
                 getApplicationContext(), intent);
         return dataProvider;
     }
+
+
 }

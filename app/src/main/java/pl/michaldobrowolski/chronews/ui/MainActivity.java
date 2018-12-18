@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,6 +11,11 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.amitshekhar.DebugDB;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import pl.michaldobrowolski.chronews.R;
 
@@ -22,8 +28,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         Toolbar mainActivityToolbar = findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(mainActivityToolbar);
-        DebugDB.getAddressLog();
 
+        DebugDB.getAddressLog();
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment());

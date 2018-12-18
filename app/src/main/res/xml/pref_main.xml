@@ -68,8 +68,8 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="@string/key_switch_search_phrase_top_headlines"
             android:dependency="@string/key_switch_top_headlines_home_screen"
+            android:key="@string/key_switch_search_phrase_top_headlines"
             android:summary="Show top headlines for selected phrase"
             android:summaryOff="All top headlines"
             android:summaryOn="Top headlines for selected phrase"
@@ -78,10 +78,10 @@
             android:dependency="@string/key_switch_search_phrase_top_headlines"
             android:dialogMessage="Populate default phrase for showing top headlines on the home screen"
             android:dialogTitle="Specify preferred phrase"
-            android:key="@string/key_default_phrase_top_headlines"
-            android:persistent="true"
-            android:lines="2"
             android:ellipsize="end"
+            android:key="@string/key_default_phrase_top_headlines"
+            android:lines="2"
+            android:persistent="true"
             android:title="Set a search phrase" />
     </PreferenceCategory>
 

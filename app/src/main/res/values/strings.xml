@@ -138,6 +138,8 @@
     <string name="add_widget">Add widget</string>
     <string name="widget_subheader_slogan_text">Favourite articles</string>
     <string name="image_of_article_displayed_on_widget_item">Image of article displayed on widget item</string>
+    <string name="image_desc_logo_login_scrn">Logo on the login @string/key_switch_top_headlines_home_screen</string>
+    <string name="menu_logout_tile">Log out</string>
 
     <!-- Strings related to Settings -->
 

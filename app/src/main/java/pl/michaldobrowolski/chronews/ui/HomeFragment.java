@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
 
 import pl.michaldobrowolski.chronews.BuildConfig;
@@ -48,6 +50,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private RecyclerView.Adapter adapter;
     private News news;
     private Toolbar toolbar;
+    private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
@@ -64,6 +67,18 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
+        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    if (isAdded()) {
+                        Intent intent = new Intent(context, GoogleSignInActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
 
         recyclerView = rootView.findViewById(R.id.recycler_view_home);
         recyclerView.setHasFixedSize(false);
@@ -76,6 +91,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     public void fetchArticles(@Nullable String searchedPhrase) {
         toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
@@ -193,10 +212,14 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.actionSettings) {
-            // launch settings activity
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
-            return true;
+        switch (id) {
+            case R.id.actionSettings:
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            case R.id.actionLogout:
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
+
         }
         return super.onOptionsItemSelected(item);
     }

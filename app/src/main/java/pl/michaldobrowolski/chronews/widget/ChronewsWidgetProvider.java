@@ -4,16 +4,19 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import pl.michaldobrowolski.chronews.R;
+import pl.michaldobrowolski.chronews.ui.MainActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -28,42 +31,14 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
                                 int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.chronews_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             setRemoteAdapter(context, views);
         } else {
             setRemoteAdapterV11(context, views);
         }
-//        Intent intentUpdate = new Intent(context, ChronewsWidgetProvider.class);
-//        intentUpdate.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//
-//        int[] idArray = new int[]{appWidgetId};
-//        intentUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, idArray);
-//
-//        PendingIntent pendingUpdate = PendingIntent.getBroadcast(
-//                context, appWidgetId, intentUpdate,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        try {
-//            pendingUpdate.send();
-//        } catch (PendingIntent.CanceledException e) {
-//            e.printStackTrace();
-//        }
 
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
-    }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        ComponentName component;
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     /**
@@ -89,11 +64,48 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_TOAST)) {
-            String item = intent.getExtras().getString(EXTRA_STRING);
-            Toast.makeText(context, item, Toast.LENGTH_LONG).show();
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // Handle all of widgets
+        for (int appWidgetId : appWidgetIds) {
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.setData(Uri.parse("www.google.pl"));
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+//            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.chronews_widget);
+//            remoteViews.setOnClickPendingIntent(R.id.image_widget_fav_article_thumb, pendingIntent);
+//            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+            try {
+                Intent intent = new Intent("android.intent.action.MAIN");
+                intent.addCategory("android.intent.category.LAUNCHER");
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.setComponent(new ComponentName(context.getPackageName(),
+                        "Activity.class"));
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context, 0, intent, 0);
+                RemoteViews views = new RemoteViews(context.getPackageName(),
+                        R.layout.chronews_widget);
+                views.setOnClickPendingIntent(R.id.widget_fav_article_item, pendingIntent);
+                appWidgetManager.updateAppWidget(appWidgetId, views);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context.getApplicationContext(),
+                        "There was a problem loading the application: ",
+                        Toast.LENGTH_SHORT).show();
+            }
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+//        Bundle dataFromBundle = intent.getExtras();
+//        if (dataFromBundle != null) {
+//            String articleUrl = dataFromBundle.getString("articleUrl");
+//            Intent launch = new Intent(Intent.ACTION_VIEW, Uri.parse(articleUrl));
+//            context.startActivity(launch);
+//        }
         super.onReceive(context, intent);
     }
 

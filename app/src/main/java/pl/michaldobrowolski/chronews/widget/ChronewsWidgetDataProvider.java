@@ -3,15 +3,13 @@ package pl.michaldobrowolski.chronews.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,8 +56,7 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                R.layout.item_widget_fav_article
-        );
+                R.layout.item_widget_fav_article);
 
         remoteViews.setTextViewText(R.id.text_widget_fav_article_title, dbArticlesList.get(position).getTitle());
         remoteViews.setTextViewText(R.id.text_widget_fav_article_source, dbArticlesList.get(position).getSourceName());
@@ -73,6 +70,14 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
             }
             remoteViews.setViewVisibility(R.id.progress_bar_widget_fav_article_image, View.GONE);
         }
+
+        String articleUrl = dbArticlesList.get(position).getUrl();
+        final Intent intent = new Intent();
+        final Bundle extra = new Bundle();
+        extra.putString("articleUrl", articleUrl);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtras(extra);
+        remoteViews.setOnClickFillInIntent(R.id.image_widget_fav_article_thumb, intent);
 
         return remoteViews;
     }
@@ -98,9 +103,7 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
     }
 
     private void getDataFromDataBase() {
-
         try {
-            //dbArticlesList.clear();
             dbArticlesList = articleRepository.getAllArticles();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();

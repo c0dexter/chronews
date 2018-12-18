@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "829629333236",
+    "firebase_url": "https://chronews-225114.firebaseio.com",
+    "project_id": "chronews-225114",
+    "storage_bucket": "chronews-225114.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829629333236:android:5492cfda4befa209",
+        "android_client_info": {
+          "package_name": "pl.michaldobrowolski.chronews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829629333236-6ejg06dohca5r9v8j60djsgui9cimpf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.michaldobrowolski.chronews",
+            "certificate_hash": "34c3c177e1166178377c24cf019fe9ae81002852"
+          }
+        },
+        {
+          "client_id": "829629333236-log3f5ipbgja13mbn3sq0afed92unpmj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8tw8McUhq95VEGgpeCHzaTVuy3bXcziM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829629333236-log3f5ipbgja13mbn3sq0afed92unpmj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
