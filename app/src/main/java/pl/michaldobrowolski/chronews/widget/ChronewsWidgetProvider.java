@@ -5,12 +5,9 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -22,22 +19,20 @@ import pl.michaldobrowolski.chronews.ui.MainActivity;
  * Implementation of App Widget functionality.
  */
 public class ChronewsWidgetProvider extends AppWidgetProvider {
-
-    public static final String ACTION_TOAST = "com.dharmangsoni.widgets.ACTION_TOAST";
-    public static final String EXTRA_STRING = "com.dharmangsoni.widgets.EXTRA_STRING";
-
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.chronews_widget);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        PendingIntent template = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setPendingIntentTemplate(R.id.widgetCollectionList, template);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             setRemoteAdapter(context, views);
         } else {
             setRemoteAdapterV11(context, views);
         }
-
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -67,29 +62,13 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Handle all of widgets
         for (int appWidgetId : appWidgetIds) {
-//            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setData(Uri.parse("www.google.pl"));
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-//            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.chronews_widget);
-//            remoteViews.setOnClickPendingIntent(R.id.image_widget_fav_article_thumb, pendingIntent);
-//            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
             try {
-                Intent intent = new Intent("android.intent.action.MAIN");
-                intent.addCategory("android.intent.category.LAUNCHER");
+                Intent intent = new Intent(context, MainActivity.class);
 
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                intent.setComponent(new ComponentName(context.getPackageName(),
-                        "Activity.class"));
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        context, 0, intent, 0);
-                RemoteViews views = new RemoteViews(context.getPackageName(),
-                        R.layout.chronews_widget);
-                views.setOnClickPendingIntent(R.id.widget_fav_article_item, pendingIntent);
-                appWidgetManager.updateAppWidget(appWidgetId, views);
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(context.getApplicationContext(),
-                        "There was a problem loading the application: ",
+                        "There was a problem loading the application",
                         Toast.LENGTH_SHORT).show();
             }
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -97,26 +76,19 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Bundle dataFromBundle = intent.getExtras();
-//        if (dataFromBundle != null) {
-//            String articleUrl = dataFromBundle.getString("articleUrl");
-//            Intent launch = new Intent(Intent.ACTION_VIEW, Uri.parse(articleUrl));
-//            context.startActivity(launch);
-//        }
         super.onReceive(context, intent);
     }
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
+        // functionality when the first instance of widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        // functionality when the last instance of widget is created
     }
 
 

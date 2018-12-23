@@ -1,7 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -23,6 +23,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import pl.michaldobrowolski.chronews.R;
+import pl.michaldobrowolski.chronews.utils.Analytics;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class GoogleSignInActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,6 +42,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton signInButton;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private ProgressBar loginProgressBar;
+    private ImageView noInternetConnection;
 
 
     @Override
@@ -76,29 +80,41 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_login);
         makeStatusBarTransculent();
 
-            signInButton = (SignInButton) findViewById(R.id.login_activity_google_login_btn);
-            firebaseAuth = FirebaseAuth.getInstance();
+        signInButton = findViewById(R.id.login_activity_google_login_btn);
+        loginProgressBar = findViewById(R.id.login_progress_bar);
+        noInternetConnection = findViewById(R.id.no_internet_dino_img);
+        firebaseAuth = FirebaseAuth.getInstance();
 
-            signInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(UtilityHelper.isOnline(getApplicationContext())){
-                        signIn();
-                    }else {
-                        Toast.makeText(GoogleSignInActivity.this, "No Internet connection", Toast.LENGTH_SHORT).show();
-                    }
+        signInButton.setOnClickListener(v -> {
+            if (UtilityHelper.isOnline(getApplicationContext())) {
+                noInternetConnection.setVisibility(View.GONE);
+                loginProgressBar.setVisibility(View.VISIBLE);
+                signIn();
+            } else {
+                noInternetConnection.setVisibility(View.VISIBLE);
+                Toast.makeText(GoogleSignInActivity.this, "Check your internet connection!", Toast.LENGTH_SHORT).show();
 
-                }
-            });
+            }
+
+        });
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            openMainScreen();
+        } else {
             firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    if (firebaseAuth.getCurrentUser() != null) {
-                        startActivity(new Intent(GoogleSignInActivity.this, MainActivity.class));
+                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                    if (currentUser != null) {
+                        FirebaseAnalytics analytics = Analytics.get(GoogleSignInActivity.this);
+                        analytics.setUserId(currentUser.getUid());
+                        analytics.logEvent("user_signed_in", null);
+
+                        openMainScreen();
                     }
                 }
             };
-            firebaseAuth.addAuthStateListener(firebaseAuthListener);
+            this.firebaseAuth.addAuthStateListener(firebaseAuthListener);
 
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
@@ -107,10 +123,12 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
 
             // Build a GoogleSignInClient with the options specified by gso.
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        }
+    }
 
-
-
-
+    private void openMainScreen() {
+        startActivity(new Intent(GoogleSignInActivity.this, MainActivity.class));
+        finish();
     }
 
     @Override
@@ -124,10 +142,13 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                loginProgressBar.setVisibility(View.GONE);
             } catch (ApiException e) {
+                loginProgressBar.setVisibility(View.GONE);
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
                 Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
+
                 updateUI(null);
             }
         }
@@ -189,31 +210,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void updateUI(FirebaseUser user) {
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.signInButton).setVisibility(View.GONE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.GONE);
-//        }
+
     }
 
     @Override
     public void onClick(View v) {
-//        int i = v.getId();
-//        if (i == R.id.signInButton) {
-//            signIn();
-//        } else if (i == R.id.signOutButton) {
-//            signOut();
-//        } else if (i == R.id.disconnectButton) {
-//            revokeAccess();
-//        }
     }
 
     private void makeStatusBarTransculent() {

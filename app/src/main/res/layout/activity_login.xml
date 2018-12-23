@@ -5,35 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_screen_bg_2_icons"
-    tools:context=".ui.GoogleSignInActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.GoogleSignInActivity">
 
     <ImageView
-        android:id="@+id/no_internet_cable_img"
-        android:layout_width="41dp"
+        android:id="@+id/no_internet_dino_img"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.44"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/login_activity_google_login_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_activity_logo_img"
         app:srcCompat="@drawable/no_internet_connection" />
 
     <ImageView
         android:id="@+id/login_activity_logo_img"
         android:layout_width="295dp"
         android:layout_height="112dp"
+        android:layout_marginTop="64dp"
         android:contentDescription="@string/image_desc_logo_login_scrn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19"
+        app:layout_constraintVertical_bias="0.00999999"
         app:srcCompat="@drawable/full_logo_big" />
 
     <com.google.android.gms.common.SignInButton
@@ -45,10 +46,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_activity_logo_img"
-        app:layout_constraintVertical_bias="0.7" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/login_progress_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,6 +57,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/login_activity_google_login_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

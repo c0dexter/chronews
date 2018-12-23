@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
-import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.Source;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
@@ -36,7 +36,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
     private ArticleEntity articleEntity;
     private List<ArticleEntity> dbArticlesList;
     private Toolbar toolbar;
-    private ArticleRepository articleRepository;
+    private FavouriteArticleRepository favouriteArticleRepository;
 
     @Nullable
     @Override
@@ -51,13 +51,13 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
-        articleRepository = new ArticleRepository(getContext());
+        favouriteArticleRepository = new FavouriteArticleRepository(getContext());
         recyclerView = rootView.findViewById(R.id.recycler_view_favourites);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         dbArticlesList = getDbArticlesList();
-        adapter = new FavouriteListAdapter(FavouriteFragment.this, dbArticlesList, articleRepository, context);
+        adapter = new FavouriteListAdapter(FavouriteFragment.this, dbArticlesList, favouriteArticleRepository, context);
         recyclerView.setAdapter(adapter);
 
         return rootView;
@@ -71,7 +71,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
      */
     private List<ArticleEntity> getDbArticlesList() {
         try {
-            dbArticlesList = articleRepository.getAllArticles();
+            dbArticlesList = favouriteArticleRepository.getAllArticles();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

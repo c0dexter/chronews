@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
-import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.ViewHolder> {
@@ -31,12 +31,12 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private final FavouriteListAdapter.OnItemClickListener onItemClickListener;
     private List<ArticleEntity> dbArticlesList;
     private Context context;
-    private ArticleRepository articleRepository;
+    private FavouriteArticleRepository favouriteArticleRepository;
 
-    public FavouriteListAdapter(OnItemClickListener onItemClickListener, List<ArticleEntity> dbArticlesList, ArticleRepository articleRepository, Context context) {
+    public FavouriteListAdapter(OnItemClickListener onItemClickListener, List<ArticleEntity> dbArticlesList, FavouriteArticleRepository favouriteArticleRepository, Context context) {
         this.onItemClickListener = onItemClickListener;
         this.dbArticlesList = dbArticlesList;
-        this.articleRepository = articleRepository;
+        this.favouriteArticleRepository = favouriteArticleRepository;
         this.context = context;
     }
 
@@ -135,8 +135,8 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     int position = getAdapterPosition();
                     String articleUrl = dbArticlesList.get(position).getUrl();
                     try {
-                        articleRepository.deleteArticle(articleUrl);
-                        dbArticlesList = articleRepository.getAllArticles(); // Remember this!!!
+                        favouriteArticleRepository.deleteArticle(articleUrl);
+                        dbArticlesList = favouriteArticleRepository.getAllArticles(); // Remember this!!!
                         notifyDataSetChanged();
                         // Update widgets
                         UtilityHelper.updateWidget(context);

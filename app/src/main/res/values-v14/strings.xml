@@ -2,4 +2,8 @@
 <resources>
     <string name="widget_subheader_slogan_text">Favourite articles</string>
     <string name="menu_logout_tile">Log out</string>
+    <string name="key_switch_country_top_headlines">key_switch_country_top_headlines</string>
+    <string name="key_country_code_for_categories_board">key_language_code_for_categories_board</string>
+    <string name="key_switch_country_of_category_board">key_switch_language_category_board</string>
+    <string name="key_country_code_categories_board">key_country_code_categories_board</string>
 </resources>

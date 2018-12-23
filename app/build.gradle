@@ -12,6 +12,16 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        release {
+            storeFile file('../test_signing.jks')
+            storePassword 'test1234'
+            keyAlias 'codenewsapp'
+            keyPassword 'test1234'
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -19,13 +29,18 @@ android {
             resValue 'string', "api_key", Chronews_ApiKey
 
         }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', "ApiKey", Chronews_ApiKey
             resValue 'string', "api_key", Chronews_ApiKey
+            signingConfig signingConfigs.release
         }
     }
+
+
+
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
@@ -73,4 +88,6 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+
 }

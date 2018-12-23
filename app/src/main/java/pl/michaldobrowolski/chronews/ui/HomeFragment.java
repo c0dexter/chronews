@@ -50,7 +50,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private RecyclerView.Adapter adapter;
     private News news;
     private Toolbar toolbar;
-    private FirebaseAuth firebaseAuth;
+    private Boolean isManualSearch = false;
+    private Call<News> call;
 
     @Nullable
     @Override
@@ -67,15 +68,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
-        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() == null) {
-                    if (isAdded()) {
-                        Intent intent = new Intent(context, GoogleSignInActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                if (isAdded()) {
+                    Intent intent = new Intent(context, GoogleSignInActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             }
         });
@@ -86,7 +84,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        fetchArticles(null); // TODO: (FEATURE) get info from shared pref
+        // Show top headlines articles based on Shared Pref settings
+        fetchArticles(null, isManualSearch);
 
         return rootView;
     }
@@ -96,7 +95,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         super.onAttach(context);
     }
 
-    public void fetchArticles(@Nullable String searchedPhrase) {
+    public void fetchArticles(@Nullable String searchedPhrase, @Nullable Boolean isManualSearch) {
         toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -106,6 +105,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         String topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
         String phraseForSearchingTopHeadlines;
         Boolean preferredLanguageSwitch = preferences.getBoolean("key_switch_specific_news_language", false);
+        Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
         Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
         Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
         Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
@@ -119,11 +119,19 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         // TOP HEADLINES - DEFAULT SEARCH LOGIC
         if (preferredTopHeadlinesSwitch == true) {
             // Check selected country code
-            countryCode = preferences.getString("key_country_code_top_headlines", null);
+
+            // Check switch for displaying top headlines for one specific category
+            if (preferredCountrySwitch == true) {
+                // Select country code to build a call
+                countryCode = preferences.getString("key_country_code_top_headlines", null);
+            } else {
+                // Set country code as null
+                countryCode = null;
+            }
 
             // Check switch for displaying top headlines for one specific category
             if (preferredTopHeadlinesCategorySwitch == true) {
-                // Select country code to build a call
+                // Select category code to build a call
                 topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
             } else {
                 // Set country code as null
@@ -134,47 +142,53 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             if (preferredTopHeadlinesSpecificPhraseSwitch == true) {
                 // get a search phrase form shared pref and assign value to searched phrase
                 phraseForSearchingTopHeadlines = preferences.getString("key_default_phrase_top_headlines", null);
-                searchedPhrase = phraseForSearchingTopHeadlines;
-                // set country as null, because API can return a global top headlines for some phrase only
-                countryCode = null;
+                if(isManualSearch == false){
+                    searchedPhrase = phraseForSearchingTopHeadlines;
+                }
             } else {
-                //searchedPhrase = null;
+                searchedPhrase = null;
             }
         } else {
             countryCode = null;
         }
 
-
-        Call<News> call;
-        if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
-            // Use search phrase and display everything what is related to the phrase
-            call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
-        } else {
-            // Show top headlines
-            call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
-        }
-        call.enqueue(new Callback<News>() {
-            @Override
-            public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "Response Code: " + response.code());
-                    news = response.body();
-                    //jasonRetrofitResult = new Gson().toJson(news);
-                    adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Fetching data failed! Response code: " + response.code());
+        if(UtilityHelper.isOnline(context)){
+            if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
+                // Use search phrase and display everything what is related to the phrase
+                if(isManualSearch==true){
+                    call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
+                } else if(isManualSearch == false){
+                    call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
                 }
+            }else if(isManualSearch == false){
+                call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
             }
 
-            @Override
-            public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                call.cancel();
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
+            call.enqueue(new Callback<News>() {
+                @Override
+                public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.d(TAG, "Response Code: " + response.code());
+                        news = response.body();
+                        adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Fetching data failed! Response code: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
+                    call.cancel();
+                    Log.e(TAG, "onFailure: ", t);
+                }
+            });
+        } else {
+            Toast.makeText(context, "No internet connection, check settings", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -196,7 +210,9 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
+                isManualSearch = true;
+                fetchArticles(query, true); // TODO: make switch-case block for selected search type in the Settings
+                isManualSearch = false;
                 return false;
             }
 
@@ -219,15 +235,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             case R.id.actionLogout:
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
-
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
-
         Article article = news.getArticles().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
@@ -239,5 +252,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 .replace(R.id.fragment_container, articleDetailFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 }

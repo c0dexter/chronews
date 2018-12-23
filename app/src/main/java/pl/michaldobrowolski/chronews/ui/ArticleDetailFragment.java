@@ -1,8 +1,5 @@
 package pl.michaldobrowolski.chronews.ui;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amitshekhar.DebugDB;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -26,8 +22,9 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
-import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
+import pl.michaldobrowolski.chronews.utils.Analytics;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import pl.michaldobrowolski.chronews.widget.ChronewsWidgetProvider;
@@ -48,9 +45,8 @@ public class ArticleDetailFragment extends Fragment {
     TextView tvArticleDetailAuthor;
     @BindView(R.id.toolbar_article_detail)
     Toolbar tbArticleDetailToolbar;
-    private Context context;
     private Article article;
-    private ArticleRepository articleRepository;
+    private FavouriteArticleRepository favouriteArticleRepository;
     private boolean articleStored;
     private String articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent;
     private ChronewsWidgetProvider chronewsWidgetProvider;
@@ -60,8 +56,9 @@ public class ArticleDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
-        context = getActivity();
-        articleRepository = new ArticleRepository(context);
+        tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+        favouriteArticleRepository = new FavouriteArticleRepository(getContext());
         chronewsWidgetProvider = new ChronewsWidgetProvider();
 
         return rootView;
@@ -71,7 +68,6 @@ public class ArticleDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = this.getArguments();
-
         if (bundle != null) {
             article = bundle.getParcelable("articleKey");
             populateViews(Objects.requireNonNull(article));
@@ -90,40 +86,37 @@ public class ArticleDetailFragment extends Fragment {
 
         setFavButtonLogic(articleUrl);
         setFabButtonLook();
-        tvReadMoreText.setOnClickListener(v -> UtilityHelper.openArticleInBrowser(context, article));
+        tvReadMoreText.setOnClickListener(v -> UtilityHelper.openArticleInBrowser(requireContext(), article));
     }
 
     private void setFavButtonLogic(String articleUrl) {
         try {
-            articleStored = articleRepository.getArticleCountByUrl(articleUrl);
-
+            articleStored = favouriteArticleRepository.getArticleCountByUrl(articleUrl);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
         btnFav.setOnClickListener(v -> {
-
-
             if (!articleStored) {
-                DebugDB.getAddressLog();
                 try {
-                    articleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
+                    favouriteArticleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
                     articleStored = true;
                     setFabButtonLook();
-                    // Update widgets
-                    UtilityHelper.updateWidget(context);
-                    Toast.makeText(context, "Article has been saved", Toast.LENGTH_SHORT).show();
+                    UtilityHelper.updateWidget(getContext()); // Update widgets
+                    Toast.makeText(getContext(), "Article has been saved", Toast.LENGTH_SHORT).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("article_title", articleTitle);
+                    Analytics.get(getContext()).logEvent("article_added_to_favourite", bundle);
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    articleRepository.deleteArticle(articleUrl);
+                    favouriteArticleRepository.deleteArticle(articleUrl);
                     articleStored = false;
                     setFabButtonLook();
-                    // Update widgets
-                    UtilityHelper.updateWidget(context);
-                    Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
+                    UtilityHelper.updateWidget(getContext()); // Update widgets
+                    Toast.makeText(getContext(), "Article removed", Toast.LENGTH_SHORT).show();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -140,7 +133,6 @@ public class ArticleDetailFragment extends Fragment {
     }
 
     private void populateViews(Article article) {
-
         if (article.getUrl() != null) {
             Picasso.get()
                     .load(article.getUrlToImage())

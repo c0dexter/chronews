@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Language of news">
+    <PreferenceCategory android:title="Search settings">
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_switch_specific_news_language"
             android:summary="Show news written in the selected language only"
-            android:summaryOff="No matter language, show all news"
-            android:summaryOn="Show news only for selected language"
+            android:summaryOff="Option [OFF]: Now if you search something manually by populating a search phrase, you will get all news no matter in what language."
+            android:summaryOn="Option [ON]: Now if you search something manually by populating a search phrase, you will get news in SELECTED language. Choose preferred language below."
             android:title="News in preferred language" />
         <ListPreference
             android:defaultValue="en"
@@ -16,7 +16,7 @@
             android:entries="@array/language_name_entries"
             android:entryValues="@array/language_codes_values"
             android:key="@string/key_language_code"
-            android:summary="Set language"
+            android:summary="%s"
             android:title="Set language" />
     </PreferenceCategory>
 
@@ -26,28 +26,36 @@
             android:entries="@array/sorting_options_entries"
             android:entryValues="@array/sorting_options_values"
             android:key="@string/key_sorting_code"
-            android:summary="You can choose sorting option for search result"
+            android:summary="Choose sorting option"
             android:title="Set sorting type" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Top headlines on the home screen">
+    <PreferenceCategory android:title="Top headlines settings">
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_switch_top_headlines_home_screen"
             android:summary="Show top headlines on home screen"
-            android:summaryOff="Don't search and don't show top headlines news on home screen"
-            android:summaryOn="Search and show top headlines news on home screen for selected country"
+            android:summaryOff="Option [OFF]: Now the home screen will not show top-headlines"
+            android:summaryOn="Option [ON]: Top-headlines news will be displayed on the home screen. Customize following preferences to get best result of searching"
             android:title="Show top headlines on home screen" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_switch_top_headlines_home_screen"
+            android:key="@string/key_switch_country_top_headlines"
+            android:summary="Show global or local top headlines for a country"
+            android:summaryOff="Option [OFF]: all of top-headlines news will be displayed for all available countries by default"
+            android:summaryOn="Option [ON]: all of top-headlines news will be displayed for country selected by user. Choose a country below."
+            android:title="Show global or local top headlines" />
         <ListPreference
             android:defaultValue="eg"
-            android:dependency="@string/key_switch_top_headlines_home_screen"
+            android:dependency="@string/key_switch_country_top_headlines"
             android:dialogTitle="Choose preferred country "
             android:entries="@array/country_name_entries"
             android:entryValues="@array/country_codes_values"
             android:key="@string/key_country_code_top_headlines"
             android:summary="Choose country"
-            android:title="Set country as top headlines source" />
+            android:title="Choose country" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -64,7 +72,7 @@
             android:entryValues="@array/news_categories_values"
             android:key="@string/key_top_headlines_category"
             android:summary="Set favourite category type for displaying top headlines"
-            android:title="Set favorite category" />
+            android:title="Choose category" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -85,7 +93,24 @@
             android:title="Set a search phrase" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Choose categories">
+    <PreferenceCategory android:title="Categories settings">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_switch_country_of_category_board"
+            android:summary="Show news for specific country"
+            android:summaryOff="Option [OFF]: default country is United Kingdom. In this case all of news in each category will comes from this country."
+            android:summaryOn="Option [ON]: all of news in each category will be displayed for selected country by user. Choose a country below."
+            android:title="Customize country" />
+        <ListPreference
+            android:dependency="@string/key_switch_country_of_category_board"
+            android:dialogTitle="Set country as news source"
+            android:entries="@array/country_name_entries"
+            android:entryValues="@array/country_codes_values"
+            android:key="@string/key_country_code_categories_board"
+            android:summary="%s"
+            android:title="Choose country" />
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/key_category_business"

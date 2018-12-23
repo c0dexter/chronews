@@ -30,7 +30,7 @@ public final class UtilityHelper {
      * @return String value with date in the new format
      */
     public static String displayShortDate(String dateToParse) {
-        String inputPattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        String inputPattern = detectTimePattern(dateToParse);
         String outputPattern = "d MMM yyyy";
         SimpleDateFormat inputDateFormat = new SimpleDateFormat(inputPattern);
         SimpleDateFormat outputDateFormat = new SimpleDateFormat(outputPattern);
@@ -57,7 +57,7 @@ public final class UtilityHelper {
         String counterResult;
 
         Calendar cal = Calendar.getInstance();
-        String inputPattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        String inputPattern = detectTimePattern(publishedDate);
         SimpleDateFormat sdf = new SimpleDateFormat(inputPattern);
 
         Date publishedDateAt = null;
@@ -90,6 +90,35 @@ public final class UtilityHelper {
         }
 
         return String.valueOf(counterResult);
+    }
+
+    /**
+     * Check which format of date should be used for given data
+     * @param dataTimeFromApi is a data source
+     * @return String with a proper format
+     */
+    private static String detectTimePattern(String dataTimeFromApi) {
+        String[] formatPatterns = {
+                "EEE MMM dd HH:mm:ss Z yyyy", "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy HH:mm:ss",
+                "MM/dd/yyyy'T'HH:mm:ss.SSS'Z'", "MM/dd/yyyy'T'HH:mm:ss.SSS",
+                "MM/dd/yyyy'T'HH:mm:ss.SSSZ", "MM/dd/yyyy'T'HH:mm:ss", "MM/dd/yyyy'T'HH:mm:ssZ",
+                "yyyy:MM:dd HH:mm:ss", "yyyyMMdd", "yyyy-MM-dd" , "yyyy-MM-dd HH:mm",
+                "yyyy-MM-dd HH:mmZ", "yyyy-MM-dd HH:mm:ss.SSSZ"};
+
+        if (dataTimeFromApi != null) {
+            for (String pattern : formatPatterns) {
+                SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                try {
+                    sdf.parse(dataTimeFromApi);
+                    return pattern;
+
+                } catch (ParseException e) {
+                }
+            }
+        }
+        return null;
     }
 
     /**

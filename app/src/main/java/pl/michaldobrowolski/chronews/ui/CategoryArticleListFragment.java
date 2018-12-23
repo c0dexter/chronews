@@ -2,7 +2,9 @@ package pl.michaldobrowolski.chronews.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,7 +33,6 @@ import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
-import pl.michaldobrowolski.chronews.utils.NewsApiUtils;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +47,9 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
     private RecyclerView.Adapter adapter;
     private News news;
     private Category category;
+    private String countryCode;
+    private SharedPreferences preferences;
+    private Toolbar toolbar;
 
     @Nullable
     @Override
@@ -58,7 +62,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
 
-        Toolbar toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
+        toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -76,26 +80,33 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
 
         if (category != null) {
             toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
-            fetchArticles(category.getCategoryName()); // TODO: get info from the bundle
+            if (UtilityHelper.isOnline(context)) {
+                fetchArticles(category.getCategoryName());
+            } else {
+                Toast.makeText(activity, "No internet connection! Check your settings.", Toast.LENGTH_SHORT).show();
+            }
         }
         return rootView;
     }
 
     private void fetchArticles(final String category) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Boolean preferredCountryCategorySwitch = preferences.getBoolean("key_switch_language_category_board", false);
+        String preferredCountryCode = preferences.getString("key_country_code_categories_board", null);
+        if(preferredCountryCategorySwitch == true){
+            countryCode = preferredCountryCode;
+        } else {
+            countryCode = "gb";
+        }
 
         Call<News> call;
-        String country = NewsApiUtils.CountryCodes.UNITED_KINGDOM.getCountryCode();
-        String categoryType = NewsApiUtils.Category.ENTERTAINMENT.getCategory();
-        String sortingType = NewsApiUtils.SortOption.POPULARITY.getSortingOption(); // TODO: options for search has to be moved to SharedPref
-
-        call = apiInterface.topHeadlines(country, category, null, null, null, API_KEY);
+        call = apiInterface.topHeadlines(countryCode, category, null, null, null, API_KEY);
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d(TAG, "Response Code: " + response.code());
                     news = response.body();
-                    //jasonRetrofitResult = new Gson().toJson(news);
                     adapter = new ArticleListAdapter(news.getArticles(), context, CategoryArticleListFragment.this);
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -147,8 +158,6 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(context, "TOAST on position: #" + String.valueOf(position), Toast.LENGTH_SHORT).show();
-
         Article article = news.getArticles().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
@@ -161,5 +170,4 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
                 .addToBackStack(null)
                 .commit();
     }
-
 }

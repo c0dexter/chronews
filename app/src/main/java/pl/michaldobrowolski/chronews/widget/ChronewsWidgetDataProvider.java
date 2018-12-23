@@ -17,14 +17,14 @@ import java.util.concurrent.ExecutionException;
 
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
-import pl.michaldobrowolski.chronews.api.data.ArticleRepository;
+import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
 
     private List<ArticleEntity> dbArticlesList;
     private Context context = null;
-    private ArticleRepository articleRepository;
+    private FavouriteArticleRepository favouriteArticleRepository;
     private ArticleEntity articleEntity;
 
 
@@ -34,7 +34,7 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
 
     @Override
     public void onCreate() {
-        articleRepository = new ArticleRepository(context);
+        favouriteArticleRepository = new FavouriteArticleRepository(context);
         getDataFromDataBase();
     }
 
@@ -71,13 +71,17 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
             remoteViews.setViewVisibility(R.id.progress_bar_widget_fav_article_image, View.GONE);
         }
 
-        String articleUrl = dbArticlesList.get(position).getUrl();
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(dbArticlesList.get(position).getUrl()));
+        remoteViews.setOnClickFillInIntent(R.id.widget_fav_article_item, intent);
+
+        /*String articleUrl = dbArticlesList.get(position).getUrl();
         final Intent intent = new Intent();
         final Bundle extra = new Bundle();
         extra.putString("articleUrl", articleUrl);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(extra);
-        remoteViews.setOnClickFillInIntent(R.id.image_widget_fav_article_thumb, intent);
+        remoteViews.setOnClickFillInIntent(R.id.image_widget_fav_article_thumb, intent);*/
 
         return remoteViews;
     }
@@ -104,7 +108,7 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
 
     private void getDataFromDataBase() {
         try {
-            dbArticlesList = articleRepository.getAllArticles();
+            dbArticlesList = favouriteArticleRepository.getAllArticles();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

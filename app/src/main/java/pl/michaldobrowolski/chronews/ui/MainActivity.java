@@ -1,6 +1,5 @@
 package pl.michaldobrowolski.chronews.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,13 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-
-import com.amitshekhar.DebugDB;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.firebase.auth.FirebaseAuth;
 
 import pl.michaldobrowolski.chronews.R;
 
@@ -29,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Toolbar mainActivityToolbar = findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(mainActivityToolbar);
 
-        DebugDB.getAddressLog();
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment());
@@ -42,10 +33,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-
             return true;
         }
-
         return false;
     }
 
@@ -68,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Log.d(TAG, "Bottom Menu clicked: FavouritesFragment created!");
                 break;
         }
-
         return loadFragment(fragment);
     }
 
