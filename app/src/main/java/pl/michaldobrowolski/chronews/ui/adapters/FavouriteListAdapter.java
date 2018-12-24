@@ -32,6 +32,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private List<ArticleEntity> dbArticlesList;
     private Context context;
     private FavouriteArticleRepository favouriteArticleRepository;
+    private Toast toast;
 
     public FavouriteListAdapter(OnItemClickListener onItemClickListener, List<ArticleEntity> dbArticlesList, FavouriteArticleRepository favouriteArticleRepository, Context context) {
         this.onItemClickListener = onItemClickListener;
@@ -140,6 +141,9 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                         notifyDataSetChanged();
                         // Update widgets
                         UtilityHelper.updateWidget(context);
+                        if(toast !=  null){
+                            toast.cancel();
+                        }
                         Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
 
                     } catch (ExecutionException | InterruptedException e) {

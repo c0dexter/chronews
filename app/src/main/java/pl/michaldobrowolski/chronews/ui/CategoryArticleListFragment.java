@@ -79,7 +79,16 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         }
 
         if (category != null) {
+            preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Boolean showArticlesForSpecificCountry = preferences.getBoolean("key_switch_language_category_board", false);
+            String country = preferences.getString("key_country_code_categories_board", "gb");
             toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
+            if(showArticlesForSpecificCountry){
+                toolbar.setSubtitle("Top headlines in " + country.toUpperCase());
+            } else {
+                toolbar.setSubtitle("Top headlines in GB (Default setting)");
+            }
+
             if (UtilityHelper.isOnline(context)) {
                 fetchArticles(category.getCategoryName());
             } else {
@@ -127,7 +136,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
     }
 
     @Override

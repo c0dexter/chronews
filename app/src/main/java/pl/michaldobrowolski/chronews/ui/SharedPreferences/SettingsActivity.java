@@ -82,6 +82,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            this.finish();
+
         }
         return super.onOptionsItemSelected(item);
     }

@@ -40,7 +40,7 @@
             android:title="Show top headlines on home screen" />
 
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:dependency="@string/key_switch_top_headlines_home_screen"
             android:key="@string/key_switch_country_top_headlines"
             android:summary="Show global or local top headlines for a country"
@@ -48,13 +48,13 @@
             android:summaryOn="Option [ON]: all of top-headlines news will be displayed for country selected by user. Choose a country below."
             android:title="Show global or local top headlines" />
         <ListPreference
-            android:defaultValue="eg"
+            android:defaultValue="gb"
             android:dependency="@string/key_switch_country_top_headlines"
             android:dialogTitle="Choose preferred country "
             android:entries="@array/country_name_entries"
             android:entryValues="@array/country_codes_values"
             android:key="@string/key_country_code_top_headlines"
-            android:summary="Choose country"
+            android:summary="%s"
             android:title="Choose country" />
 
         <SwitchPreference
@@ -90,6 +90,7 @@
             android:key="@string/key_default_phrase_top_headlines"
             android:lines="2"
             android:persistent="true"
+            android:summary="%s"
             android:title="Set a search phrase" />
     </PreferenceCategory>
 

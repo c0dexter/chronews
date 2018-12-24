@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +52,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private News news;
     private Toolbar toolbar;
     private Boolean isManualSearch = false;
-    private Call<News> call;
+    private LinearLayout settingsTopHeadlinesNotifier;
 
     @Nullable
     @Override
@@ -83,8 +84,9 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
-        // Show top headlines articles based on Shared Pref settings
+                // Show top headlines articles based on Shared Pref settings
         fetchArticles(null, isManualSearch);
 
         return rootView;
@@ -96,8 +98,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     }
 
     public void fetchArticles(@Nullable String searchedPhrase, @Nullable Boolean isManualSearch) {
-        toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String countryCode;
         String languageCode;
@@ -109,6 +109,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
         Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
         Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
+
+        toolbar.setTitle(UtilityHelper.makeUpperString("top headlines"));
+        setSubTitle(preferredTopHeadlinesCategorySwitch, preferredTopHeadlinesSpecificPhraseSwitch, preferredTopHeadlinesSwitch, preferredCountrySwitch, preferences);
+
 
         if (preferredLanguageSwitch == true) {
             languageCode = preferences.getString("key_language_code", null);
@@ -142,59 +146,75 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             if (preferredTopHeadlinesSpecificPhraseSwitch == true) {
                 // get a search phrase form shared pref and assign value to searched phrase
                 phraseForSearchingTopHeadlines = preferences.getString("key_default_phrase_top_headlines", null);
-                if(isManualSearch == false){
+                if (isManualSearch == false) {
                     searchedPhrase = phraseForSearchingTopHeadlines;
                 }
             } else {
-                searchedPhrase = null;
+                //searchedPhrase = null;
             }
         } else {
             countryCode = null;
+            topHeadlinesCategory = null;
         }
 
-        if(UtilityHelper.isOnline(context)){
-            if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
-                // Use search phrase and display everything what is related to the phrase
-                if(isManualSearch==true){
-                    call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
-                } else if(isManualSearch == false){
+        if(preferredTopHeadlinesSwitch){
+            settingsTopHeadlinesNotifier.setVisibility(View.GONE);
+            if (UtilityHelper.isOnline(context)) {
+                Call<News> call = null;
+                if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
+                    // Use search phrase and display everything what is related to the phrase
+                    if (isManualSearch == true) {
+                        call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
+                    } else if (isManualSearch == false) {
+                        call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
+                    }
+                } else if (isManualSearch == false) {
                     call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
                 }
-            }else if(isManualSearch == false){
-                call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
-            }
 
-            call.enqueue(new Callback<News>() {
-                @Override
-                public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Log.d(TAG, "Response Code: " + response.code());
-                        news = response.body();
-                        adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Fetching data failed! Response code: " + response.code());
+                call.enqueue(new Callback<News>() {
+                    @Override
+                    public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.d(TAG, "Response Code: " + response.code());
+                            news = response.body();
+                            adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
+                            recyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+
+                            if(news.getArticles().size()==0){
+                                Toast.makeText(context, "No result to display for current settings, change your preferences for top-headlines on setting screen.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(context, "Error. Fetching data failed :( Make settings more specific for top-headlines", Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "Fetching data failed! Response code: " + response.code());
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                    call.cancel();
-                    Log.e(TAG, "onFailure: ", t);
-                }
-            });
+                    @Override
+                    public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
+                        call.cancel();
+                        Log.e(TAG, "onFailure: ", t);
+                    }
+                });
+            } else {
+                Toast.makeText(context, "No internet connection, check settings", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(context, "No internet connection, check settings", Toast.LENGTH_SHORT).show();
+            settingsTopHeadlinesNotifier.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -210,8 +230,18 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 isManualSearch = true;
+                Boolean searchInSpecificLanguage = preferences.getBoolean("key_switch_specific_news_language", false);
+                String language = preferences.getString("key_language_code", null);
                 fetchArticles(query, true); // TODO: make switch-case block for selected search type in the Settings
+                toolbar.setTitle("Search results");
+                if (searchInSpecificLanguage) {
+                    toolbar.setSubtitle("for phrase: \"" + query + "\" (" + language.toUpperCase() + ")");
+                } else {
+                    toolbar.setSubtitle("for phrase: " + query);
+                }
+
                 isManualSearch = false;
                 return false;
             }
@@ -258,5 +288,28 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+    }
+
+
+
+    private void setSubTitle(Boolean preferredTopHeadlinesCategorySwitch, Boolean preferredTopHeadlinesSpecificPhraseSwitch, Boolean preferredTopHeadlinesSwitch, Boolean preferredCountrySwitch, SharedPreferences preferences) {
+        if (preferredTopHeadlinesSwitch == true) {
+            String country = preferences.getString("key_country_code_top_headlines", null);
+            String category = preferences.getString("key_top_headlines_category", null);
+            String phrase = preferences.getString("key_default_phrase_top_headlines", null);
+            if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && preferredTopHeadlinesSpecificPhraseSwitch) {
+                if (country != null) {
+                    toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " from " + country.toUpperCase() + " (" + phrase + ")");
+                }
+            } else if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
+                toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " from " + country.toUpperCase());
+            } else if (!preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
+                toolbar.setSubtitle("From " + country.toUpperCase());
+            } else {
+                toolbar.setSubtitle("Improve settings or use a search");
+            }
+        } else {
+            toolbar.setSubtitle("Feature disabled");
+        }
     }
 }

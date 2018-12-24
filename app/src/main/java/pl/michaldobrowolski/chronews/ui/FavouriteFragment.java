@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,8 +47,10 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
+
         toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.toolbar_title_favourites);
+        toolbar.setSubtitle("Stored articles");
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -59,6 +62,9 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         dbArticlesList = getDbArticlesList();
         adapter = new FavouriteListAdapter(FavouriteFragment.this, dbArticlesList, favouriteArticleRepository, context);
         recyclerView.setAdapter(adapter);
+        if (dbArticlesList.size() == 0) {
+            Toast.makeText(context, "You should add to favourite at least one article to see at least one item ;)", Toast.LENGTH_SHORT).show();
+        }
 
         return rootView;
     }
