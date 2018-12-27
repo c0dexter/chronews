@@ -146,7 +146,7 @@
     <string name="no_internet_connection_message">No internet connection, check settings</string>
     <string name="article_saved_message">Article saved</string>
     <string name="default_country_set_category_article_list_message">Top headlines in GB (Default setting)</string>
-    <string name="top_headlines_specific_country_selected_toolbar">Top headlines in </string>
+    <string name="top_headlines_specific_country_selected_toolbar">Top headlines in</string>
     <string name="default_country_code">gb</string>
     <string name="fetching_data_failed_message">Error. Fetching data failed :(</string>
     <string name="empty_favourite_list_message">You have not had favourite articles yet</string>
@@ -163,5 +163,19 @@
     <string name="settings_title">Settings</string>
     <string name="top_headlines_title">top headlines</string>
     <string name="favourite_scrn_subtitle">Stored articles</string>
+    <string name="turn_on_feature">Turn on this feature in the</string>
+    <string name="settings_name">settings</string>
+    <string name="or_use_the">or use the</string>
+    <string name="search">search</string>
+    <string name="on_the_top">on the top</string>
+    <string name="image_turned_off_feature_desc">The image to inform user about turned off a feature</string>
+    <string name="search_icon_in_message_desc">The image of search icon which user should use for searching articles</string>
+    <string name="the_image_which_is_displaying_when_internet_connection_is_missing">The_image_which_is_displaying_when_internet_connection_is_missing</string>
+    <string name="sear_result_name">Search results</string>
+    <string name="search_for_phrase_part_name">for phrase: "</string>
+    <string name="subtitle_part_name_from">from</string>
+    <string name="subtile_name_start_name_from">From</string>
+    <string name="fab_content_desc">Add or remove favourite article from database</string>
+    <string name="widget_chronews_logo_desc">Chronews logo</string>
 
 </resources>

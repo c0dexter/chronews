@@ -130,7 +130,6 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         } else {
             Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override

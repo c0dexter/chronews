@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_login_root_constraint_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +23,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_activity_logo_img"
-        app:srcCompat="@drawable/no_internet_connection" />
+        app:srcCompat="@drawable/no_internet_connection"
+        android:contentDescription="@string/the_image_which_is_displaying_when_internet_connection_is_missing" />
 
     <ImageView
         android:id="@+id/login_activity_logo_img"

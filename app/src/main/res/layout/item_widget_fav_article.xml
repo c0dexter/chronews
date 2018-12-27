@@ -32,6 +32,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/item_widget_fav_article_main_linear_layout_for_article_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
@@ -51,6 +52,7 @@
             tools:text="Bitcoin Price Intraday Analysis: BTC/USD Retests Interim Resistance" />
 
         <LinearLayout
+            android:id="@+id/item_widget_linear_layout_publication_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -86,6 +88,7 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/image_view_arrow_right"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="4dp"

@@ -38,7 +38,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/no_internet_connection"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="@string/the_image_which_is_displaying_when_internet_connection_is_missing" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

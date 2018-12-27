@@ -85,8 +85,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
-
-                // Show top headlines articles based on Shared Pref settings
+        // Show top headlines articles based on Shared Pref settings
         fetchArticles(null, isManualSearch);
 
         return rootView;
@@ -156,50 +155,50 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             settingsTopHeadlinesNotifier.setVisibility(View.VISIBLE);
         }
 
-            if (UtilityHelper.isOnline(context)) {
-                Call<News> call = null;
-                if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
-                    // Use search phrase and display everything what is related to the phrase
-                    if (isManualSearch) {
-                        call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
-                        settingsTopHeadlinesNotifier.setVisibility(View.GONE);
-                    } else {
-                        call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
-                    }
-                } else if (!isManualSearch) {
+        if (UtilityHelper.isOnline(context)) {
+            Call<News> call = null;
+            if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
+                // Use search phrase and display everything what is related to the phrase
+                if (isManualSearch) {
+                    call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
+                    settingsTopHeadlinesNotifier.setVisibility(View.GONE);
+                } else {
                     call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
                 }
-
-                if(isManualSearch || preferredTopHeadlinesSwitch){
-                    if (call != null) {
-                        call.enqueue(new Callback<News>() {
-                            @Override
-                            public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    news = response.body();
-                                    adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
-                                    recyclerView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                    if(news.getArticles().size()==0){
-                                        Toast.makeText(context, R.string.top_headlines_no_results_extend_search_criteria, Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    Toast.makeText(context, R.string.fetching_data_failed_change_settings, Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                                call.cancel();
-                            }
-                        });
-                    }
-                }
-
-            } else {
-                Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
+            } else if (!isManualSearch) {
+                call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
             }
+
+            if (isManualSearch || preferredTopHeadlinesSwitch) {
+                if (call != null) {
+                    call.enqueue(new Callback<News>() {
+                        @Override
+                        public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                news = response.body();
+                                adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
+                                recyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                                if (news.getArticles().size() == 0) {
+                                    Toast.makeText(context, R.string.top_headlines_no_results_extend_search_criteria, Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, R.string.fetching_data_failed_change_settings, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
+                            call.cancel();
+                        }
+                    });
+                }
+            }
+
+        } else {
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
         }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -215,7 +214,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Menu menu1 = menu;
+        // Menu menu1 = menu;
         inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -235,13 +234,13 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 Boolean searchInSpecificLanguage = preferences.getBoolean("key_switch_specific_news_language", false);
                 String language = preferences.getString("key_language_code", null);
                 fetchArticles(query, true);
-                toolbar.setTitle("Search results");
+                toolbar.setTitle(R.string.sear_result_name);
                 if (searchInSpecificLanguage) {
                     if (language != null) {
-                        toolbar.setSubtitle("for phrase: \"" + query + "\" (" + language.toUpperCase() + ")");
+                        toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + " " + query + "\" (" + language.toUpperCase() + ")");
                     }
                 } else {
-                    toolbar.setSubtitle("for phrase: " + query);
+                    toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + query);
                 }
 
                 isManualSearch = false;
@@ -297,8 +296,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     }
 
-
-
     private void setSubTitle(Boolean preferredTopHeadlinesCategorySwitch, Boolean preferredTopHeadlinesSpecificPhraseSwitch, Boolean preferredTopHeadlinesSwitch, Boolean preferredCountrySwitch, SharedPreferences preferences) {
         if (preferredTopHeadlinesSwitch) {
             String country = preferences.getString("key_country_code_top_headlines", null);
@@ -307,18 +304,18 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (country != null) {
                     if (category != null) {
-                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " from " + country.toUpperCase() + " (" + phrase + ")");
+                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase() + " (" + phrase + ")");
                     }
                 }
             } else if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (category != null) {
                     if (country != null) {
-                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " from " + country.toUpperCase());
+                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase());
                     }
                 }
             } else if (!preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (country != null) {
-                    toolbar.setSubtitle("From " + country.toUpperCase());
+                    toolbar.setSubtitle(getString(R.string.subtile_name_start_name_from) + " " + country.toUpperCase());
                 }
             } else {
                 toolbar.setSubtitle(R.string.subtitle_search_hint_message);

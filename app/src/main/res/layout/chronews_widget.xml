@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/app_widget_root_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/widget_margin"
@@ -11,8 +12,8 @@
         android:layout_height="wrap_content"
         android:background="#E6FFFFFF"
         android:orientation="horizontal"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp">
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
 
         <ImageView
             android:id="@+id/app_widget_image_launcher_logo"
@@ -53,6 +54,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/app_widget_header_divider_text_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#aab" />

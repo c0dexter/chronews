@@ -14,9 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/NewsTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".ui.GoogleSignInActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".ui.GoogleSignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,13 +22,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.MainActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".ui.MainActivity" />
 
-        <activity
-            android:name=".ui.SharedPreferences.SettingsActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".ui.SharedPreferences.SettingsActivity" />
 
         <receiver android:name=".widget.ChronewsWidgetProvider">
             <intent-filter>

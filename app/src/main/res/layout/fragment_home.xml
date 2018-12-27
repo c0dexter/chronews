@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_home_root_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,9 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_margin="@dimen/text_margin"
+            android:contentDescription="@string/image_turned_off_feature_desc"
             android:scaleType="centerCrop"
-            android:src="@drawable/power_on_image"
-            android:layout_margin="@dimen/text_margin"/>
+            android:src="@drawable/power_on_image" />
 
         <LinearLayout
             android:id="@+id/firstLineTextNotifierContainer"
@@ -35,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:text="Turn on this feature in the "
+                android:text="@string/turn_on_feature"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -45,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:text="settings"
+                android:text="@string/settings_name"
                 android:textColor="@color/customColorAccent"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -58,45 +60,52 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/second_line_notifier_part_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:text="or use the "
+                android:text="@string/or_use_the"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/second_line_notifier_part_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:text=" search "
+                android:text="@string/search"
                 android:textColor="@color/customColorAccent"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/second_line_notifier_part_three"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:text="on the top"
+                android:text="@string/on_the_top"
                 android:textSize="16sp"
                 android:textStyle="normal" />
+
             <ImageView
+                android:id="@+id/home_fragment_image_turn_on"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/search_icon_in_message_desc"
                 android:src="@android:drawable/ic_menu_search"
-                android:tint="@color/customColorSecondaryText"/>
+                android:tint="@color/customColorSecondaryText" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/fragment_home_main_linear_layout_for_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
@@ -111,7 +120,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="?android:attr/searchViewStyle" />
-
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
