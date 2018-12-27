@@ -6,7 +6,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import pl.michaldobrowolski.chronews.R;
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         loadFragment(new HomeFragment());
-        Log.d(TAG, "A default HomeFragment has been loaded successfully!");
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -45,16 +43,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 fragment = new HomeFragment();
-                Log.d(TAG, "Bottom Menu clicked: HomeFragment created!");
                 break;
             case R.id.navigation_categories:
                 fragment = new CategoryBoardFragment();
-                Log.d(TAG, "Bottom Menu clicked: CategoryBoardFragment created!");
                 break;
 
             case R.id.navigation_favourites:
                 fragment = new FavouriteFragment();
-                Log.d(TAG, "Bottom Menu clicked: FavouritesFragment created!");
                 break;
         }
         return loadFragment(fragment);

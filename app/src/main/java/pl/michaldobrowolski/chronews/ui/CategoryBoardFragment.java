@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -34,7 +33,7 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_categories_board, null);
+        View rootView = View.inflate(getActivity(), R.layout.fragment_categories_board, null);
         context = getActivity();
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).hide();
@@ -87,7 +86,5 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
                 .replace(R.id.fragment_container, categoryArticleListFragment)
                 .addToBackStack(null)
                 .commit();
-
-        Toast.makeText(context, "Selected \"" + category.getCategoryName().toUpperCase() + "\" category", Toast.LENGTH_SHORT).show();
     }
 }

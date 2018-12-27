@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class ArticleDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_article_detail, null);
+        View rootView = View.inflate(getActivity(),R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
@@ -103,7 +102,7 @@ public class ArticleDetailFragment extends Fragment {
                     articleStored = true;
                     setFabButtonLook();
                     UtilityHelper.updateWidget(getContext()); // Update widgets
-                    Toast.makeText(getContext(), "Article has been saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.article_saved_message, Toast.LENGTH_SHORT).show();
                     Bundle bundle = new Bundle();
                     bundle.putString("article_title", articleTitle);
                     Analytics.get(getContext()).logEvent("article_added_to_favourite", bundle);
@@ -116,7 +115,7 @@ public class ArticleDetailFragment extends Fragment {
                     articleStored = false;
                     setFabButtonLook();
                     UtilityHelper.updateWidget(getContext()); // Update widgets
-                    Toast.makeText(getContext(), "Article removed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.article_removed_message, Toast.LENGTH_SHORT).show();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -133,7 +132,7 @@ public class ArticleDetailFragment extends Fragment {
     }
 
     private void populateViews(Article article) {
-        if (article.getUrl() != null) {
+        if (article.getUrlToImage() != null && !String.valueOf(article.getUrlToImage()).equals("")) {
             Picasso.get()
                     .load(article.getUrlToImage())
                     .into(ivArticleImage);
@@ -150,12 +149,10 @@ public class ArticleDetailFragment extends Fragment {
 
         if (article.getContent() != null) {
             tvArticleDetailText.setText(UtilityHelper.removeRedundantCharactersFromText(article.getContent()));
-            Log.d(TAG, "ARTICLE CONTENT: " + article.getContent());
         } else {
             tvArticleDetailText.setText(article.getDescription());
         }
         tvArticleDetailTitle.setText(article.getTitle());
-        Log.d(TAG, article.getContent() + " " + article.getAuthor());
     }
 
     @Override

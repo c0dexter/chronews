@@ -18,8 +18,8 @@ import android.view.ViewGroup;
 import pl.michaldobrowolski.chronews.R;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
-
     private static final String TAG = SettingsActivity.class.getSimpleName();
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Up button
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Settings");
+            actionBar.setTitle(R.string.settings_title);
         }
     }
 

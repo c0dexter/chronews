@@ -10,9 +10,9 @@ import java.util.concurrent.ExecutionException;
 public class FavouriteArticleRepository {
 
     private static AppDatabase appDatabase;
-    private String DB_NAME = "db_article";
 
     public FavouriteArticleRepository(Context context) {
+        String DB_NAME = "db_article";
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, DB_NAME).build();
     }
 
@@ -41,10 +41,6 @@ public class FavouriteArticleRepository {
 
     public List<ArticleEntity> getAllArticles() throws ExecutionException, InterruptedException {
         return new GetAllArticlesAsyncTask().execute().get();
-    }
-
-    public ArticleEntity getArticleByUrl(String articleUrl) throws ExecutionException, InterruptedException {
-        return new GetArticleByUrlAsyncTask().execute(articleUrl).get();
     }
 
     public void deleteArticle(
@@ -91,20 +87,7 @@ public class FavouriteArticleRepository {
         }
     }
 
-    private static class GetArticleByUrlAsyncTask extends AsyncTask<String, Void, ArticleEntity> {
-        @Override
-        protected ArticleEntity doInBackground(String... strings) {
-            return appDatabase.myDao().getArticle(strings[0]);
-        }
-    }
-
     private static class DeleteArticleAsyncTask extends AsyncTask<String, Void, Void> {
-//        @Override
-//        protected Void doInBackground(ArticleEntity... articleEntities) {
-//            appDatabase.myDao().deleteArticleByUrl(articleEntities[0].getUrl());
-//            return null;
-//        }
-
         @Override
         protected Void doInBackground(String... strings) {
             appDatabase.myDao().deleteArticleByUrl(strings[0]);

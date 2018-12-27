@@ -7,9 +7,8 @@ public class ChronewsWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        ChronewsWidgetDataProvider dataProvider = new ChronewsWidgetDataProvider(
+        return new ChronewsWidgetDataProvider(
                 getApplicationContext(), intent);
-        return dataProvider;
     }
 
 

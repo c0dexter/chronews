@@ -63,7 +63,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         adapter = new FavouriteListAdapter(FavouriteFragment.this, dbArticlesList, favouriteArticleRepository, context);
         recyclerView.setAdapter(adapter);
         if (dbArticlesList.size() == 0) {
-            Toast.makeText(context, "You should add to favourite at least one article to see at least one item ;)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.empty_favourite_list_message, Toast.LENGTH_SHORT).show();
         }
 
         return rootView;

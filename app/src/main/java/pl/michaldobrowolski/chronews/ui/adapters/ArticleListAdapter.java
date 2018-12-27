@@ -3,7 +3,6 @@ package pl.michaldobrowolski.chronews.ui.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +107,6 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     @Override
     public int getItemCount() {
-        Log.i(TAG, "Item count: " + String.valueOf(articleList.size()));
         return articleList.size();
     }
 

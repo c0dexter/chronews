@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
     private static void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
         views.setRemoteAdapter(0, R.id.widgetCollectionList,
                 new Intent(context, ChronewsWidgetService.class));
+        Log.i("trt", "dfs");
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
 
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(context.getApplicationContext(),
-                        "There was a problem loading the application",
+                        R.string.widget_error_login_app_message,
                         Toast.LENGTH_SHORT).show();
             }
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -83,12 +85,10 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // functionality when the first instance of widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
-        // functionality when the last instance of widget is created
     }
 
 

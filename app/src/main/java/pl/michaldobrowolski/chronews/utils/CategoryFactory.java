@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.michaldobrowolski.chronews.BuildConfig;
+import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.CategoryBoardFragment;
@@ -26,6 +26,7 @@ public class CategoryFactory {
     private ApiInterface apiInterface;
     private News news;
     private String urlToThumbnail;
+    private boolean atLeastOneCategorySelected = false;
 
     public CategoryFactory(Context context, ApiInterface apiInterface) {
         this.context = context;
@@ -38,46 +39,51 @@ public class CategoryFactory {
 
 
     public void createCategories() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (NewsApiUtils.Category.values().length >= 0) {
-            for (final NewsApiUtils.Category category : NewsApiUtils.Category.values()) {
-                Boolean categorySelected = preferences.getBoolean("key_category_" + category.getCategory(), true);
-                Call<News> call;
-                if (categorySelected) {
-                    call = apiInterface.topHeadlines(null, category.getCategory(), null, 20, null, API_KEY);
-                    call.enqueue(new Callback<News>() {
-                        @Override
-                        public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                int newsIndex = 0;
-                                news = response.body();
-                                Log.d(TAG, "NEWS RESPONSE BODY: " + news);
-                                urlToThumbnail = news.getArticles().get(newsIndex).getUrlToImage();
-
-                                while ((urlToThumbnail == null || news.getArticles().get(newsIndex).getUrlToImage().equals("")) && newsIndex < 20) {
-                                    newsIndex++;
+        if (UtilityHelper.isOnline(context)) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (NewsApiUtils.Category.values().length > 0) {
+                for (final NewsApiUtils.Category category : NewsApiUtils.Category.values()) {
+                    Boolean categorySelected = preferences.getBoolean("key_category_" + category.getCategory(), true);
+                    if (categorySelected) {
+                        atLeastOneCategorySelected = true;
+                    }
+                    Call<News> call;
+                    if (categorySelected) {
+                        call = apiInterface.topHeadlines(null, category.getCategory(), null, 20, null, API_KEY);
+                        call.enqueue(new Callback<News>() {
+                            @Override
+                            public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    int newsIndex = 0;
+                                    news = response.body();
                                     urlToThumbnail = news.getArticles().get(newsIndex).getUrlToImage();
+
+                                    while ((urlToThumbnail == null || news.getArticles().get(newsIndex).getUrlToImage().equals("")) && newsIndex < 20) {
+                                        newsIndex++;
+                                        urlToThumbnail = news.getArticles().get(newsIndex).getUrlToImage();
+                                    }
+                                    categoryObjectList.add(new Category(category.getCategory(), urlToThumbnail));
+                                    CategoryBoardFragment.adapter.notifyDataSetChanged();
+
+                                } else {
+                                    Toast.makeText(context, R.string.fetching_data_failed_message, Toast.LENGTH_SHORT).show();
                                 }
-                                categoryObjectList.add(new Category(category.getCategory(), urlToThumbnail));
-                                CategoryBoardFragment.adapter.notifyDataSetChanged();
-
-                            } else {
-                                Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "Fetching data failed! Response code: " + response.code());
                             }
-                        }
 
-                        @Override
-                        public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                            call.cancel();
-                            Log.e(TAG, "onFailure: ", t);
-                        }
-                    });
-                    Log.d(TAG, "URL to IMAGE: " + urlToThumbnail);
+                            @Override
+                            public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
+                                call.cancel();
+                            }
+                        });
+                    }
                 }
             }
+            if (!atLeastOneCategorySelected) {
+                Toast.makeText(context, R.string.no_categories_set_message, Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(context, "No categories defined", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
         }
+
     }
 }

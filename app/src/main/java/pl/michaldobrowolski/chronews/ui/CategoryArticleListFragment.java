@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,16 +82,16 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
             Boolean showArticlesForSpecificCountry = preferences.getBoolean("key_switch_language_category_board", false);
             String country = preferences.getString("key_country_code_categories_board", "gb");
             toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
-            if(showArticlesForSpecificCountry){
-                toolbar.setSubtitle("Top headlines in " + country.toUpperCase());
+            if (showArticlesForSpecificCountry) {
+                toolbar.setSubtitle(getString(R.string.top_headlines_specific_country_selected_toolbar) + " " + country.toUpperCase());
             } else {
-                toolbar.setSubtitle("Top headlines in GB (Default setting)");
+                toolbar.setSubtitle(R.string.default_country_set_category_article_list_message);
             }
 
             if (UtilityHelper.isOnline(context)) {
                 fetchArticles(category.getCategoryName());
             } else {
-                Toast.makeText(activity, "No internet connection! Check your settings.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity,  R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
             }
         }
         return rootView;
@@ -102,35 +101,37 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean preferredCountryCategorySwitch = preferences.getBoolean("key_switch_language_category_board", false);
         String preferredCountryCode = preferences.getString("key_country_code_categories_board", null);
-        if(preferredCountryCategorySwitch == true){
+        if (preferredCountryCategorySwitch) {
             countryCode = preferredCountryCode;
         } else {
-            countryCode = "gb";
+            countryCode = getString(R.string.default_country_code);
         }
 
-        Call<News> call;
-        call = apiInterface.topHeadlines(countryCode, category, null, null, null, API_KEY);
-        call.enqueue(new Callback<News>() {
-            @Override
-            public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "Response Code: " + response.code());
-                    news = response.body();
-                    adapter = new ArticleListAdapter(news.getArticles(), context, CategoryArticleListFragment.this);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(context, "Error. Fetching data failed :(", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Fetching data failed! Response code: " + response.code());
+        if ((UtilityHelper.isOnline(context))) {
+            Call<News> call;
+            call = apiInterface.topHeadlines(countryCode, category, null, null, null, API_KEY);
+            call.enqueue(new Callback<News>() {
+                @Override
+                public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        news = response.body();
+                        adapter = new ArticleListAdapter(news.getArticles(), context, CategoryArticleListFragment.this);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast. makeText(context, R.string.fetching_data_failed_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                call.cancel();
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
+                    call.cancel();
+                }
+            });
+        } else {
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -152,7 +153,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetchArticles(query); // TODO: make switch-case block for selected search type in the Settings
+                fetchArticles(query);
                 return false;
             }
 

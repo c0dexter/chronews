@@ -143,6 +143,25 @@
     <string name="key_switch_country_top_headlines">key_switch_country_top_headlines</string>
     <string name="key_switch_country_of_category_board">key_switch_country_of_category_board</string>
     <string name="key_country_code_categories_board">key_country_code_categories_board</string>
+    <string name="no_internet_connection_message">No internet connection, check settings</string>
+    <string name="article_saved_message">Article has been saved</string>
+    <string name="default_country_set_category_article_list_message">Top headlines in GB (Default setting)</string>
+    <string name="top_headlines_specific_country_selected_toolbar">Top headlines in </string>
+    <string name="default_country_code">gb</string>
+    <string name="fetching_data_failed_message">Error. Fetching data failed :(</string>
+    <string name="empty_favourite_list_message">You have not had favourite articles yet</string>
+    <string name="google_sign_in_fail_message">Google sign in failed</string>
+    <string name="authentication_fail_message">Authentication failed.</string>
+    <string name="top_headlines_no_results_extend_search_criteria">No result to display for current settings, try extend the search criteria for top-headlines</string>
+    <string name="fetching_data_failed_change_settings">Fetching data failed :( Try to change settings for top-headlines</string>
+    <string name="log_out_message">Logged out!</string>
+    <string name="subtitle_search_hint_message">Improve settings or use a search</string>
+    <string name="subtitle_feature_disabled">Feature disabled</string>
+    <string name="article_removed_message">Article removed</string>
+    <string name="no_categories_set_message">No category defined. Change settings to use this feature</string>
+    <string name="widget_error_login_app_message">There was a problem loading the application</string>
+    <string name="settings_title">Settings</string>
+    <string name="top_headlines_title">top headlines</string>
 
     <!-- Strings related to Settings -->
 

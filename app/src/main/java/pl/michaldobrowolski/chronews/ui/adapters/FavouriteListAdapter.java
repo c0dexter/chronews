@@ -3,7 +3,6 @@ package pl.michaldobrowolski.chronews.ui.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +99,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
     @Override
     public int getItemCount() {
-        Log.i(TAG, "Stored articles count: " + String.valueOf(dbArticlesList.size()));
         return dbArticlesList.size();
     }
 
@@ -130,30 +128,26 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-            btnRemoveFavArticle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    String articleUrl = dbArticlesList.get(position).getUrl();
-                    try {
-                        favouriteArticleRepository.deleteArticle(articleUrl);
-                        dbArticlesList = favouriteArticleRepository.getAllArticles(); // Remember this!!!
-                        notifyDataSetChanged();
-                        // Update widgets
-                        UtilityHelper.updateWidget(context);
-                        if(toast !=  null){
-                            toast.cancel();
-                        }
-                        Toast.makeText(context, "Article removed", Toast.LENGTH_SHORT).show();
-
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
+            btnRemoveFavArticle.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                String articleUrl = dbArticlesList.get(position).getUrl();
+                try {
+                    favouriteArticleRepository.deleteArticle(articleUrl);
+                    dbArticlesList = favouriteArticleRepository.getAllArticles(); // Remember this!!!
+                    notifyDataSetChanged();
+                    // Update widgets
+                    UtilityHelper.updateWidget(context);
+                    if(toast !=  null){
+                        toast.cancel();
                     }
+                    Toast.makeText(context, R.string.article_removed_message, Toast.LENGTH_SHORT).show();
+
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
                 }
             });
 
             this.onItemClickListener = onItemClickListener;
-
         }
 
         @Override

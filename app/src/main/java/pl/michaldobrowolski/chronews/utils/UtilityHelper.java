@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -94,6 +95,7 @@ public final class UtilityHelper {
 
     /**
      * Check which format of date should be used for given data
+     *
      * @param dataTimeFromApi is a data source
      * @return String with a proper format
      */
@@ -104,7 +106,7 @@ public final class UtilityHelper {
                 "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy HH:mm:ss",
                 "MM/dd/yyyy'T'HH:mm:ss.SSS'Z'", "MM/dd/yyyy'T'HH:mm:ss.SSS",
                 "MM/dd/yyyy'T'HH:mm:ss.SSSZ", "MM/dd/yyyy'T'HH:mm:ss", "MM/dd/yyyy'T'HH:mm:ssZ",
-                "yyyy:MM:dd HH:mm:ss", "yyyyMMdd", "yyyy-MM-dd" , "yyyy-MM-dd HH:mm",
+                "yyyy:MM:dd HH:mm:ss", "yyyyMMdd", "yyyy-MM-dd", "yyyy-MM-dd HH:mm",
                 "yyyy-MM-dd HH:mmZ", "yyyy-MM-dd HH:mm:ss.SSSZ"};
 
         if (dataTimeFromApi != null) {
@@ -115,6 +117,7 @@ public final class UtilityHelper {
                     return pattern;
 
                 } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -128,10 +131,14 @@ public final class UtilityHelper {
      * @param article  - object article
      */
     public static void openArticleInBrowser(Context context, Article article) {
-        String url = article.getUrl();
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        context.startActivity(i);
+        if (isOnline(context)) {
+            String url = article.getUrl();
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            context.startActivity(i);
+        } else {
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -153,13 +160,18 @@ public final class UtilityHelper {
 
     /**
      * Check if an Internet connection exist
+     *
      * @param context of called activity
      * @return true if internet connection exist
      */
     public static boolean isOnline(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        NetworkInfo netInfo = null;
+        if (cm != null) {
+            netInfo = cm.getActiveNetworkInfo();
+        }
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
 }

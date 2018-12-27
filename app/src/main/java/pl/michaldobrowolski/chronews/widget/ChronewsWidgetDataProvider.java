@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -23,12 +22,12 @@ import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteViewsFactory {
 
     private List<ArticleEntity> dbArticlesList;
-    private Context context = null;
+    private Context context;
     private FavouriteArticleRepository favouriteArticleRepository;
     private ArticleEntity articleEntity;
 
 
-    public ChronewsWidgetDataProvider(Context context, Intent intent) {
+    ChronewsWidgetDataProvider(Context context, Intent intent) {
         this.context = context;
     }
 
@@ -69,19 +68,14 @@ public class ChronewsWidgetDataProvider implements RemoteViewsService.RemoteView
                 e.printStackTrace();
             }
             remoteViews.setViewVisibility(R.id.progress_bar_widget_fav_article_image, View.GONE);
+        } else {
+            remoteViews.setImageViewResource(R.id.image_widget_fav_article_thumb, R.drawable.default_news_photo);
+            remoteViews.setViewVisibility(R.id.progress_bar_widget_fav_article_image, View.GONE);
         }
 
         Intent intent = new Intent();
         intent.setData(Uri.parse(dbArticlesList.get(position).getUrl()));
         remoteViews.setOnClickFillInIntent(R.id.widget_fav_article_item, intent);
-
-        /*String articleUrl = dbArticlesList.get(position).getUrl();
-        final Intent intent = new Intent();
-        final Bundle extra = new Bundle();
-        extra.putString("articleUrl", articleUrl);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(extra);
-        remoteViews.setOnClickFillInIntent(R.id.image_widget_fav_article_thumb, intent);*/
 
         return remoteViews;
     }
