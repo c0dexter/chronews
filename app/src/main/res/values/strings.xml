@@ -144,7 +144,7 @@
     <string name="key_switch_country_of_category_board">key_switch_country_of_category_board</string>
     <string name="key_country_code_categories_board">key_country_code_categories_board</string>
     <string name="no_internet_connection_message">No internet connection, check settings</string>
-    <string name="article_saved_message">Article has been saved</string>
+    <string name="article_saved_message">Article saved</string>
     <string name="default_country_set_category_article_list_message">Top headlines in GB (Default setting)</string>
     <string name="top_headlines_specific_country_selected_toolbar">Top headlines in </string>
     <string name="default_country_code">gb</string>
@@ -162,7 +162,5 @@
     <string name="widget_error_login_app_message">There was a problem loading the application</string>
     <string name="settings_title">Settings</string>
     <string name="top_headlines_title">top headlines</string>
-
-    <!-- Strings related to Settings -->
 
 </resources>

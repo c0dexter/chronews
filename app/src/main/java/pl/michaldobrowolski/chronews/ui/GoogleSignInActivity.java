@@ -36,7 +36,6 @@ public class GoogleSignInActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient mGoogleSignInClient;
-    private SignInButton signInButton;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private ProgressBar loginProgressBar;
     private ImageView noInternetConnection;
@@ -76,7 +75,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         makeStatusBarTransparent();
 
-        signInButton = findViewById(R.id.login_activity_google_login_btn);
+        SignInButton signInButton = findViewById(R.id.login_activity_google_login_btn);
         loginProgressBar = findViewById(R.id.login_progress_bar);
         noInternetConnection = findViewById(R.id.no_internet_dino_img);
         firebaseAuth = FirebaseAuth.getInstance();

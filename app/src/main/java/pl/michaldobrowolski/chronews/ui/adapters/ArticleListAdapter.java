@@ -28,7 +28,6 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private final OnItemClickListener onItemClickListener;
     private List<Article> articleList;
     private Context context;
-    private DynamicHeightImage dynamicHeightImage;
 
     public ArticleListAdapter(List<Article> articleList, Context context, OnItemClickListener onItemClickListener) {
         this.articleList = articleList;
@@ -41,7 +40,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_article, parent, false);
 
-        dynamicHeightImage = new DynamicHeightImage(context);
+        DynamicHeightImage dynamicHeightImage = new DynamicHeightImage(context);
         dynamicHeightImage.setUserAspectRatio((float) 1.5);
         view.setFocusable(true);
         return new ViewHolder(view, onItemClickListener);

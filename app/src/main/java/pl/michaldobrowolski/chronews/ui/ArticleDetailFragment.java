@@ -47,8 +47,13 @@ public class ArticleDetailFragment extends Fragment {
     private Article article;
     private FavouriteArticleRepository favouriteArticleRepository;
     private boolean articleStored;
-    private String articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent;
-    private ChronewsWidgetProvider chronewsWidgetProvider;
+    private String articleTitle;
+    private String articlePublishedDate;
+    private String articleSource;
+    private String articleAuthor;
+    private String articleDesc;
+    private String articleImageUrl;
+    private String articleContent;
 
     @Nullable
     @Override
@@ -58,7 +63,7 @@ public class ArticleDetailFragment extends Fragment {
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());
-        chronewsWidgetProvider = new ChronewsWidgetProvider();
+        ChronewsWidgetProvider chronewsWidgetProvider = new ChronewsWidgetProvider();
 
         return rootView;
     }
@@ -77,7 +82,7 @@ public class ArticleDetailFragment extends Fragment {
         if (article.getSource() != null) {
             articleSource = article.getSource().getName();
         }
-        articleUrl = article.getUrl();
+        String articleUrl = article.getUrl();
         articleAuthor = article.getAuthor();
         articleDesc = article.getDescription();
         articleImageUrl = article.getUrlToImage();

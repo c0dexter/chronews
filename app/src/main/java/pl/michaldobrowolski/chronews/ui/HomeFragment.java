@@ -85,6 +85,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
+
                 // Show top headlines articles based on Shared Pref settings
         fetchArticles(null, isManualSearch);
 
@@ -214,6 +215,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Menu menu1 = menu;
         inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -225,11 +227,14 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.setIconified(true);
+                searchView.clearFocus();
+
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 isManualSearch = true;
                 Boolean searchInSpecificLanguage = preferences.getBoolean("key_switch_specific_news_language", false);
                 String language = preferences.getString("key_language_code", null);
-                fetchArticles(query, true); // TODO: make switch-case block for selected search type in the Settings
+                fetchArticles(query, true);
                 toolbar.setTitle("Search results");
                 if (searchInSpecificLanguage) {
                     if (language != null) {
@@ -240,6 +245,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 }
 
                 isManualSearch = false;
+                // collapse the action view
+                if (menu != null) {
+                    (menu.findItem(R.id.action_bar_search)).collapseActionView();
+                    searchView.onActionViewCollapsed();
+                }
                 return false;
             }
 

@@ -28,7 +28,7 @@ public class Source implements Parcelable {
     private String name;
 
     protected Source(Parcel in) {
-        this.id = ((Object) in.readValue((Object.class.getClassLoader())));
+        this.id = in.readValue((Object.class.getClassLoader()));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
     }
 
