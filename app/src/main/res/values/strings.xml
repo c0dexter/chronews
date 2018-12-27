@@ -162,5 +162,6 @@
     <string name="widget_error_login_app_message">There was a problem loading the application</string>
     <string name="settings_title">Settings</string>
     <string name="top_headlines_title">top headlines</string>
+    <string name="favourite_scrn_subtitle">Stored articles</string>
 
 </resources>

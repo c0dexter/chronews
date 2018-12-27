@@ -50,7 +50,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
 
         toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.toolbar_title_favourites);
-        toolbar.setSubtitle("Stored articles");
+        toolbar.setSubtitle(R.string.favourite_scrn_subtitle);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 

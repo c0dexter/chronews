@@ -1,7 +1,5 @@
 package pl.michaldobrowolski.chronews.api.service;
 
-import android.util.Log;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -19,13 +17,10 @@ public class ApiClient {
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(BASE_API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-
-        Log.d(TAG, "Retrofit client has been built successfully.");
-        return retrofit;
     }
 }
