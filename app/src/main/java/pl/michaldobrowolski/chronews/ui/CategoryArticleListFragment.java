@@ -46,9 +46,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
     private RecyclerView.Adapter adapter;
     private News news;
     private Category category;
-    private String countryCode;
     private SharedPreferences preferences;
-    private Toolbar toolbar;
 
     @Nullable
     @Override
@@ -61,7 +59,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
 
-        toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
+        Toolbar toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -79,7 +77,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
 
         if (category != null) {
             preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            Boolean showArticlesForSpecificCountry = preferences.getBoolean("key_switch_language_category_board", false);
+            Boolean showArticlesForSpecificCountry = preferences.getBoolean("key_switch_country_of_category_board", false);
             String country = preferences.getString("key_country_code_categories_board", "gb");
             toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
             if (showArticlesForSpecificCountry) {
@@ -99,8 +97,9 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
 
     private void fetchArticles(final String category) {
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Boolean preferredCountryCategorySwitch = preferences.getBoolean("key_switch_language_category_board", false);
+        Boolean preferredCountryCategorySwitch = preferences.getBoolean("key_switch_country_of_category_board", false);
         String preferredCountryCode = preferences.getString("key_country_code_categories_board", null);
+        String countryCode;
         if (preferredCountryCategorySwitch) {
             countryCode = preferredCountryCode;
         } else {
