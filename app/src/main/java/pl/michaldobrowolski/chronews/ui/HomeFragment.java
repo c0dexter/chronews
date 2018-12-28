@@ -44,6 +44,7 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
     private static final String API_KEY = BuildConfig.ApiKey;
+    private static final String SEARCH_PHRASE_KEY = "search_key";
     private Context context;
     private RecyclerView recyclerView;
     private ApiInterface apiInterface;
@@ -52,6 +53,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private Toolbar toolbar;
     private Boolean isManualSearch = false;
     private LinearLayout settingsTopHeadlinesNotifier;
+    private String searchText;
+    private SearchView searchView;
 
     @Nullable
     @Override
@@ -63,6 +66,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
+
+        if (savedInstanceState != null) {
+            searchText = savedInstanceState.getString(SEARCH_PHRASE_KEY);
+        }
+
         toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.app_name);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -213,16 +221,26 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Menu menu1 = menu;
         inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_action_bar, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
-        MenuItem menuItem = menu.findItem(R.id.action_bar_search);
 
-        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
-        searchView.setQueryHint(getString(R.string.search_news_hint));
+        MenuItem menuItem = menu.findItem(R.id.action_bar_search);
+        searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
+
+        //focus the SearchView
+        if (searchText != null && !searchText.isEmpty()) {
+            menuItem.expandActionView();
+            searchView.onActionViewExpanded();
+            searchView.setQuery(searchText, true);
+            searchView.clearFocus();
+        } else{
+            searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
+            searchView.setQueryHint(getString(R.string.search_news_hint));
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.setIconified(true);
@@ -244,10 +262,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
                 isManualSearch = false;
                 // collapse the action view
-                if (menu != null) {
-                    (menu.findItem(R.id.action_bar_search)).collapseActionView();
-                    searchView.onActionViewCollapsed();
-                }
+                (menu.findItem(R.id.action_bar_search)).collapseActionView();
+                searchView.onActionViewCollapsed();
                 return false;
             }
 
@@ -327,5 +343,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        searchText = searchView.getQuery().toString();
+        outState.putString(SEARCH_PHRASE_KEY, searchText);
     }
 }
