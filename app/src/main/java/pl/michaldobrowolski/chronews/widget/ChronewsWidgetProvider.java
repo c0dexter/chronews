@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -29,11 +28,7 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
         PendingIntent template = PendingIntent.getActivity(context, 0, intent, 0);
         views.setPendingIntentTemplate(R.id.widgetCollectionList, template);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            setRemoteAdapter(context, views);
-        } else {
-            setRemoteAdapterV11(context, views);
-        }
+        setRemoteAdapter(context, views);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -48,17 +43,6 @@ public class ChronewsWidgetProvider extends AppWidgetProvider {
                 new Intent(context, ChronewsWidgetService.class));
     }
 
-    /**
-     * Sets the remote adapter used to fill in the list items
-     *
-     * @param views RemoteViews to set the RemoteAdapter
-     */
-    @SuppressWarnings("deprecation")
-    private static void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(0, R.id.widgetCollectionList,
-                new Intent(context, ChronewsWidgetService.class));
-        Log.i("trt", "dfs");
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

@@ -12,6 +12,7 @@ import pl.michaldobrowolski.chronews.R;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = MainActivity.class.getClass().getSimpleName();
+    private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +23,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-        //loadFragment(new HomeFragment());
 
+        // TODO: Check this
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container,
-                            new HomeFragment())
-                    .commit();
+            fragment = new HomeFragment();
+            loadFragment(fragment);
+        } else {
+            loadFragment(fragment);
         }
     }
 
@@ -45,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
-
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 fragment = new HomeFragment();
@@ -65,5 +64,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "myFragment", fragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fragment = getSupportFragmentManager().getFragment(savedInstanceState, "myFragment");
     }
 }

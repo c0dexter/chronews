@@ -85,7 +85,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
-        // Show top headlines articles based on Shared Pref settings
         fetchArticles(null, isManualSearch);
 
         return rootView;
@@ -323,5 +322,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         } else {
             toolbar.setSubtitle(R.string.subtitle_feature_disabled);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }
