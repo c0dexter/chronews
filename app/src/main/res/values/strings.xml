@@ -152,7 +152,7 @@
     <string name="empty_favourite_list_message">You have not had favourite articles yet</string>
     <string name="google_sign_in_fail_message">Google sign in failed</string>
     <string name="authentication_fail_message">Authentication failed.</string>
-    <string name="top_headlines_no_results_extend_search_criteria">No result to display for current settings, try extend the search criteria for top-headlines</string>
+    <string name="api_code_200_but_no_results">No result to display for current settings, try extend the search criteria for top-headlines</string>
     <string name="fetching_data_failed_change_settings">Fetching data failed :( Try to change settings for top-headlines</string>
     <string name="log_out_message">Logged out!</string>
     <string name="subtitle_search_hint_message">Improve settings or use a search</string>
@@ -233,5 +233,10 @@
     <string name="shared_pref_check_box_category_title_science">Science category</string>
     <string name="shared_pref_check_box_category_title_sports">Sports category</string>
     <string name="shared_pref_check_box_category_title_technology">Technology category</string>
+    <string name="api_error_400_msg">Bad request. Try to change your search settings or a search phrase</string>
+    <string name="api_error_401_msg">Problem with API authorization, please contact with developer for solving the issue</string>
+    <string name="api_error_429_msg">Too Many Requests. You made too many requests within a window of time and have been rate limited. Back off for a while.</string>
+    <string name="api_error_500_msg">Server Error. Something went wrong on provider side.</string>
+    <string name="api_unknkown_error_msg">Unknown error: #</string>
 
 </resources>

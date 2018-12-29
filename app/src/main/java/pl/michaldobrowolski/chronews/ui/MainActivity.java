@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
-        // TODO: Check this
+        // Remember last fragment in savedInstanceState
         if (savedInstanceState == null) {
             fragment = new HomeFragment();
             loadFragment(fragment);

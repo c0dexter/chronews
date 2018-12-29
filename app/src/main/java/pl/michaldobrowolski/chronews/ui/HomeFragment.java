@@ -1,6 +1,8 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.Application;
 import android.app.SearchManager;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,33 +30,31 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
-import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.SharedPreferences.SettingsActivity;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
-    private static final String API_KEY = BuildConfig.ApiKey;
     private static final String SEARCH_PHRASE_KEY = "search_key";
+    private static final String TOOLBAR_SUBTITLE_KEY = "subtitle_key";
+    private static final String TOOLBAR_TITLE_KEY = "title_key";
     private Context context;
     private RecyclerView recyclerView;
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
-    private News news;
     private Toolbar toolbar;
     private Boolean isManualSearch = false;
     private LinearLayout settingsTopHeadlinesNotifier;
     private String searchText;
     private SearchView searchView;
+    private NewsListViewModel viewModel;
+    private String toolbarTitleText;
+    private String toolbarSubtitleText = null;
 
     @Nullable
     @Override
@@ -63,12 +63,15 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         context = getActivity();
+
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
 
         if (savedInstanceState != null) {
             searchText = savedInstanceState.getString(SEARCH_PHRASE_KEY);
+            toolbarSubtitleText = savedInstanceState.getString(TOOLBAR_SUBTITLE_KEY);
+            toolbarTitleText = savedInstanceState.getString(TOOLBAR_TITLE_KEY);
         }
 
         toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
@@ -105,10 +108,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     public void fetchArticles(@Nullable String searchedPhrase, @Nullable Boolean isManualSearch) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String countryCode;
-        String languageCode;
-        String sortingType = preferences.getString("key_sorting_code", null);
-        String topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
         String phraseForSearchingTopHeadlines;
         Boolean preferredLanguageSwitch = preferences.getBoolean("key_switch_specific_news_language", false);
         Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
@@ -116,94 +115,28 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
         Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
 
-        toolbar.setTitle(UtilityHelper.makeUpperString(getString(R.string.top_headlines_title)));
-        setSubTitle(preferredTopHeadlinesCategorySwitch, preferredTopHeadlinesSpecificPhraseSwitch, preferredTopHeadlinesSwitch, preferredCountrySwitch, preferences);
-
-
-        if (preferredLanguageSwitch) {
-            languageCode = preferences.getString("key_language_code", null);
+        // Toolbar title and subtitle
+        if (toolbarTitleText == null || toolbarTitleText.equals("")) {
+            toolbar.setTitle(UtilityHelper.makeUpperString(getString(R.string.top_headlines_title)));
         } else {
-            languageCode = null;
+            toolbar.setTitle(toolbarTitleText);
+        }
+        if (toolbarSubtitleText == null || toolbarSubtitleText.equals("")) {
+            setSubTitle(preferredTopHeadlinesCategorySwitch, preferredTopHeadlinesSpecificPhraseSwitch, preferredTopHeadlinesSwitch, preferredCountrySwitch, preferences);
+        } else {
+            toolbar.setSubtitle(toolbarSubtitleText);
         }
 
         // TOP HEADLINES - DEFAULT SEARCH LOGIC
         if (preferredTopHeadlinesSwitch) {
             // Check selected country code
             settingsTopHeadlinesNotifier.setVisibility(View.GONE);
-            // Check switch for displaying top headlines for one specific category
-            if (preferredCountrySwitch) {
-                // Select country code to build a call
-                countryCode = preferences.getString("key_country_code_top_headlines", null);
-            } else {
-                // Set country code as null
-                countryCode = null;
-            }
-
-            // Check switch for displaying top headlines for one specific category
-            if (preferredTopHeadlinesCategorySwitch) {
-                // Select category code to build a call
-                topHeadlinesCategory = preferences.getString("key_top_headlines_category", null);
-            } else {
-                // Set country code as null
-                topHeadlinesCategory = null;
-            }
-
             // Check switch for searching news by phrase
-            if (preferredTopHeadlinesSpecificPhraseSwitch) {
-                // get a search phrase form shared pref and assign value to searched phrase
+            // get a search phrase form shared pref and assign value to searched phrase
+            if (preferredTopHeadlinesSpecificPhraseSwitch)
                 phraseForSearchingTopHeadlines = preferences.getString("key_default_phrase_top_headlines", null);
-                if (!isManualSearch) {
-                    searchedPhrase = phraseForSearchingTopHeadlines;
-                }
-            }
         } else {
-            countryCode = null;
-            topHeadlinesCategory = null;
             settingsTopHeadlinesNotifier.setVisibility(View.VISIBLE);
-        }
-
-        if (UtilityHelper.isOnline(context)) {
-            Call<News> call = null;
-            if (searchedPhrase != null && !Objects.equals(searchedPhrase, "")) {
-                // Use search phrase and display everything what is related to the phrase
-                if (isManualSearch) {
-                    call = apiInterface.everything(searchedPhrase, languageCode, sortingType, API_KEY);
-                    settingsTopHeadlinesNotifier.setVisibility(View.GONE);
-                } else {
-                    call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
-                }
-            } else if (!isManualSearch) {
-                call = apiInterface.topHeadlines(countryCode, topHeadlinesCategory, searchedPhrase, null, null, API_KEY);
-            }
-
-            if (isManualSearch || preferredTopHeadlinesSwitch) {
-                if (call != null) {
-                    call.enqueue(new Callback<News>() {
-                        @Override
-                        public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                news = response.body();
-                                adapter = new ArticleListAdapter(news.getArticles(), context, HomeFragment.this);
-                                recyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                                if (news.getArticles().size() == 0) {
-                                    Toast.makeText(context, R.string.top_headlines_no_results_extend_search_criteria, Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                Toast.makeText(context, R.string.fetching_data_failed_change_settings, Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                            call.cancel();
-                        }
-                    });
-                }
-            }
-
-        } else {
-            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -234,7 +167,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             searchView.onActionViewExpanded();
             searchView.setQuery(searchText, true);
             searchView.clearFocus();
-        } else{
+        } else {
             searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
             searchView.setQueryHint(getString(R.string.search_news_hint));
         }
@@ -246,15 +179,21 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 searchView.setIconified(true);
                 searchView.clearFocus();
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity());
                 isManualSearch = true;
-                Boolean searchInSpecificLanguage = preferences.getBoolean("key_switch_specific_news_language", false);
+                Boolean searchInSpecificLanguage = preferences.getBoolean(
+                        "key_switch_specific_news_language", false);
                 String language = preferences.getString("key_language_code", null);
-                fetchArticles(query, true);
+
+                viewModel.searchArticlesBySearchPhrase(query);// TODO; check this, here is populated search phrase
+                settingsTopHeadlinesNotifier.setVisibility(View.GONE);
+
                 toolbar.setTitle(R.string.sear_result_name);
                 if (searchInSpecificLanguage) {
                     if (language != null) {
-                        toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + " " + query + "\" (" + language.toUpperCase() + ")");
+                        toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + " " +
+                                query + "\" (" + language.toUpperCase() + ")");
                     }
                 } else {
                     toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + query);
@@ -269,6 +208,9 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
             @Override
             public boolean onQueryTextChange(String newQuery) {
+                // Leave as is, this feature could be use in a new version of app
+                // This method can execute search after passing letter one by one
+                // For free plan of API this is dangerous because of generating lot of calls
                 return false;
             }
         });
@@ -292,7 +234,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     @Override
     public void onItemClick(View view, int position) {
-        Article article = news.getArticles().get(position);
+        // TODO: Here is executing a DEFAULT search for TOP-HEADLINES
+        Article article = viewModel.getArticles().getValue().getArticleList().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("articleKey", article);
@@ -308,10 +251,59 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Application application = getActivity().getApplication();
 
+        viewModel = ViewModelProviders.of(this, new NewsListViewModel.Factory(application,
+                apiInterface)).get(NewsListViewModel.class);
+        // TODO: Here is executing the TOP-HEADLINES call
+        viewModel.getArticles().observe(this, (NewsListResult newsListResult) -> {
+            int errorCode = 0;
+            if (newsListResult != null) {
+                errorCode = newsListResult.getErrorCode();
+            }
+
+            switch (errorCode) {
+                case -1: {
+                    // do nothing, this is a default value for initialization
+                    break;
+                }
+                case 200: {
+                    adapter = new ArticleListAdapter(newsListResult.getArticleList(), context, HomeFragment.this);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    // Check if API returns any of articles for provided query criteria. If not, inform a user.
+                    if (newsListResult.getArticleList().isEmpty()) {
+                        Toast.makeText(context, getString(R.string.api_code_200_but_no_results), Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                }
+                case 400: {
+                    Toast.makeText(context, getString(R.string.api_error_400_msg), Toast.LENGTH_LONG).show();
+                    break;
+                }
+                case 401: {
+                    Toast.makeText(context, getString(R.string.api_error_401_msg), Toast.LENGTH_LONG).show();
+                    break;
+                }
+                case 429: {
+                    Toast.makeText(context, getString(R.string.api_error_429_msg), Toast.LENGTH_LONG).show();
+                    break;
+                }
+                case 500: {
+                    Toast.makeText(context, getString(R.string.api_error_500_msg),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                default: {
+                    Toast.makeText(context, getString(R.string.api_unknkown_error_msg) + " " + errorCode,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setSubTitle(Boolean preferredTopHeadlinesCategorySwitch, Boolean preferredTopHeadlinesSpecificPhraseSwitch, Boolean preferredTopHeadlinesSwitch, Boolean preferredCountrySwitch, SharedPreferences preferences) {
+
         if (preferredTopHeadlinesSwitch) {
             String country = preferences.getString("key_country_code_top_headlines", null);
             String category = preferences.getString("key_top_headlines_category", null);
@@ -319,24 +311,29 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (country != null) {
                     if (category != null) {
-                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase() + " (" + phrase + ")");
+                        toolbarSubtitleText = UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase() + " (" + phrase + ")";
+                        toolbar.setSubtitle(toolbarSubtitleText);
                     }
                 }
             } else if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (category != null) {
                     if (country != null) {
-                        toolbar.setSubtitle(UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase());
+                        toolbarSubtitleText = UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase();
+                        toolbar.setSubtitle(toolbarSubtitleText);
                     }
                 }
             } else if (!preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
                 if (country != null) {
-                    toolbar.setSubtitle(getString(R.string.subtile_name_start_name_from) + " " + country.toUpperCase());
+                    toolbarSubtitleText = getString(R.string.subtile_name_start_name_from) + " " + country.toUpperCase();
+                    toolbar.setSubtitle(toolbarSubtitleText);
                 }
             } else {
-                toolbar.setSubtitle(R.string.subtitle_search_hint_message);
+                toolbarSubtitleText = getString(R.string.subtitle_search_hint_message);
+                toolbar.setSubtitle(toolbarSubtitleText);
             }
         } else {
-            toolbar.setSubtitle(R.string.subtitle_feature_disabled);
+            toolbarSubtitleText = getString(R.string.subtitle_feature_disabled);
+            toolbar.setSubtitle(toolbarSubtitleText);
         }
     }
 
@@ -344,6 +341,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         searchText = searchView.getQuery().toString();
+        toolbarTitleText = toolbar.getTitle().toString();
+        toolbarSubtitleText = toolbar.getSubtitle().toString();
+
         outState.putString(SEARCH_PHRASE_KEY, searchText);
+        outState.putString(TOOLBAR_TITLE_KEY, toolbarTitleText);
+        outState.putString(TOOLBAR_SUBTITLE_KEY, toolbarSubtitleText);
     }
 }
