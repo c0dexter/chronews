@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
+import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class CategoryBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
     private static final String TAG = CategoryBoardFragment.class.getClass().getSimpleName();
@@ -48,6 +50,7 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
         return rootView;
     }
 
+
     @Override
     public void onItemClick(View view, int position) {
         Category category = categoriesListResult.getCategoryList().get(position);
@@ -63,14 +66,13 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
                 .commit();
     }
 
-    // TODO: leave as is, this will display a categories
+
     public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView, CategoriesListResult categoriesListResult) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(gridLayoutManager);
         gridLayoutManager.supportsPredictiveItemAnimations();
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
 
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -87,19 +89,22 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
         recyclerView.setAdapter(adapter);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         Application application = getActivity().getApplication();
 
         viewModel = ViewModelProviders.of(this, new CategoriesBoardListViewModel.Factory(application,
                 apiInterface)).get(CategoriesBoardListViewModel.class);
-        // TODO: Here is executing the TOP-HEADLINES call
-        viewModel.getCategories().observe(this, (CategoriesListResult categoriesListResult) -> {
-            addCategoriesToScreen(gridLayoutManager, view, categoriesListResult);
-            this.categoriesListResult = categoriesListResult;
-        });
+        if ((UtilityHelper.isOnline(context))) {
+            viewModel.getCategories().observe(this, (CategoriesListResult categoriesListResult) -> {
+                addCategoriesToScreen(gridLayoutManager, view, categoriesListResult);
+                this.categoriesListResult = categoriesListResult;
+            });
+        } else {
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

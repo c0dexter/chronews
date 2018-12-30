@@ -1,6 +1,7 @@
 package pl.michaldobrowolski.chronews.ui;
 
-import android.app.SearchManager;
+import android.app.Application;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,19 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.Objects;
 
-import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.News;
@@ -33,20 +29,24 @@ import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CategoryArticleListFragment extends Fragment implements ArticleListAdapter.OnItemClickListener {
     private static final String TAG = ApiClient.class.getClass().getSimpleName();
-    private static final String API_KEY = BuildConfig.ApiKey;
+    private static final String TOOLBAR_SUBTITLE_KEY = "subtitle_key";
+    private static final String TOOLBAR_TITLE_KEY = "title_key";
     private Context context;
     private RecyclerView recyclerView;
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
     private News news;
     private Category category;
+    private CategoryArticlesListViewModel viewModel;
+    private CategoryArticlesListResult categoryArticlesListResult;
     private SharedPreferences preferences;
+    private String toolbarTitleText;
+    private String toolbarSubtitleText = null;
+    private Toolbar toolbar;
+
 
     @Nullable
     @Override
@@ -58,8 +58,12 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
+        if (savedInstanceState != null) {
+            toolbarSubtitleText = savedInstanceState.getString(TOOLBAR_SUBTITLE_KEY);
+            toolbarTitleText = savedInstanceState.getString(TOOLBAR_TITLE_KEY);
+        }
 
-        Toolbar toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
+        toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -85,51 +89,9 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
             } else {
                 toolbar.setSubtitle(R.string.default_country_set_category_article_list_message);
             }
-
-            if (UtilityHelper.isOnline(context)) {
-                fetchArticles(category.getCategoryName());
-            } else {
-                Toast.makeText(activity,  R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
-            }
         }
+
         return rootView;
-    }
-
-    private void fetchArticles(final String category) {
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Boolean preferredCountryCategorySwitch = preferences.getBoolean("key_switch_country_of_category_board", false);
-        String preferredCountryCode = preferences.getString("key_country_code_categories_board", null);
-        String countryCode;
-        if (preferredCountryCategorySwitch) {
-            countryCode = preferredCountryCode;
-        } else {
-            countryCode = getString(R.string.default_country_code);
-        }
-
-        if ((UtilityHelper.isOnline(context))) {
-            Call<News> call;
-            call = apiInterface.topHeadlines(countryCode, category, null, null, null, API_KEY);
-            call.enqueue(new Callback<News>() {
-                @Override
-                public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        news = response.body();
-                        adapter = new ArticleListAdapter(news.getArticles(), context, CategoryArticleListFragment.this);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast. makeText(context, R.string.fetching_data_failed_message, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
-                    call.cancel();
-                }
-            });
-        } else {
-            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -139,34 +101,8 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater = Objects.requireNonNull(getActivity(), "Context must not be null").getMenuInflater();
-        inflater.inflate(R.menu.menu_action_bar, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_bar_search).getActionView();
-        MenuItem menuItem = menu.findItem(R.id.action_bar_search);
-
-        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getActivity().getComponentName()) : null);
-        searchView.setQueryHint(getString(R.string.search_news_hint));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fetchArticles(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newQuery) {
-                return false;
-            }
-        });
-
-        menuItem.getIcon().setVisible(false, false);
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
-        Article article = news.getArticles().get(position);
+        Article article = categoryArticlesListResult.getArticleList().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("articleKey", article);
@@ -177,5 +113,76 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
                 .replace(R.id.fragment_container, articleDetailFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Application application = getActivity().getApplication();
+
+        viewModel = ViewModelProviders.of(this, new CategoryArticlesListViewModel.Factory(application,
+                apiInterface)).get(CategoryArticlesListViewModel.class);
+
+        if ((UtilityHelper.isOnline(context))) {
+            viewModel.getArticles(category.getCategoryName()).observe(this, (CategoryArticlesListResult categoryArticlesListResult) -> {
+                this.categoryArticlesListResult = categoryArticlesListResult;
+                int errorCode = 0;
+                if (categoryArticlesListResult != null) {
+                    errorCode = categoryArticlesListResult.getErrorCode();
+                }
+
+                switch (errorCode) {
+                    case -1: {
+                        // do nothing, this is a default value for initialization
+                        break;
+                    }
+                    case 200: {
+                        adapter = new ArticleListAdapter(categoryArticlesListResult.getArticleList(), context, CategoryArticleListFragment.this);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        // Check if API returns any of articles for provided query criteria. If not, inform a user.
+                        if (categoryArticlesListResult.getArticleList().isEmpty()) {
+                            Toast.makeText(context, getString(R.string.api_code_200_but_no_results), Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                    }
+                    case 400: {
+                        Toast.makeText(context, getString(R.string.api_error_400_msg), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    case 401: {
+                        Toast.makeText(context, getString(R.string.api_error_401_msg), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    case 429: {
+                        Toast.makeText(context, getString(R.string.api_error_429_msg), Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    case 500: {
+                        Toast.makeText(context, getString(R.string.api_error_500_msg),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    default: {
+                        Toast.makeText(context, getString(R.string.api_unknkown_error_msg) + " " + errorCode,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } else {
+            Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        toolbarTitleText = toolbar.getTitle().toString();
+        toolbarSubtitleText = toolbar.getSubtitle().toString();
+
+        outState.putString(TOOLBAR_TITLE_KEY, toolbarTitleText);
+        outState.putString(TOOLBAR_SUBTITLE_KEY, toolbarSubtitleText);
     }
 }

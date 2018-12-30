@@ -172,7 +172,7 @@
     <string name="search_icon_in_message_desc">The image of search icon which user should use for searching articles</string>
     <string name="the_image_which_is_displaying_when_internet_connection_is_missing">The_image_which_is_displaying_when_internet_connection_is_missing</string>
     <string name="sear_result_name">Search results</string>
-    <string name="search_for_phrase_part_name">for phrase: "</string>
+    <string name="search_for_phrase_part_name">for phrase:"</string>
     <string name="subtitle_part_name_from">from</string>
     <string name="subtile_name_start_name_from">From</string>
     <string name="fab_content_desc">Add or remove favourite article from database</string>

@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CategoriesBoardListViewModel extends AndroidViewModel {
+class CategoriesBoardListViewModel extends AndroidViewModel {
     private static final String TAG = CategoriesBoardListViewModel.class.getSimpleName();
     private static String API_KEY = BuildConfig.ApiKey;
     private final ApiInterface apiInterface;
@@ -39,13 +39,13 @@ public class CategoriesBoardListViewModel extends AndroidViewModel {
     // LiveData
     private MutableLiveData<CategoriesListResult> categoriesLiveData;
 
-    public CategoriesBoardListViewModel(@NonNull Application application, ApiInterface apiInterface) {
+    private CategoriesBoardListViewModel(@NonNull Application application, ApiInterface apiInterface) {
         super(application);
         this.apiInterface = apiInterface;
     }
 
 
-    public LiveData<CategoriesListResult> getCategories() {
+    LiveData<CategoriesListResult> getCategories() {
         List<Category> categoryList = new ArrayList<>();
         if (categoriesLiveData == null) {
             categoriesLiveData = new MutableLiveData<>();
@@ -64,7 +64,7 @@ public class CategoriesBoardListViewModel extends AndroidViewModel {
         // Switches
         Boolean parredCountryCategoryBoard = preferences.getBoolean("key_switch_country_of_category_board", false);
         // Country code value
-        categoriesCountryCode = preferences.getString("key_country_code_categories_boar", null);
+        categoriesCountryCode = preferences.getString("key_country_code_categories_board", null);
 
         // LOGIC FOR SWITCHES
         // == country for searching categories with news for a specific country
@@ -98,9 +98,7 @@ public class CategoriesBoardListViewModel extends AndroidViewModel {
                                     newsIndex++;
                                     urlToThumbnail = news.getArticles().get(newsIndex).getUrlToImage();
                                 }
-
                                 categoryObjectList.add(new Category(category.getCategory(), urlToThumbnail));
-                                //CategoryBoardFragment.adapter.notifyDataSetChanged();
 
                             } else {
                                 Log.i(TAG, "Fetching data failed for some reason :(");
@@ -131,7 +129,7 @@ public class CategoriesBoardListViewModel extends AndroidViewModel {
         @NonNull
         private final Application application;
 
-        public Factory(@NonNull Application application, ApiInterface apiInterface) {
+        Factory(@NonNull Application application, ApiInterface apiInterface) {
             this.apiInterface = apiInterface;
             this.application = application;
         }
