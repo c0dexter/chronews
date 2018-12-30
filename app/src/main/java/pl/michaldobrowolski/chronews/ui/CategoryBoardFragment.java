@@ -1,5 +1,7 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.Application;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,13 +22,15 @@ import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
-import pl.michaldobrowolski.chronews.utils.CategoryFactory;
 
 public class CategoryBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
     private static final String TAG = CategoryBoardFragment.class.getClass().getSimpleName();
     public static RecyclerView.Adapter adapter;
-    private CategoryFactory categoryFactory;
+    private CategoriesListResult categoriesListResult;
     private Context context;
+    private CategoriesBoardListViewModel viewModel;
+    private ApiInterface apiInterface;
+    private GridLayoutManager gridLayoutManager;
 
     @Nullable
     @Override
@@ -38,46 +42,15 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).hide();
         }
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        addCategoriesToScreen(gridLayoutManager, rootView);
+        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         return rootView;
     }
 
-    public void createCategories(ApiInterface apiInterface, Context context) {
-        categoryFactory = new CategoryFactory(context, apiInterface);
-        categoryFactory.createCategories();
-    }
-
-
-    // TODO: leave as is, this will display a categories
-    public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView) {
-        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        gridLayoutManager.supportsPredictiveItemAnimations();
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        createCategories(apiInterface, context);
-
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (categoryFactory.getCategoryObjectList().size() % 2 != 0) {
-                    return (position == categoryFactory.getCategoryObjectList().size() - 1) ? 2 : 1;
-                } else {
-                    return 1;
-                }
-            }
-        });
-
-        adapter = new CategoryBoardAdapter(CategoryBoardFragment.this, context, categoryFactory.getCategoryObjectList());
-        recyclerView.setAdapter(adapter);
-    }
-
     @Override
     public void onItemClick(View view, int position) {
-        Category category = categoryFactory.getCategoryObjectList().get(position);
+        Category category = categoriesListResult.getCategoryList().get(position);
         CategoryArticleListFragment categoryArticleListFragment = new CategoryArticleListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("categoryArticleKey", category);
@@ -88,5 +61,45 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
                 .replace(R.id.fragment_container, categoryArticleListFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // TODO: leave as is, this will display a categories
+    public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView, CategoriesListResult categoriesListResult) {
+        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        gridLayoutManager.supportsPredictiveItemAnimations();
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (categoriesListResult.getCategoryList().size() % 2 != 0) {
+                    return (position == categoriesListResult.getCategoryList().size() - 1) ? 2 : 1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+        adapter = new CategoryBoardAdapter(CategoryBoardFragment.this, context, categoriesListResult.getCategoryList());
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        Application application = getActivity().getApplication();
+
+        viewModel = ViewModelProviders.of(this, new CategoriesBoardListViewModel.Factory(application,
+                apiInterface)).get(CategoriesBoardListViewModel.class);
+        // TODO: Here is executing the TOP-HEADLINES call
+        viewModel.getCategories().observe(this, (CategoriesListResult categoriesListResult) -> {
+            addCategoriesToScreen(gridLayoutManager, view, categoriesListResult);
+            this.categoriesListResult = categoriesListResult;
+        });
     }
 }

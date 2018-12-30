@@ -340,7 +340,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        searchText = searchView.getQuery().toString();
+        if(searchText != null){
+            searchText = searchView.getQuery().toString();
+        }
+
         toolbarTitleText = toolbar.getTitle().toString();
         toolbarSubtitleText = toolbar.getSubtitle().toString();
 
