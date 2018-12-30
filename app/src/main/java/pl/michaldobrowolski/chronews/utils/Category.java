@@ -7,7 +7,7 @@ public class Category implements Parcelable {
     private String categoryName;
     private String categoryImageUrl;
 
-    Category(String categoryName, String categoryImageUrl) {
+    public Category(String categoryName, String categoryImageUrl) {
         this.categoryName = categoryName;
         this.categoryImageUrl = categoryImageUrl;
     }

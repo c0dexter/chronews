@@ -31,16 +31,12 @@ public class NewsListViewModel extends AndroidViewModel {
     private String sortingType;
     private String topHeadlinesCategory;
     private String phraseForSearchingTopHeadlines;
-    private Boolean preferredTopHeadlinesSwitch;
-    private Boolean preferredTopHeadlinesCategorySwitch;
 
     private MutableLiveData<NewsListResult> articlesLiveData;
 
     public NewsListViewModel(@NonNull Application application, ApiInterface apiInterface) {
         super(application);
         this.apiInterface = apiInterface;
-
-
     }
 
     public LiveData<NewsListResult> getArticles() {
@@ -66,11 +62,8 @@ public class NewsListViewModel extends AndroidViewModel {
         Boolean preferredLanguageSwitch = preferences.getBoolean("key_switch_specific_news_language", false);
         Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
         Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
-
-        // TODO: Logic for UI should me move from here, because this is not a parameter for making call
-
-        preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
-        preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
+        Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
+        Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
 
 
         // LOGIC FOR SWITCHES
@@ -120,7 +113,7 @@ public class NewsListViewModel extends AndroidViewModel {
         });
     }
 
-    void searchArticlesBySearchPhrase(String searchPhrase) {
+    public void searchArticlesBySearchPhrase(String searchPhrase) {
         Call<News> call = apiInterface.everything(searchPhrase, languageCode, sortingType, API_KEY);
         call.enqueue(new Callback<News>() {
             @Override

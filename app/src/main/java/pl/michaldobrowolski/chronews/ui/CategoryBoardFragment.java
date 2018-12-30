@@ -49,6 +49,8 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
         categoryFactory.createCategories();
     }
 
+
+    // TODO: leave as is, this will display a categories
     public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);

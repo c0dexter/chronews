@@ -40,7 +40,14 @@ public class CategoryFactory {
 
     public void createCategories() {
         if (UtilityHelper.isOnline(context)) {
+            String countryCode;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if((preferences.getBoolean("key_switch_country_of_category_board", false))){
+                countryCode = preferences.getString("key_country_code_top_headlines", null);
+            } else{
+                countryCode = "gb";
+            }
+
             if (NewsApiUtils.Category.values().length > 0) {
                 for (final NewsApiUtils.Category category : NewsApiUtils.Category.values()) {
                     Boolean categorySelected = preferences.getBoolean("key_category_" + category.getCategory(), true);
@@ -49,7 +56,7 @@ public class CategoryFactory {
                     }
                     Call<News> call;
                     if (categorySelected) {
-                        call = apiInterface.topHeadlines(null, category.getCategory(), null, 20, null, API_KEY);
+                        call = apiInterface.topHeadlines(countryCode, category.getCategory(), null, 20, null, API_KEY);
                         call.enqueue(new Callback<News>() {
                             @Override
                             public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
