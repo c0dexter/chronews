@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new HomeFragment();
                 break;
             case R.id.navigation_categories:
-                fragment = new CategoryBoardFragment();
+                fragment = new CategoriesBoardFragment();
                 break;
 
             case R.id.navigation_favourites:

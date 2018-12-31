@@ -54,6 +54,7 @@ public class ArticleDetailFragment extends Fragment {
     private String articleDesc;
     private String articleImageUrl;
     private String articleContent;
+    private FavouriteArticlesListViewModel favouriteArticlesListViewModel;
 
     @Nullable
     @Override

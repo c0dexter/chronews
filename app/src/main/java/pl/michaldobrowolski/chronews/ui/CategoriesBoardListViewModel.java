@@ -29,7 +29,6 @@ class CategoriesBoardListViewModel extends AndroidViewModel {
     private final ApiInterface apiInterface;
 
     private String categoriesCountryCode;
-    private String categoryName;
     private News news;
     private String urlToThumbnail;
     private SharedPreferences preferences;

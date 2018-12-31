@@ -25,8 +25,8 @@ import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
-public class CategoryBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
-    private static final String TAG = CategoryBoardFragment.class.getClass().getSimpleName();
+public class CategoriesBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
+    private static final String TAG = CategoriesBoardFragment.class.getClass().getSimpleName();
     public static RecyclerView.Adapter adapter;
     private CategoriesListResult categoriesListResult;
     private Context context;
@@ -85,7 +85,7 @@ public class CategoryBoardFragment extends Fragment implements CategoryBoardAdap
             }
         });
 
-        adapter = new CategoryBoardAdapter(CategoryBoardFragment.this, context, categoriesListResult.getCategoryList());
+        adapter = new CategoryBoardAdapter(CategoriesBoardFragment.this, context, categoriesListResult.getCategoryList());
         recyclerView.setAdapter(adapter);
     }
 

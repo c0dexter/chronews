@@ -1,5 +1,7 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.Application;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,29 +17,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
-import pl.michaldobrowolski.chronews.BuildConfig;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
 import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.api.model.pojo.Source;
-import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.ui.adapters.FavouriteListAdapter;
 
 public class FavouriteFragment extends Fragment implements FavouriteListAdapter.OnItemClickListener {
-    private static final String TAG = ApiClient.class.getClass().getSimpleName();
-    private static final String API_KEY = BuildConfig.ApiKey;
+    private static final String TAG = FavouriteFragment.class.getClass().getSimpleName();
     private Context context;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ArticleEntity articleEntity;
-    private List<ArticleEntity> dbArticlesList;
     private Toolbar toolbar;
     private FavouriteArticleRepository favouriteArticleRepository;
+
+    private FavouriteArticlesListViewModel viewModel;
+    private FavouriteArticlesListResult favouriteArticlesListResult;
 
     @Nullable
     @Override
@@ -59,35 +58,14 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        dbArticlesList = getDbArticlesList();
-        adapter = new FavouriteListAdapter(FavouriteFragment.this, dbArticlesList, favouriteArticleRepository, context);
-        recyclerView.setAdapter(adapter);
-        if (dbArticlesList.size() == 0) {
-            Toast.makeText(context, R.string.empty_favourite_list_message, Toast.LENGTH_SHORT).show();
-        }
 
         return rootView;
     }
 
 
-    /**
-     * Get all articles from Database
-     *
-     * @return ArticlesEntity list which contains saved articles
-     */
-    private List<ArticleEntity> getDbArticlesList() {
-        try {
-            dbArticlesList = favouriteArticleRepository.getAllArticles();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return dbArticlesList;
-    }
-
-
     @Override
     public void onItemClick(View view, int position) {
-        articleEntity = dbArticlesList.get(position);
+        articleEntity = favouriteArticlesListResult.getFavouriteArticleList().get(position);
         Article article = new Article();
         Source source = new Source();
         source.setName(articleEntity.getSourceName());
@@ -116,5 +94,22 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Application application = getActivity().getApplication();
+
+        viewModel = ViewModelProviders.of(this, new FavouriteArticlesListViewModel.Factory(application, favouriteArticleRepository)).get(FavouriteArticlesListViewModel.class);
+        viewModel.getFavouriteArticlesFromDb().observe(this, (FavouriteArticlesListResult favouriteArticlesListResult) -> {
+            this.favouriteArticlesListResult = favouriteArticlesListResult;
+            adapter = new FavouriteListAdapter(FavouriteFragment.this, favouriteArticlesListResult.getFavouriteArticleList(), favouriteArticleRepository, context);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            if (favouriteArticlesListResult.getFavouriteArticleList().size() == 0) {
+                Toast.makeText(context, R.string.empty_favourite_list_message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
