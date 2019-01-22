@@ -3,6 +3,7 @@ package pl.michaldobrowolski.chronews.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.Analytics;
+import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import pl.michaldobrowolski.chronews.widget.ChronewsWidgetProvider;
@@ -54,13 +56,24 @@ public class ArticleDetailFragment extends Fragment {
     private String articleDesc;
     private String articleImageUrl;
     private String articleContent;
-    private FavouriteArticlesListViewModel favouriteArticlesListViewModel;
+    private String titleName;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = View.inflate(getActivity(),R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            article = bundle.getParcelable("articleKey");
+            populateViews(Objects.requireNonNull(article));
+            titleName = bundle.getString("titleNameKey");
+        }
+
+        if (titleName != null) {
+            tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleName));
+        }
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());
@@ -72,12 +85,6 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            article = bundle.getParcelable("articleKey");
-            populateViews(Objects.requireNonNull(article));
-        }
-
         articleTitle = article.getTitle();
         articlePublishedDate = article.getPublishedAt();
         if (article.getSource() != null) {

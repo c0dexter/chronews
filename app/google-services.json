@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "829629333236-6ejg06dohca5r9v8j60djsgui9cimpf1.apps.googleusercontent.com",
+          "client_id": "829629333236-4vdrdo01rjcohlgkr0s8ltpamm907her.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "pl.michaldobrowolski.chronews",
-            "certificate_hash": "34c3c177e1166178377c24cf019fe9ae81002852"
+            "certificate_hash": "b2b2f0f67bd0e231f8964596208e25307da75f03"
           }
         },
         {

@@ -59,7 +59,7 @@
                 android:text="@string/read_more"
                 android:padding="@dimen/fab_margin"
                 android:layout_gravity="end"
-                android:textColor="@color/customColorSecondaryText"/>
+                android:textColor="@color/customColorAccent"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

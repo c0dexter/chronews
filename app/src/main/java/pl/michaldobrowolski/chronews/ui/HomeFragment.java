@@ -166,8 +166,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             searchView.setQueryHint(getString(R.string.search_news_hint));
         }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.setIconified(true);
@@ -228,11 +226,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
     @Override
     public void onItemClick(View view, int position) {
-        // TODO: Here is executing a DEFAULT search for TOP-HEADLINES
+        // Here is executing a DEFAULT search for TOP-HEADLINES
         Article article = viewModel.getArticles().getValue().getArticleList().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("articleKey", article);
+        bundle.putParcelable("  /articleKey", article);
         articleDetailFragment.setArguments(bundle);
 
         Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
@@ -249,7 +247,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
         viewModel = ViewModelProviders.of(this, new NewsListViewModel.Factory(application,
                 apiInterface)).get(NewsListViewModel.class);
-        // TODO: Here is executing the TOP-HEADLINES call
+        // Here is executing the TOP-HEADLINES call
         if ((UtilityHelper.isOnline(context))) {
             viewModel.getArticles().observe(this, (NewsListResult newsListResult) -> {
                 int errorCode = 0;
@@ -340,10 +338,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (searchText != null) {
-            searchText = searchView.getQuery().toString();
-        }
-
+        searchText = searchView.getQuery().toString();
         toolbarTitleText = toolbar.getTitle().toString();
         toolbarSubtitleText = toolbar.getSubtitle().toString();
 

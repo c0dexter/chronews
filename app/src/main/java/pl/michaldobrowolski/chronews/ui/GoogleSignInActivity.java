@@ -32,7 +32,7 @@ import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class GoogleSignInActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
-    private static final int RC_SIGN_IN = 2;
+    private static final int RC_SIGN_IN = 101;
 
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -108,7 +108,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
             this.firebaseAuth.addAuthStateListener(firebaseAuthListener);
 
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestIdToken(getString(R.string.default_web_client_id_hardcoded)) // hardcoded client_id because of bug in firebase
                     .requestEmail()
                     .build();
 
@@ -150,7 +150,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        FirebaseUser user = firebaseAuth.getCurrentUser(); //TODO: check this
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(GoogleSignInActivity.this, R.string.authentication_fail_message, Toast.LENGTH_SHORT).show();

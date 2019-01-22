@@ -106,6 +106,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("articleKey", article);
+        bundle.putString("titleNameKey", category.getCategoryName());
         articleDetailFragment.setArguments(bundle);
 
         Objects.requireNonNull(getFragmentManager(), "FragmentManager must not be null")
