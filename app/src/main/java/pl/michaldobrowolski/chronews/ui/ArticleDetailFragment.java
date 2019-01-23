@@ -3,7 +3,6 @@ package pl.michaldobrowolski.chronews.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.Analytics;
-import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 import pl.michaldobrowolski.chronews.widget.ChronewsWidgetProvider;
@@ -56,7 +54,8 @@ public class ArticleDetailFragment extends Fragment {
     private String articleDesc;
     private String articleImageUrl;
     private String articleContent;
-    private String titleName;
+    private String titleText;
+    private String subtitleText;
 
     @Nullable
     @Override
@@ -68,12 +67,18 @@ public class ArticleDetailFragment extends Fragment {
         if (bundle != null) {
             article = bundle.getParcelable("articleKey");
             populateViews(Objects.requireNonNull(article));
-            titleName = bundle.getString("titleNameKey");
+            titleText = bundle.containsKey("titleNameKey") ? bundle.getString("titleNameKey") : "";
+            subtitleText = bundle.containsKey("subTitleNameKey") ? bundle.getString("subTitleNameKey") : "";
         }
 
-        if (titleName != null) {
-            tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleName));
+        if (titleText != null && !titleText.equals("")) {
+            tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleText));
         }
+        if (subtitleText != null && !subtitleText.equals("")){
+            tbArticleDetailToolbar.setSubtitle(UtilityHelper.makeUpperString(subtitleText));
+        }
+
+
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());

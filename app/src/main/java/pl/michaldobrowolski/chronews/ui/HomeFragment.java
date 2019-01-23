@@ -54,7 +54,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private SearchView searchView;
     private NewsListViewModel viewModel;
     private String toolbarTitleText;
-    private String toolbarSubtitleText = null;
+    private String toolbarSubtitleText;
+    private SharedPreferences preferences;
+    private Boolean preferredCountrySwitch;
+    private Boolean preferredTopHeadlinesSwitch;
+    private Boolean preferredTopHeadlinesCategorySwitch;
+    private Boolean preferredTopHeadlinesSpecificPhraseSwitch;
 
     @Nullable
     @Override
@@ -96,6 +101,12 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
+        preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
+        preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
+        preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
+
         fetchArticles(null, isManualSearch);
 
         return rootView;
@@ -107,15 +118,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     }
 
     public void fetchArticles(@Nullable String searchedPhrase, @Nullable Boolean isManualSearch) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Boolean preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
-        Boolean preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
-        Boolean preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
-        Boolean preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
-
         // Toolbar title and subtitle
         if (toolbarTitleText == null || toolbarTitleText.equals("")) {
-            toolbar.setTitle(UtilityHelper.makeUpperString(getString(R.string.top_headlines_title)));
+            toolbarTitleText = UtilityHelper.makeUpperString(getString(R.string.top_headlines_title));
+            toolbar.setTitle(toolbarTitleText);
         } else {
             toolbar.setTitle(toolbarTitleText);
         }
@@ -230,7 +236,9 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         Article article = viewModel.getArticles().getValue().getArticleList().get(position);
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("  /articleKey", article);
+        bundle.putParcelable("articleKey", article);
+        bundle.putString("titleNameKey", toolbarTitleText);
+        bundle.putString("subTitleNameKey", toolbarSubtitleText);
         articleDetailFragment.setArguments(bundle);
 
         Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
