@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
     private Toolbar toolbar;
-    private Boolean isManualSearch = false;
     private LinearLayout settingsTopHeadlinesNotifier;
     private String searchText;
     private SearchView searchView;
@@ -60,6 +59,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
     private Boolean preferredTopHeadlinesSwitch;
     private Boolean preferredTopHeadlinesCategorySwitch;
     private Boolean preferredTopHeadlinesSpecificPhraseSwitch;
+    private String articleDetailScreenTitle;
 
     @Nullable
     @Override
@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
         preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
 
-        fetchArticles(null, isManualSearch);
+        fetchArticles(null);
 
         return rootView;
     }
@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         super.onAttach(context);
     }
 
-    public void fetchArticles(@Nullable String searchedPhrase, @Nullable Boolean isManualSearch) {
+    public void fetchArticles(@Nullable String searchedPhrase) {
         // Toolbar title and subtitle
         if (toolbarTitleText == null || toolbarTitleText.equals("")) {
             toolbarTitleText = UtilityHelper.makeUpperString(getString(R.string.top_headlines_title));
@@ -138,6 +138,8 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         } else {
             settingsTopHeadlinesNotifier.setVisibility(View.VISIBLE);
         }
+
+        articleDetailScreenTitle = "Popular article";
     }
 
     @Override
@@ -179,7 +181,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
 
                 SharedPreferences preferences = PreferenceManager
                         .getDefaultSharedPreferences(getActivity());
-                isManualSearch = true;
+
                 Boolean searchInSpecificLanguage = preferences.getBoolean(
                         "key_switch_specific_news_language", false);
                 String language = preferences.getString("key_language_code", null);
@@ -188,16 +190,17 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 settingsTopHeadlinesNotifier.setVisibility(View.GONE);
 
                 toolbar.setTitle(R.string.sear_result_name);
+                articleDetailScreenTitle = "Search result";
+
                 if (searchInSpecificLanguage) {
                     if (language != null) {
-                        toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + " \"" +
+                        toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + " \"" + " " +
                                 query + "\" " + "(" + language.toUpperCase() + ")");
                     }
                 } else {
                     toolbar.setSubtitle(getString(R.string.search_for_phrase_part_name) + query);
                 }
 
-                isManualSearch = false;
                 // collapse the action view
                 (menu.findItem(R.id.action_bar_search)).collapseActionView();
                 searchView.onActionViewCollapsed();
@@ -237,8 +240,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         ArticleDetailFragment articleDetailFragment = new ArticleDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("articleKey", article);
-        bundle.putString("titleNameKey", toolbarTitleText);
-        bundle.putString("subTitleNameKey", toolbarSubtitleText);
+        bundle.putString("titleNameKey", articleDetailScreenTitle);
         articleDetailFragment.setArguments(bundle);
 
         Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")

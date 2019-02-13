@@ -68,16 +68,11 @@ public class ArticleDetailFragment extends Fragment {
             article = bundle.getParcelable("articleKey");
             populateViews(Objects.requireNonNull(article));
             titleText = bundle.containsKey("titleNameKey") ? bundle.getString("titleNameKey") : "";
-            subtitleText = bundle.containsKey("subTitleNameKey") ? bundle.getString("subTitleNameKey") : "";
         }
 
         if (titleText != null && !titleText.equals("")) {
             tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleText));
         }
-        if (subtitleText != null && !subtitleText.equals("")){
-            tbArticleDetailToolbar.setSubtitle(UtilityHelper.makeUpperString(subtitleText));
-        }
-
 
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
