@@ -54,7 +54,6 @@ class FavouriteArticlesListViewModel extends AndroidViewModel {
 
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
-
         private final FavouriteArticleRepository favouriteArticleRepository;
         @NonNull
         private final Application application;
