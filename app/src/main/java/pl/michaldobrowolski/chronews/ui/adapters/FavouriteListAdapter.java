@@ -156,6 +156,4 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
 
         }
     }
-
-
 }

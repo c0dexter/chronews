@@ -77,11 +77,12 @@ public final class UtilityHelper {
         int days = (int) (diff / (1000 * 60 * 60 * 24));
         int hours = (int) ((diff / (1000 * 60 * 60)) % 24);
 
-        if (days > 1) {
-            if (days < 2) {
+        if (days >=1) {
+            if (days == 1) {
                 counterResult = " \u2022 " + String.valueOf(days) + " day ago";
-            } else
+            } else {
                 counterResult = " \u2022 " + String.valueOf(days) + " days ago";
+            }
         } else {
             if (hours < 2) {
                 counterResult = " \u2022 " + String.valueOf(hours) + " hour ago";
