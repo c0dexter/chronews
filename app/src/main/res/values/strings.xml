@@ -239,5 +239,6 @@
     <string name="api_error_500_msg">Server Error. Something went wrong on provider side.</string>
     <string name="api_unknkown_error_msg">Unknown error: #</string>
     <string name="default_web_client_id_hardcoded">829629333236-log3f5ipbgja13mbn3sq0afed92unpmj.apps.googleusercontent.com</string>
+    <string name="share_news">Share news</string>
 
 </resources>

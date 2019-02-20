@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ public class ArticleDetailFragment extends Fragment {
     TextView tvArticleDetailAuthor;
     @BindView(R.id.toolbar_article_detail)
     Toolbar tbArticleDetailToolbar;
+    @BindView(R.id.share_icon)
+    ImageView ivShareIcon;
     private Article article;
     private FavouriteArticleRepository favouriteArticleRepository;
     private boolean articleStored;
@@ -60,7 +64,7 @@ public class ArticleDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = View.inflate(getActivity(),R.layout.fragment_article_detail, null);
+        View rootView = View.inflate(getActivity(), R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
 
         Bundle bundle = this.getArguments();
@@ -95,6 +99,17 @@ public class ArticleDetailFragment extends Fragment {
         articleDesc = article.getDescription();
         articleImageUrl = article.getUrlToImage();
         articleContent = article.getContent();
+
+        ivShareIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(
+                        android.content.Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(android.content.Intent.EXTRA_TEXT, articleUrl);
+                startActivity(Intent.createChooser(i, "Title of your share dialog"));
+            }
+        });
 
         setFavButtonLogic(articleUrl);
         setFabButtonLook();
