@@ -1,6 +1,7 @@
 package pl.michaldobrowolski.chronews.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -78,7 +79,8 @@ public class ArticleDetailFragment extends Fragment {
             tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleText));
         }
 
-        tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+
+        tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_menu_back);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());
         ChronewsWidgetProvider chronewsWidgetProvider = new ChronewsWidgetProvider();
