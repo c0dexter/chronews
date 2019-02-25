@@ -16,7 +16,6 @@ public class FavouriteArticleRepository {
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, DB_NAME).build();
     }
 
-
     // *** START INSERT ***
     public void insertArticle(String articleTitle,
                               String articlePublishedDate,
@@ -48,6 +47,10 @@ public class FavouriteArticleRepository {
     ) throws ExecutionException, InterruptedException {
 
         new DeleteArticleAsyncTask().execute(articleImageUrl).get();
+    }
+
+    public void deleteAllArticles() {
+        new DeleteAllArticlesAsyncTask().execute();
     }
 
     /**
@@ -91,6 +94,14 @@ public class FavouriteArticleRepository {
         @Override
         protected Void doInBackground(String... strings) {
             appDatabase.myDao().deleteArticleByUrl(strings[0]);
+            return null;
+        }
+    }
+
+    private static class DeleteAllArticlesAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            appDatabase.myDao().deleteAllArticles();
             return null;
         }
     }

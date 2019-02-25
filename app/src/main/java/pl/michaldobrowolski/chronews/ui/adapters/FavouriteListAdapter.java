@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui.adapters;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.data.ArticleEntity;
 import pl.michaldobrowolski.chronews.api.data.FavouriteArticleRepository;
+import pl.michaldobrowolski.chronews.ui.FavouriteFragment;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
 public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.ViewHolder> {
@@ -140,6 +142,7 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                     if(toast !=  null){
                         toast.cancel();
                     }
+
                     Toast.makeText(context, R.string.article_removed_message, Toast.LENGTH_SHORT).show();
 
                 } catch (ExecutionException | InterruptedException e) {

@@ -1,22 +1,31 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Objects;
 
 import pl.michaldobrowolski.chronews.R;
@@ -34,14 +43,28 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
     private ArticleEntity articleEntity;
     private Toolbar toolbar;
     private FavouriteArticleRepository favouriteArticleRepository;
-
     private FavouriteArticlesListViewModel viewModel;
     private FavouriteArticlesListResult favouriteArticlesListResult;
+    private Callbacks callbacks;
+
+
+    public interface Callbacks {
+        //Callback for when "Remove all (fav)" button clicked.
+        void onRemoveAllFavButtonClicked();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Activities containing this fragment must implement its callbacks
+        callbacks = (Callbacks) activity;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
+        setHasOptionsMenu(true);
         context = getActivity();
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
@@ -62,6 +85,48 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         return rootView;
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
+        inflater.inflate(R.menu.menu_fav_screen, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.actionShareAllFav:
+                shareAllFavArticleUrls(favouriteArticlesListResult);
+                return true;
+
+            case R.id.actionRemoveAllFav:
+                new AlertDialog.Builder(context)
+                        //TODO: Refactor: move strings to string.xml file, make tests
+                        .setTitle("Are you sure?")
+                        .setMessage("Note that all favourite articles will be removed permanently.")
+                        .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeAllFavArticles();
+                                callbacks.onRemoveAllFavButtonClicked();
+                                Toast.makeText(context, "Favourite articles removed", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d(TAG, "Removing articles canelled");
+                            }
+                        })
+                        .show();
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onItemClick(View view, int position) {
@@ -96,6 +161,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         adapter.notifyDataSetChanged();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -112,4 +178,32 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
             }
         });
     }
+
+    private void shareAllFavArticleUrls(FavouriteArticlesListResult favouriteArticlesListResult) {
+        List<ArticleEntity> favArticles;
+        favArticles = favouriteArticlesListResult.getFavouriteArticleList();
+        StringBuilder stackArticleUrls = new StringBuilder();
+        if (!favArticles.isEmpty()) {
+            for (int i = 0; i < favArticles.size(); i++) {
+                stackArticleUrls.append(favArticles.get(i).getUrl()).append("\n\n");
+            }
+        }
+
+        Intent i = new Intent(
+                android.content.Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(android.content.Intent.EXTRA_TEXT, stackArticleUrls.toString());
+        startActivity(Intent.createChooser(i, "Title of your share dialog"));
+    }
+
+    private void removeAllFavArticles() {
+        favouriteArticleRepository.deleteAllArticles();
+        adapter = new FavouriteListAdapter(FavouriteFragment.this, favouriteArticlesListResult.getFavouriteArticleList(), favouriteArticleRepository, context);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        Toast.makeText(context, "Articles removed", Toast.LENGTH_SHORT).show();
+    }
+
 }
+

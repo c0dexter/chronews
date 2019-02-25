@@ -1,5 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,7 +11,7 @@ import android.view.MenuItem;
 
 import pl.michaldobrowolski.chronews.R;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FavouriteFragment.Callbacks {
     private static final String TAG = MainActivity.class.getClass().getSimpleName();
     private Fragment fragment = null;
 
@@ -71,5 +72,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         fragment = getSupportFragmentManager().getFragment(savedInstanceState, "myFragment");
+    }
+
+
+    @Override
+    public void onRemoveAllFavButtonClicked() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new FavouriteFragment())
+                .commit();
     }
 }

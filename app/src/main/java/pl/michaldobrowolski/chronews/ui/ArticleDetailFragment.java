@@ -1,7 +1,6 @@
 package pl.michaldobrowolski.chronews.ui;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +28,6 @@ import pl.michaldobrowolski.chronews.api.model.pojo.Article;
 import pl.michaldobrowolski.chronews.utils.Analytics;
 import pl.michaldobrowolski.chronews.utils.DynamicHeightImage;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
-import pl.michaldobrowolski.chronews.widget.ChronewsWidgetProvider;
 
 public class ArticleDetailFragment extends Fragment {
     private static final String TAG = ArticleDetailFragment.class.getClass().getSimpleName();
@@ -60,7 +58,6 @@ public class ArticleDetailFragment extends Fragment {
     private String articleImageUrl;
     private String articleContent;
     private String titleText;
-    private String subtitleText;
 
     @Nullable
     @Override
@@ -79,11 +76,9 @@ public class ArticleDetailFragment extends Fragment {
             tbArticleDetailToolbar.setTitle(UtilityHelper.makeUpperString(titleText));
         }
 
-
         tbArticleDetailToolbar.setNavigationIcon(R.drawable.ic_menu_back);
         tbArticleDetailToolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());
-        ChronewsWidgetProvider chronewsWidgetProvider = new ChronewsWidgetProvider();
 
         return rootView;
     }

@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.MainActivity">
+        <item
+            android:id="@+id/actionShareAllFav"
+            android:orderInCategory="100"
+            android:title="@string/fav_share_all"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/actionRemoveAllFav"
+            android:orderInCategory="200"
+            android:title="@string/fav_remove_all"
+            app:showAsAction="never" />
 </menu>

@@ -30,6 +30,10 @@ public interface MyDao {
     @Query("DELETE FROM articles WHERE article_url = :url")
     void deleteArticleByUrl(String url);
 
+    // Delete ALL articles by using query
+    @Query("DELETE FROM articles")
+    void deleteAllArticles();
+
 
     @Query("SELECT COUNT(*) FROM articles WHERE article_url LIKE :url")
     int countArticlesWithUrl(String url);

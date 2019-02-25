@@ -240,5 +240,7 @@
     <string name="api_unknkown_error_msg">Unknown error: #</string>
     <string name="default_web_client_id_hardcoded">829629333236-log3f5ipbgja13mbn3sq0afed92unpmj.apps.googleusercontent.com</string>
     <string name="share_news">Share news</string>
+    <string name="fav_share_all">Share all</string>
+    <string name="fav_remove_all">Remove all</string>
 
 </resources>
