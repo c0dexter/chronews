@@ -17,13 +17,14 @@ public class MainActivity
 
     private static final String TAG = MainActivity.class.getClass().getSimpleName();
     private Fragment fragment = null;
+    private Toolbar mainActivityToolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar mainActivityToolbar = findViewById(R.id.main_activity_toolbar);
+        mainActivityToolbar = findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(mainActivityToolbar);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);

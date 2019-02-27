@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import pl.michaldobrowolski.chronews.R;
 import pl.michaldobrowolski.chronews.api.model.pojo.Article;
-import pl.michaldobrowolski.chronews.api.model.pojo.News;
 import pl.michaldobrowolski.chronews.api.service.ApiClient;
 import pl.michaldobrowolski.chronews.api.service.ApiInterface;
 import pl.michaldobrowolski.chronews.ui.adapters.ArticleListAdapter;
@@ -57,12 +56,24 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         if (context != null) {
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
+
         if (savedInstanceState != null) {
             toolbarSubtitleText = savedInstanceState.getString(TOOLBAR_SUBTITLE_KEY);
             toolbarTitleText = savedInstanceState.getString(TOOLBAR_TITLE_KEY);
         }
 
         toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toolbar.setNavigationIcon(null);
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
 
@@ -83,6 +94,7 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
             Boolean showArticlesForSpecificCountry = preferences.getBoolean("key_switch_country_of_category_board", false);
             String country = preferences.getString("key_country_code_categories_board", "gb");
             toolbar.setTitle(UtilityHelper.makeUpperString(category.getCategoryName()));
+
             if (showArticlesForSpecificCountry) {
                 toolbar.setSubtitle(getString(R.string.top_headlines_specific_country_selected_toolbar) + " " + country.toUpperCase());
             } else {
