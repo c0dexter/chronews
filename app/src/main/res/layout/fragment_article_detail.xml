@@ -57,9 +57,8 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="end"
-                    android:padding="6dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@android:drawable/ic_menu_share" />
+                    android:padding="6dp" />
 
             </android.support.v7.widget.Toolbar>
 

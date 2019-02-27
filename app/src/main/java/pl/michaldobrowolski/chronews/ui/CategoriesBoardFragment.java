@@ -25,7 +25,8 @@ import pl.michaldobrowolski.chronews.ui.adapters.CategoryBoardAdapter;
 import pl.michaldobrowolski.chronews.utils.Category;
 import pl.michaldobrowolski.chronews.utils.UtilityHelper;
 
-public class CategoriesBoardFragment extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
+public class CategoriesBoardFragment
+        extends Fragment implements CategoryBoardAdapter.OnItemClickListener {
     private static final String TAG = CategoriesBoardFragment.class.getClass().getSimpleName();
     public static RecyclerView.Adapter adapter;
     private CategoriesListResult categoriesListResult;
@@ -33,6 +34,7 @@ public class CategoriesBoardFragment extends Fragment implements CategoryBoardAd
     private CategoriesBoardListViewModel viewModel;
     private ApiInterface apiInterface;
     private GridLayoutManager gridLayoutManager;
+
 
     @Nullable
     @Override
@@ -59,7 +61,8 @@ public class CategoriesBoardFragment extends Fragment implements CategoryBoardAd
         bundle.putParcelable("categoryArticleKey", category);
         categoryArticleListFragment.setArguments(bundle);
 
-        Objects.requireNonNull(getFragmentManager(), "Fragment Manager must not be null")
+        Objects.requireNonNull(getFragmentManager(),
+                "Fragment Manager must not be null")
                 .beginTransaction()
                 .replace(R.id.fragment_container, categoryArticleListFragment)
                 .addToBackStack(null)
@@ -67,7 +70,10 @@ public class CategoriesBoardFragment extends Fragment implements CategoryBoardAd
     }
 
 
-    public void addCategoriesToScreen(GridLayoutManager gridLayoutManager, View rootView, CategoriesListResult categoriesListResult) {
+    public void addCategoriesToScreen(
+            GridLayoutManager gridLayoutManager,
+            View rootView,
+            CategoriesListResult categoriesListResult) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -85,7 +91,9 @@ public class CategoriesBoardFragment extends Fragment implements CategoryBoardAd
             }
         });
 
-        adapter = new CategoryBoardAdapter(CategoriesBoardFragment.this, context, categoriesListResult.getCategoryList());
+        adapter = new CategoryBoardAdapter(
+                CategoriesBoardFragment.this, context,
+                categoriesListResult.getCategoryList());
         recyclerView.setAdapter(adapter);
     }
 
@@ -95,13 +103,15 @@ public class CategoriesBoardFragment extends Fragment implements CategoryBoardAd
         super.onViewCreated(view, savedInstanceState);
         Application application = getActivity().getApplication();
 
-        viewModel = ViewModelProviders.of(this, new CategoriesBoardListViewModel.Factory(application,
-                apiInterface)).get(CategoriesBoardListViewModel.class);
+        viewModel = ViewModelProviders.of(this,
+                new CategoriesBoardListViewModel.Factory(application,
+                        apiInterface)).get(CategoriesBoardListViewModel.class);
         if ((UtilityHelper.isOnline(context))) {
-            viewModel.getCategories().observe(this, (CategoriesListResult categoriesListResult) -> {
-                addCategoriesToScreen(gridLayoutManager, view, categoriesListResult);
-                this.categoriesListResult = categoriesListResult;
-            });
+            viewModel.getCategories()
+                    .observe(this, (CategoriesListResult categoriesListResult) -> {
+                        addCategoriesToScreen(gridLayoutManager, view, categoriesListResult);
+                        this.categoriesListResult = categoriesListResult;
+                    });
         } else {
             Toast.makeText(context, R.string.no_internet_connection_message, Toast.LENGTH_SHORT).show();
         }

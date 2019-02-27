@@ -40,29 +40,30 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
     private Context context;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    private ArticleEntity articleEntity;
-    private Toolbar toolbar;
     private FavouriteArticleRepository favouriteArticleRepository;
-    private FavouriteArticlesListViewModel viewModel;
     private FavouriteArticlesListResult favouriteArticlesListResult;
-    private Callbacks callbacks;
+    private OnRemoveArticleListener onRemoveArticleListener;
 
 
-    public interface Callbacks {
+    public interface OnRemoveArticleListener {
         //Callback for when "Remove all (fav)" button clicked.
-        void onRemoveAllFavButtonClicked();
+        void onRemoveArticleButtonClickedCallback();
     }
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // Activities containing this fragment must implement its callbacks
-        callbacks = (Callbacks) activity;
+        // Activities containing this fragment must implement its onRemoveArticleListener
+        onRemoveArticleListener = (OnRemoveArticleListener) activity;
     }
+
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
         setHasOptionsMenu(true);
         context = getActivity();
@@ -70,7 +71,9 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
             Objects.requireNonNull(((AppCompatActivity) context).getSupportActionBar()).show();
         }
 
-        toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
+        Toolbar toolbar = Objects.requireNonNull(getActivity(),
+                "Activity context must not be null")
+                .findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.toolbar_title_favourites);
         toolbar.setSubtitle(R.string.favourite_scrn_subtitle);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -88,11 +91,13 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater = Objects.requireNonNull(getActivity(), "Activity Context must not be null").getMenuInflater();
+        inflater = Objects.requireNonNull(getActivity(),
+                "Activity Context must not be null").getMenuInflater();
         inflater.inflate(R.menu.menu_fav_screen, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -111,8 +116,9 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeAllFavArticles();
-                                callbacks.onRemoveAllFavButtonClicked();
-                                Toast.makeText(context, "Favourite articles removed", Toast.LENGTH_SHORT).show();
+                                onRemoveArticleListener.onRemoveArticleButtonClickedCallback();
+                                Toast.makeText(context, "Favourite articles removed",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -122,15 +128,15 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
                             }
                         })
                         .show();
-
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onItemClick(View view, int position) {
-        articleEntity = favouriteArticlesListResult.getFavouriteArticleList().get(position);
+        ArticleEntity articleEntity = favouriteArticlesListResult.getFavouriteArticleList().get(position);
         Article article = new Article();
         Source source = new Source();
         source.setName(articleEntity.getSourceName());
@@ -167,17 +173,27 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         super.onViewCreated(view, savedInstanceState);
         Application application = getActivity().getApplication();
 
-        viewModel = ViewModelProviders.of(this, new FavouriteArticlesListViewModel.Factory(application, favouriteArticleRepository)).get(FavouriteArticlesListViewModel.class);
-        viewModel.getFavouriteArticlesFromDb().observe(this, (FavouriteArticlesListResult favouriteArticlesListResult) -> {
-            this.favouriteArticlesListResult = favouriteArticlesListResult;
-            adapter = new FavouriteListAdapter(FavouriteFragment.this, favouriteArticlesListResult.getFavouriteArticleList(), favouriteArticleRepository, context);
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            if (favouriteArticlesListResult.getFavouriteArticleList().size() == 0) {
-                Toast.makeText(context, R.string.empty_favourite_list_message, Toast.LENGTH_SHORT).show();
-            }
-        });
+        FavouriteArticlesListViewModel viewModel = ViewModelProviders.of(
+                this,
+                new FavouriteArticlesListViewModel.Factory(application,
+                        favouriteArticleRepository)).get(FavouriteArticlesListViewModel.class);
+        viewModel.getFavouriteArticlesFromDb()
+                .observe(this, (FavouriteArticlesListResult favouriteArticlesListResult) -> {
+                    this.favouriteArticlesListResult = favouriteArticlesListResult;
+                    adapter = new FavouriteListAdapter(
+                            FavouriteFragment.this,
+                            onRemoveArticleListener,
+                            favouriteArticlesListResult.getFavouriteArticleList(),
+                            favouriteArticleRepository, context);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    if (favouriteArticlesListResult.getFavouriteArticleList().size() == 0) {
+                        Toast.makeText(context, R.string.empty_favourite_list_message,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     private void shareAllFavArticleUrls(FavouriteArticlesListResult favouriteArticlesListResult) {
         List<ArticleEntity> favArticles;
@@ -196,14 +212,18 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
         startActivity(Intent.createChooser(i, "Title of your share dialog"));
     }
 
+
     private void removeAllFavArticles() {
         favouriteArticleRepository.deleteAllArticles();
-        adapter = new FavouriteListAdapter(FavouriteFragment.this, favouriteArticlesListResult.getFavouriteArticleList(), favouriteArticleRepository, context);
+        adapter = new FavouriteListAdapter(
+                FavouriteFragment.this,
+                onRemoveArticleListener,
+                favouriteArticlesListResult.getFavouriteArticleList(),
+                favouriteArticleRepository, context);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         Toast.makeText(context, "Articles removed", Toast.LENGTH_SHORT).show();
     }
-
 }
 

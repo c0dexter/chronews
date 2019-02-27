@@ -38,7 +38,6 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
     private RecyclerView recyclerView;
     private ApiInterface apiInterface;
     private RecyclerView.Adapter adapter;
-    private News news;
     private Category category;
     private CategoryArticlesListViewModel viewModel;
     private CategoryArticlesListResult categoryArticlesListResult;

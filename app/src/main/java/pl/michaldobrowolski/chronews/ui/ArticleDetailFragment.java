@@ -59,9 +59,13 @@ public class ArticleDetailFragment extends Fragment {
     private String articleContent;
     private String titleText;
 
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View rootView = View.inflate(getActivity(), R.layout.fragment_article_detail, null);
         ButterKnife.bind(this, rootView);
 
@@ -69,7 +73,8 @@ public class ArticleDetailFragment extends Fragment {
         if (bundle != null) {
             article = bundle.getParcelable("articleKey");
             populateViews(Objects.requireNonNull(article));
-            titleText = bundle.containsKey("titleNameKey") ? bundle.getString("titleNameKey") : "";
+            titleText = bundle.containsKey("titleNameKey")
+                    ? bundle.getString("titleNameKey") : "";
         }
 
         if (titleText != null && !titleText.equals("")) {
@@ -82,6 +87,7 @@ public class ArticleDetailFragment extends Fragment {
 
         return rootView;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -113,6 +119,7 @@ public class ArticleDetailFragment extends Fragment {
         tvReadMoreText.setOnClickListener(v -> UtilityHelper.openArticleInBrowser(requireContext(), article));
     }
 
+
     private void setFavButtonLogic(String articleUrl) {
         try {
             articleStored = favouriteArticleRepository.getArticleCountByUrl(articleUrl);
@@ -123,7 +130,15 @@ public class ArticleDetailFragment extends Fragment {
         btnFav.setOnClickListener(v -> {
             if (!articleStored) {
                 try {
-                    favouriteArticleRepository.insertArticle(articleTitle, articlePublishedDate, articleSource, articleUrl, articleAuthor, articleDesc, articleImageUrl, articleContent);
+                    favouriteArticleRepository.insertArticle(
+                            articleTitle,
+                            articlePublishedDate,
+                            articleSource,
+                            articleUrl,
+                            articleAuthor,
+                            articleDesc,
+                            articleImageUrl,
+                            articleContent);
                     articleStored = true;
                     setFabButtonLook();
                     UtilityHelper.updateWidget(getContext()); // Update widgets
@@ -148,6 +163,7 @@ public class ArticleDetailFragment extends Fragment {
         });
     }
 
+
     private void setFabButtonLook() {
         if (articleStored) {
             btnFav.setImageResource(R.drawable.ic_favorite_article_on_24dp);
@@ -156,8 +172,10 @@ public class ArticleDetailFragment extends Fragment {
         }
     }
 
+
     private void populateViews(Article article) {
-        if (article.getUrlToImage() != null && !String.valueOf(article.getUrlToImage()).equals("")) {
+        if (article.getUrlToImage() != null
+                && !String.valueOf(article.getUrlToImage()).equals("")) {
             Picasso.get()
                     .load(article.getUrlToImage())
                     .into(ivArticleImage);
@@ -173,22 +191,27 @@ public class ArticleDetailFragment extends Fragment {
         }
 
         if (article.getContent() != null) {
-            tvArticleDetailText.setText(UtilityHelper.removeRedundantCharactersFromText(article.getContent()));
+            tvArticleDetailText
+                    .setText(UtilityHelper.removeRedundantCharactersFromText(article.getContent()));
         } else {
             tvArticleDetailText.setText(article.getDescription());
         }
         tvArticleDetailTitle.setText(article.getTitle());
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(), "Context of activity must not be null")).getSupportActionBar()).hide();
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(),
+                "Context of activity must not be null")).getSupportActionBar()).hide();
     }
+
 
     @Override
     public void onStop() {
         super.onStop();
-        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(), "Context of activity must not be null")).getSupportActionBar()).show();
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity(),
+                "Context of activity must not be null")).getSupportActionBar()).show();
     }
 }

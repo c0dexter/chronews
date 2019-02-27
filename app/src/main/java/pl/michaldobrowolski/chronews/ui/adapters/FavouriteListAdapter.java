@@ -1,6 +1,5 @@
 package pl.michaldobrowolski.chronews.ui.adapters;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -34,20 +33,37 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
     private Context context;
     private FavouriteArticleRepository favouriteArticleRepository;
     private Toast toast;
+    private FavouriteFragment.OnRemoveArticleListener onRemoveArticleListener;
 
-    public FavouriteListAdapter(OnItemClickListener onItemClickListener, List<ArticleEntity> dbArticlesList, FavouriteArticleRepository favouriteArticleRepository, Context context) {
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+
+    public FavouriteListAdapter(
+            OnItemClickListener onItemClickListener,
+            FavouriteFragment.OnRemoveArticleListener onRemoveArticleListener,
+            List<ArticleEntity> dbArticlesList,
+            FavouriteArticleRepository favouriteArticleRepository,
+            Context context) {
         this.onItemClickListener = onItemClickListener;
+        this.onRemoveArticleListener = onRemoveArticleListener;
         this.dbArticlesList = dbArticlesList;
         this.favouriteArticleRepository = favouriteArticleRepository;
         this.context = context;
     }
 
+
     @NonNull
     @Override
-    public FavouriteListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fav_article, parent, false);
+    public FavouriteListAdapter.ViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.item_fav_article, parent, false);
         return new FavouriteListAdapter.ViewHolder(view, onItemClickListener);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull FavouriteListAdapter.ViewHolder holder, int position) {
@@ -104,9 +120,6 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
         return dbArticlesList.size();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.text_fav_article_title)
@@ -136,13 +149,14 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
                 try {
                     favouriteArticleRepository.deleteArticle(articleUrl);
                     dbArticlesList = favouriteArticleRepository.getAllArticles(); // Remember this!!!
-                    notifyDataSetChanged();
+                    notifyItemRemoved(position); // OR notifyDataSetChanged();
+
                     // Update widgets
                     UtilityHelper.updateWidget(context);
-                    if(toast !=  null){
+                    if (toast != null) {
                         toast.cancel();
                     }
-
+                    onRemoveArticleListener.onRemoveArticleButtonClickedCallback();
                     Toast.makeText(context, R.string.article_removed_message, Toast.LENGTH_SHORT).show();
 
                 } catch (ExecutionException | InterruptedException e) {
@@ -153,10 +167,13 @@ public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdap
             this.onItemClickListener = onItemClickListener;
         }
 
+
         @Override
         public void onClick(View v) {
             onItemClickListener.onItemClick(v, getAdapterPosition());
 
         }
+
+
     }
 }

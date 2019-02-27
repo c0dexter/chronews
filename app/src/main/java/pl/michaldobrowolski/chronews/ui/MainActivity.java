@@ -1,6 +1,5 @@
 package pl.michaldobrowolski.chronews.ui;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,9 +10,14 @@ import android.view.MenuItem;
 
 import pl.michaldobrowolski.chronews.R;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FavouriteFragment.Callbacks {
+public class MainActivity
+        extends AppCompatActivity
+        implements BottomNavigationView.OnNavigationItemSelectedListener,
+        FavouriteFragment.OnRemoveArticleListener {
+
     private static final String TAG = MainActivity.class.getClass().getSimpleName();
     private Fragment fragment = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager()
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         return false;
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -62,11 +68,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return loadFragment(fragment);
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, "myFragment", fragment);
     }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     @Override
-    public void onRemoveAllFavButtonClicked() {
+    public void onRemoveArticleButtonClickedCallback() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new FavouriteFragment())
                 .commit();
