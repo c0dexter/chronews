@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -319,7 +318,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                 if (country != null) {
                     if (category != null) {
                         if (phrase != null) {
-                            toolbarSubtitleText = UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase() + " (" + phrase.trim() + ")";
+                            toolbarSubtitleText = UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase() + " (" + UtilityHelper.makeUpperString(phrase.trim()) + ")";
                         }
                         toolbar.setSubtitle(toolbarSubtitleText);
                     }

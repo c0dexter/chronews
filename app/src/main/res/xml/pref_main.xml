@@ -89,6 +89,7 @@
             android:ellipsize="end"
             android:key="@string/key_default_phrase_top_headlines"
             android:lines="2"
+            android:inputType="text"
             android:persistent="true"
             android:summary="%s"
             android:title="@string/shared_pref_edit_text_top_headlines_specific_category_specific_phrase_title" />

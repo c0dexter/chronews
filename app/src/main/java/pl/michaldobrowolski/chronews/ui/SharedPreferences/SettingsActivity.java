@@ -20,10 +20,6 @@ import pl.michaldobrowolski.chronews.R;
 public class SettingsActivity extends AppCompatPreferenceActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -55,8 +51,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             } else if (preference instanceof EditTextPreference) {
                 EditTextPreference editTextPreference = (EditTextPreference) preference;
-                preference.setSummary(editTextPreference.getText());
+                String oldSearchPhrase = editTextPreference.getText();
+                String newSearchPhrase = String.valueOf(editTextPreference.getEditText().getText());
 
+                if (!newSearchPhrase.equals("")) {
+                    preference.setSummary(newSearchPhrase.trim());
+                } else {
+                    preference.setSummary(oldSearchPhrase.trim());
+                }
             }
             return true;
         }
