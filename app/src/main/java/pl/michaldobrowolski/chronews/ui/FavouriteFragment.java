@@ -76,8 +76,7 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
                 .findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.toolbar_title_favourites);
         toolbar.setSubtitle(R.string.favourite_scrn_subtitle);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
+
 
         favouriteArticleRepository = new FavouriteArticleRepository(getContext());
         recyclerView = rootView.findViewById(R.id.recycler_view_favourites);
@@ -112,21 +111,13 @@ public class FavouriteFragment extends Fragment implements FavouriteListAdapter.
                         //TODO: Refactor: move strings to string.xml file, make tests
                         .setTitle("Are you sure?")
                         .setMessage("Note that all favourite articles will be removed permanently.")
-                        .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeAllFavArticles();
-                                onRemoveArticleListener.onRemoveArticleButtonClickedCallback();
-                                Toast.makeText(context, "Favourite articles removed",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                        .setPositiveButton("Remove", (dialog, which) -> {
+                            removeAllFavArticles();
+                            onRemoveArticleListener.onRemoveArticleButtonClickedCallback();
+                            Toast.makeText(context, "Favourite articles removed",
+                                    Toast.LENGTH_SHORT).show();
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Log.d(TAG, "Removing articles canelled");
-                            }
-                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> Log.d(TAG, "Removing articles canelled"))
                         .show();
         }
 

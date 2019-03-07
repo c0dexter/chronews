@@ -34,8 +34,10 @@ public class MainActivity
         if (savedInstanceState == null) {
             fragment = new HomeFragment();
             loadFragment(fragment);
+            mainActivityToolbar.setNavigationIcon(null);
         } else {
             loadFragment(fragment);
+            mainActivityToolbar.setNavigationIcon(null);
         }
     }
 
@@ -57,13 +59,16 @@ public class MainActivity
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 fragment = new HomeFragment();
+                mainActivityToolbar.setNavigationIcon(null);
                 break;
             case R.id.navigation_categories:
                 fragment = new CategoriesBoardFragment();
+                mainActivityToolbar.setNavigationIcon(null);
                 break;
 
             case R.id.navigation_favourites:
                 fragment = new FavouriteFragment();
+                mainActivityToolbar.setNavigationIcon(null);
                 break;
         }
         return loadFragment(fragment);

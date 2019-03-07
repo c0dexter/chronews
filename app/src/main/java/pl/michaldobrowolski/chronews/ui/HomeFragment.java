@@ -79,7 +79,9 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             toolbarTitleText = savedInstanceState.getString(TOOLBAR_TITLE_KEY);
         }
 
-        toolbar = Objects.requireNonNull(getActivity(), "Activity context must not be null").findViewById(R.id.main_activity_toolbar);
+        toolbar = Objects.requireNonNull(getActivity(),
+                "Activity context must not be null")
+                .findViewById(R.id.main_activity_toolbar);
         toolbar.setTitle(R.string.app_name);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
@@ -99,13 +101,19 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        settingsTopHeadlinesNotifier = rootView.findViewById(R.id.home_top_headlines_feature_disable_notifier);
+        settingsTopHeadlinesNotifier = rootView
+                .findViewById(R.id.home_top_headlines_feature_disable_notifier);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferredCountrySwitch = preferences.getBoolean("key_switch_country_top_headlines", false);
-        preferredTopHeadlinesSwitch = preferences.getBoolean("key_switch_top_headlines_home_screen", false);
-        preferredTopHeadlinesCategorySwitch = preferences.getBoolean("key_switch_category_top_headlines", false);
-        preferredTopHeadlinesSpecificPhraseSwitch = preferences.getBoolean("key_switch_search_phrase_top_headlines", false);
+        preferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        preferredCountrySwitch = preferences
+                .getBoolean("key_switch_country_top_headlines", false);
+        preferredTopHeadlinesSwitch = preferences
+                .getBoolean("key_switch_top_headlines_home_screen", false);
+        preferredTopHeadlinesCategorySwitch = preferences
+                .getBoolean("key_switch_category_top_headlines", false);
+        preferredTopHeadlinesSpecificPhraseSwitch = preferences
+                .getBoolean("key_switch_search_phrase_top_headlines", false);
 
         fetchArticles(null);
 
@@ -126,7 +134,11 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
             toolbar.setTitle(toolbarTitleText);
         }
         if (toolbarSubtitleText == null || toolbarSubtitleText.equals("")) {
-            setSubTitle(preferredTopHeadlinesCategorySwitch, preferredTopHeadlinesSpecificPhraseSwitch, preferredTopHeadlinesSwitch, preferredCountrySwitch, preferences);
+            setSubTitle(preferredTopHeadlinesCategorySwitch,
+                    preferredTopHeadlinesSpecificPhraseSwitch,
+                    preferredTopHeadlinesSwitch,
+                    preferredCountrySwitch,
+                    preferences);
         } else {
             toolbar.setSubtitle(toolbarSubtitleText);
         }
@@ -271,7 +283,10 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                         break;
                     }
                     case 200: {
-                        adapter = new ArticleListAdapter(newsListResult.getArticleList(), context, HomeFragment.this);
+                        adapter = new ArticleListAdapter(
+                                newsListResult.getArticleList(),
+                                context,
+                                HomeFragment.this);
                         recyclerView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                         // Check if API returns any of articles for provided query criteria. If not, inform a user.
@@ -323,7 +338,7 @@ public class HomeFragment extends Fragment implements ArticleListAdapter.OnItemC
                         toolbar.setSubtitle(toolbarSubtitleText);
                     }
                 }
-            } else if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch && !preferredTopHeadlinesSpecificPhraseSwitch) {
+            } else if (preferredTopHeadlinesCategorySwitch && preferredCountrySwitch) {
                 if (category != null) {
                     if (country != null) {
                         toolbarSubtitleText = UtilityHelper.makeUpperString(category) + " " + getString(R.string.subtitle_part_name_from) + " " + country.toUpperCase();

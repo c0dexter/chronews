@@ -76,10 +76,11 @@ public class CategoriesBoardFragment
             CategoriesListResult categoriesListResult) {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view_category);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        gridLayoutManager.supportsPredictiveItemAnimations();
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        if(recyclerView.getLayoutManager()==null){
+            recyclerView.setLayoutManager(gridLayoutManager);
+            gridLayoutManager.supportsPredictiveItemAnimations();
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+        }
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {

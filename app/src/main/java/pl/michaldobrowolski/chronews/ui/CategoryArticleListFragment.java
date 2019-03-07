@@ -63,19 +63,11 @@ public class CategoryArticleListFragment extends Fragment implements ArticleList
         }
 
         toolbar = Objects.requireNonNull(getActivity(), "Context must not be null").findViewById(R.id.main_activity_toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toolbar.setNavigationIcon(null);
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                }
-            }
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        toolbar.setNavigationOnClickListener(v -> {
+            requireActivity().onBackPressed();
+            toolbar.setNavigationIcon(null);
         });
-
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
 
         context = getContext();
         recyclerView = rootView.findViewById(R.id.recycler_view_category_list);
