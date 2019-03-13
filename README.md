@@ -73,7 +73,7 @@ The application requires API keys and configuration of them. Take a look at the 
 - API's issues with sending a broken text of article long description. Missing letters with polish diacritical signs.
 - Limited requests to the API: up to 1000 requests.
 
-
+### Information from the author
 > Notice that this is a very beginning version of the app and it's still developing
 > so you can see some strange behaviour or some desing issues. 
 > If you find some bug, please contact with me, I will try to fixed it as soon as I can.
