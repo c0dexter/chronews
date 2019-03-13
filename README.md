@@ -66,8 +66,8 @@ The application requires API keys and configuration of them. Take a look at the 
 
 ### Todos
 
- - Write MORE Tests
- - Add Night Mode
+ - Fix all bugs from Kanban Board
+ - Add more features (increase amount of receiving news)
 
 ### Known issues
 - API's issues with sending a broken text of article long description. Missing letters with polish diacritical signs.
