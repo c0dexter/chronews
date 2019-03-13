@@ -70,7 +70,9 @@ The application requires API keys and configuration of them. Take a look at the 
  - Add more features (increase amount of receiving news),
  - Make refactor: remove boilerpalate code, make sure that encapsulation is fine,
  - Move classes to the proper packages,
- - Add RXJava.
+ - Add RXJava,
+ - Add Espresso tests,
+ - Add unit tests.
 
 ### Known issues
 - API's issues with sending a broken text of article long description. Missing letters with polish diacritical signs.
