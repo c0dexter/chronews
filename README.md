@@ -15,6 +15,7 @@
 
 # Documentation of the app
 [![N|Solid](https://www.shareicon.net/download/2017/04/11/883725_document.ico)](https://docs.google.com/document/d/1dUKXPDBmgN66GCfa0Oo_0rRxxKvlphHT-_mKxx8dKsA/edit?usp=sharing)
+
 Click the above icon to read documenation of project scratch. This is a description of an idea of this app and steps how to develop application in a chronology order. New features will be described in V2 of this documentation.
 
 # Kanban board @Trello
