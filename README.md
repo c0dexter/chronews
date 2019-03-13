@@ -67,7 +67,7 @@ The application requires API keys and configuration of them. Take a look at the 
 
 | Service URL | Info |
 | ------ | ------ |
-| newsapi.org | Create an own free developer account to getting an API key |
+| https://newsapi.org | Create an own free developer account to getting an API key |
 | https://firebase.google.com | Create an account and prepare a configuration for analytics for this app |
 
 
