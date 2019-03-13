@@ -66,8 +66,11 @@ The application requires API keys and configuration of them. Take a look at the 
 
 ### Todos
 
- - Fix all bugs from Kanban Board
- - Add more features (increase amount of receiving news)
+ - Fix all bugs from Kanban Board,
+ - Add more features (increase amount of receiving news),
+ - Make refactor: remove boilerpalate code, make sure that encapsulation is fine,
+ - Move classes to the proper packages,
+ - Add RXJava.
 
 ### Known issues
 - API's issues with sending a broken text of article long description. Missing letters with polish diacritical signs.
