@@ -24,7 +24,7 @@ Click the above icon to read documenation of project scratch. This is a descript
 # Kanban board @Trello
 [![N|Solid](https://i.imgur.com/OgojzKL.png)](https://trello.com/b/Sgv6SXy7/chronews-android-app)
 
-I create my own a Kanban Board by using Trello to manage taks and issues. **Click on the above image** to see the the actual version.
+I created my own a Kanban Board by using Trello to manage tasks and issues. **Click on the above image** to see the the actual version.
 
 # Main features
   - displaying top-headlines of news for some country,
