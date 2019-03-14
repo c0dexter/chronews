@@ -2,7 +2,7 @@
 
 ![N|Solid](https://i.imgur.com/jLbEJXf.png) 
 
-"**Chronews**" app is a kinda news aggregator with options to save interesting news in "favorites", share the news with someone by sharing URL provided by third-party apps and displaying a list of favorites on the widget which allows very fast opening stored news in a browser. The app is not providing entire text of news, only a short and long description with the option "Read more" on the original site.  This application is flexible to a user by providing preferences screen where is possible to set many parameters of displaying news for a specific country, language, phrase or popularity, etc. 
+"**Chronews**" app is a kind of news aggregator with options to save interesting news in "favorites", share the news with someone by sharing URL provided by third-party apps and displaying a list of favorites on the widget which allows very fast opening stored news in a browser. The app is not providing entire text of news, only a short and long description with the option "Read more" on the original site.  This application is flexible to a user by providing preferences screen where is possible to set many parameters of displaying news for a specific country, language, phrase or popularity, etc. 
 
 
 # Screenshots
