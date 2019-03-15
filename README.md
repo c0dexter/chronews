@@ -80,7 +80,7 @@ The application requires API keys and configuration of them. Take a look at the 
 
 ### Known issues
 - API's issues with sending a broken text of article long description. Missing letters with polish diacritical signs.
-- Limited requests to the API: up to 1000 requests.
+- Limited requests to the API: up to 1000 requests (in the free, developer version).
 
 ### Information from the author
 > Notice that this is a very beginning version of the app and it's still developing
