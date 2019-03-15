@@ -14,7 +14,7 @@
 ![N|Solid](https://i.imgur.com/HX4UaCO.jpg?3) ![N|Solid](https://i.imgur.com/V1cYkLn.jpg?1) ![N|Solid](https://i.imgur.com/Z5u1juK.jpg?1)  
 
 # Video presentation
-[YouTube] - will be available make soon...
+[YouTube] - will be available soon...
 
 # Documentation of the app
 [![N|Solid](https://www.shareicon.net/download/2017/04/11/883725_document.ico)](https://docs.google.com/document/d/1dUKXPDBmgN66GCfa0Oo_0rRxxKvlphHT-_mKxx8dKsA/edit?usp=sharing)
