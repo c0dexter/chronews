@@ -9,9 +9,9 @@
 
 ![N|Solid](https://i.imgur.com/7lhj1lV.jpg?1) ![N|Solid](https://i.imgur.com/mKGFgm6.jpg?1) ![N|Solid](https://i.imgur.com/hNY1IHo.jpg?1) 
 
-![N|Solid](https://i.imgur.com/ZA1UOd9.jpg) ![N|Solid](https://i.imgur.com/5RSgiP0.jpg?1) ![N|Solid](https://i.imgur.com/ssK7a87.jpg?1)
+![N|Solid](https://i.imgur.com/ZA1UOd9.jpg) ![N|Solid](https://i.imgur.com/5RSgiP0.jpg?2) ![N|Solid](https://i.imgur.com/ssK7a87.jpg?1)
 
-![N|Solid](https://i.imgur.com/HX4UaCO.jpg?3) ![N|Solid](https://i.imgur.com/V1cYkLn.jpg?1) ![N|Solid](https://i.imgur.com/Z5u1juK.jpg?1)  
+![N|Solid](https://i.imgur.com/HX4UaCO.jpg?3) ![N|Solid](https://i.imgur.com/9BBkm8P.jpg?1) ![N|Solid](https://i.imgur.com/Z5u1juK.jpg?1)  
 
 # Video presentation
 [YouTube] - will be available soon...
